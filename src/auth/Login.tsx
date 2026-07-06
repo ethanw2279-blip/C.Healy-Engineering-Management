@@ -12,10 +12,21 @@ export default function Login() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setLoading(false)
-    if (error) setError(error.message)
-    // On success the AuthProvider's listener swaps this screen for the app.
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) setError(error.message)
+      // On success the AuthProvider's listener swaps this screen for the app.
+    } catch (err) {
+      // Network/config failures (e.g. "Failed to fetch") throw here.
+      console.error('Sign-in failed', err)
+      setError(
+        err instanceof Error
+          ? `${err.message} — the app couldn't reach Supabase. Check the URL/key env vars and that the project isn't paused.`
+          : 'Something went wrong signing in.',
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
