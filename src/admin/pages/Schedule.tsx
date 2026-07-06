@@ -1,9 +1,10 @@
 import { PageHeader, Button, Avatar, EmptyState } from '../components/ui'
-import { useStore, formatDate } from '../../data/store'
+import { useStore, useCurrentUser, formatDate } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 export default function Schedule() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
 
   const jobById = (id: string) => state.jobs.find((j) => j.id === id)
@@ -25,7 +26,7 @@ export default function Schedule() {
       <PageHeader
         title="Schedule"
         subtitle="Everyone's visits"
-        action={<Button onClick={() => create('job')}>New job</Button>}
+        action={can('create:records') && <Button onClick={() => create('job')}>New job</Button>}
       />
 
       {dates.length === 0 ? (

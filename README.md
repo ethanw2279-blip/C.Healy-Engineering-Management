@@ -27,8 +27,51 @@ A desktop dashboard with a left sidebar, top bar with global search, and a
 | **Jobs** | Status pipeline (Unscheduled → Complete), assigned crew + create job |
 | **Invoices** | Outstanding total, statuses (Draft/Awaiting/Past due/Paid) + create invoice |
 | **Timesheets** | **Every employee's hours**, pending approval, estimated labour cost, per-entry + bulk approve |
-| **Team** | Roster with roles, rates, job counts, and weekly hours |
+| **Team** | Add / edit / remove members and assign roles |
+| **Roles & permissions** | Create and edit roles; toggle exactly what each role can see and do |
 | **Reports** | Revenue, pipeline, win rate, labour cost, job value by client |
+
+## Roles & permissions (RBAC)
+
+Every team member has a **role**, and each role holds a set of **permissions**
+that control which pages they see and which actions they can take. Roles are
+data-driven and editable in the app.
+
+**Default roles**
+
+| Role | Access |
+| --- | --- |
+| **Developer** | Complete access and control (a system role — always full access, can't be deleted). |
+| **Admin** | Every page + create records + approve timesheets + manage the team. Cannot edit roles. |
+| **Employee** | Schedule, Jobs, Clients and Timesheets only. No create, no admin. |
+
+**How permissions are enforced**
+- The sidebar only lists pages the current role can view.
+- Visiting a page you can't access bounces you to your first allowed page (or a
+  "No access" screen).
+- The **+ Create** button, timesheet **Approve** buttons, and team-management
+  controls only appear when your role allows them.
+
+**Previewing a role** — use the **"Viewing as"** switcher in the top bar to see
+the app as any team member. The sidebar, buttons and pages update instantly to
+match that person's role. (This resets to the owner on a full page reload, since
+data is in-memory.)
+
+### How to create or edit a role
+
+1. Go to **Roles & permissions** in the sidebar (needs the *Create & edit roles*
+   permission — Developer has it by default).
+2. Click **New role** (or **Edit** on an existing card).
+3. Give it a **name** and **description**, then tick the permissions it should
+   have, grouped into **Pages**, **Actions**, and **Administration**.
+4. **Save** — assign it to people from the **Team** page (click a member →
+   choose the role).
+
+Delete a role from its card. A role can't be deleted while members are still
+assigned to it (reassign them first), and the Developer role is protected.
+
+To change the *defaults* in code, edit `src/data/permissions.ts`
+(`defaultRoles` and the `PERMISSION_GROUPS` catalog).
 
 **Create flows** — quotes, jobs and invoices use a shared line-item editor with
 live totals; jobs let you assign crew and set schedule dates. New records get an

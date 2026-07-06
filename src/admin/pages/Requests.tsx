@@ -1,9 +1,10 @@
 import { PageHeader, Button, StatusBadge, EmptyState, Avatar } from '../components/ui'
-import { useStore, formatDate } from '../../data/store'
+import { useStore, useCurrentUser, formatDate } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 export default function Requests() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
   const clientById = (id: string) => state.clients.find((c) => c.id === id)?.name ?? 'Unknown'
 
@@ -12,7 +13,7 @@ export default function Requests() {
       <PageHeader
         title="Requests"
         subtitle={`${state.requests.length} incoming`}
-        action={<Button onClick={() => create('request')}>New request</Button>}
+        action={can('create:records') && <Button onClick={() => create('request')}>New request</Button>}
       />
 
       <div className="card">

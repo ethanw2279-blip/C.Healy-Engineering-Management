@@ -290,7 +290,7 @@ function JobForm({ onClose }: { onClose: () => void }) {
       </div>
       <Field label="Assign team">
         <div className="assign-row">
-          {state.employees.filter((e) => e.role !== 'Owner').map((e) => (
+          {state.employees.filter((e) => e.active).map((e) => (
             <button
               key={e.id}
               type="button"

@@ -10,10 +10,18 @@ export type LineItem = {
   unitPrice: number
 }
 
+export type Role = {
+  id: ID
+  name: string
+  description: string
+  permissions: string[] // list of permission keys, or ['*'] for everything
+  system?: boolean // system roles (Developer) can't be deleted or edited
+}
+
 export type Employee = {
   id: ID
   name: string
-  role: 'Owner' | 'Admin' | 'Field crew' | 'Dispatcher'
+  roleId: ID
   email: string
   phone: string
   hourlyRate: number
@@ -99,6 +107,8 @@ export type Visit = {
 }
 
 export type State = {
+  roles: Role[]
+  currentUserId: ID
   employees: Employee[]
   clients: Client[]
   requests: Request[]

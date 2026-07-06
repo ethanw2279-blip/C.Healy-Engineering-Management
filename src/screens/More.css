@@ -5,6 +5,27 @@
   margin: 8px 0 20px;
 }
 
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 20px;
+}
+.user-chip-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-chip-text { display: flex; flex-direction: column; }
+.user-chip-text strong { font-size: 18px; color: var(--navy); }
+.user-chip-text span { font-size: 14px; color: var(--navy-muted); }
+
 .tile-row {
   display: flex;
   gap: 14px;

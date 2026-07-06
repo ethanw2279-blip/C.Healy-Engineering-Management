@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { PageHeader, Button, StatusBadge, EmptyState } from '../components/ui'
-import { useStore, eur, invoiceTotal, formatDate } from '../../data/store'
+import { useStore, useCurrentUser, eur, invoiceTotal, formatDate } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 const filters = ['All', 'Draft', 'Awaiting payment', 'Past due', 'Paid'] as const
 
 export default function Invoices() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
   const [filter, setFilter] = useState<(typeof filters)[number]>('All')
 
@@ -21,7 +22,7 @@ export default function Invoices() {
       <PageHeader
         title="Invoices"
         subtitle={`${eur(outstanding)} outstanding`}
-        action={<Button onClick={() => create('invoice')}>New invoice</Button>}
+        action={can('create:records') && <Button onClick={() => create('invoice')}>New invoice</Button>}
       />
 
       <div className="toolbar">

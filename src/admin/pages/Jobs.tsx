@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { PageHeader, Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
-import { useStore, eur, jobTotal, formatDateShort } from '../../data/store'
+import { useStore, useCurrentUser, eur, jobTotal, formatDateShort } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 const filters = ['All', 'Unscheduled', 'Scheduled', 'Active', 'Requires invoicing', 'Complete'] as const
 
 export default function Jobs() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
   const [filter, setFilter] = useState<(typeof filters)[number]>('All')
 
@@ -18,7 +19,7 @@ export default function Jobs() {
       <PageHeader
         title="Jobs"
         subtitle={`${state.jobs.length} total`}
-        action={<Button onClick={() => create('job')}>New job</Button>}
+        action={can('create:records') && <Button onClick={() => create('job')}>New job</Button>}
       />
 
       <div className="toolbar">

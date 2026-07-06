@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { PageHeader, StatusBadge, Avatar, Button } from '../components/ui'
-import { useStore, eur, quoteTotal, invoiceTotal, formatDateShort } from '../../data/store'
+import { useStore, useCurrentUser, eur, quoteTotal, invoiceTotal, formatDateShort } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 export default function Dashboard() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
 
   const clientById = (id: string) => state.clients.find((c) => c.id === id)?.name ?? 'Unknown'
@@ -22,7 +23,7 @@ export default function Dashboard() {
       <PageHeader
         title="Dashboard"
         subtitle="Monday, 6 July 2026 · Ethan Whitney Detailing"
-        action={<Button onClick={() => create('quote')}>Create quote</Button>}
+        action={can('create:records') && <Button onClick={() => create('quote')}>Create quote</Button>}
       />
 
       <div className="stat-grid">

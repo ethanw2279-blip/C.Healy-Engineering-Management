@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { PageHeader, Button, StatusBadge, EmptyState } from '../components/ui'
-import { useStore, eur, quoteTotal, formatDate } from '../../data/store'
+import { useStore, useCurrentUser, eur, quoteTotal, formatDate } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 const filters = ['All', 'Draft', 'Awaiting response', 'Approved', 'Converted'] as const
 
 export default function Quotes() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
   const [filter, setFilter] = useState<(typeof filters)[number]>('All')
 
@@ -19,7 +20,7 @@ export default function Quotes() {
       <PageHeader
         title="Quotes"
         subtitle={`${rows.length} quotes · ${eur(total)} total`}
-        action={<Button onClick={() => create('quote')}>New quote</Button>}
+        action={can('create:records') && <Button onClick={() => create('quote')}>New quote</Button>}
       />
 
       <div className="toolbar">

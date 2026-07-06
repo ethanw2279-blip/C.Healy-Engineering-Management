@@ -1,9 +1,10 @@
 import { PageHeader, Button, Avatar, StatusBadge } from '../components/ui'
 import { CheckIcon } from '../../components/Icons'
-import { useStore, eur, formatDate } from '../../data/store'
+import { useStore, useCurrentUser, eur, formatDate, roleNameOf } from '../../data/store'
 
 export default function Timesheets() {
   const { state, dispatch } = useStore()
+  const { can } = useCurrentUser()
 
   const empById = (id: string) => state.employees.find((e) => e.id === id)
   const jobById = (id?: string) => state.jobs.find((j) => j.id === id)
@@ -30,9 +31,11 @@ export default function Timesheets() {
         title="Timesheets"
         subtitle="This week · 5 – 11 July 2026"
         action={
-          <Button onClick={() => dispatch({ type: 'APPROVE_ALL_TIME' })} disabled={pending.length === 0}>
-            <CheckIcon size={18} /> Approve all
-          </Button>
+          can('approve:timesheets') && (
+            <Button onClick={() => dispatch({ type: 'APPROVE_ALL_TIME' })} disabled={pending.length === 0}>
+              <CheckIcon size={18} /> Approve all
+            </Button>
+          )
         }
       />
 
@@ -76,7 +79,7 @@ export default function Timesheets() {
                     <span className="cell-strong">{emp.name}</span>
                   </div>
                 </td>
-                <td className="cell-muted">{emp.role}</td>
+                <td className="cell-muted">{roleNameOf(state, emp.roleId)}</td>
                 <td className="num cell-muted">{emp.hourlyRate ? `${eur(emp.hourlyRate)}/h` : '—'}</td>
                 <td className="num cell-strong">{hours}h</td>
                 <td className="num">{pend > 0 ? <span className="badge badge-amber">{pend}h</span> : <span className="cell-muted">0</span>}</td>
@@ -121,7 +124,7 @@ export default function Timesheets() {
                     <StatusBadge status={e.approved ? 'Approved' : 'Pending'} />
                   </td>
                   <td className="num">
-                    {!e.approved && (
+                    {!e.approved && can('approve:timesheets') && (
                       <Button size="sm" variant="secondary" onClick={() => dispatch({ type: 'APPROVE_TIME', id: e.id })}>
                         Approve
                       </Button>

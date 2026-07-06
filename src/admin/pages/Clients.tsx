@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { PageHeader, Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
-import { useStore, formatDate } from '../../data/store'
+import { useStore, useCurrentUser, formatDate } from '../../data/store'
 import { useCreate } from '../useCreate'
 
 const filters = ['All', 'Lead', 'Active', 'Archived'] as const
 
 export default function Clients() {
   const { state } = useStore()
+  const { can } = useCurrentUser()
   const create = useCreate()
   const [filter, setFilter] = useState<(typeof filters)[number]>('All')
 
@@ -17,7 +18,7 @@ export default function Clients() {
       <PageHeader
         title="Clients"
         subtitle={`${state.clients.length} total`}
-        action={<Button onClick={() => create('client')}>New client</Button>}
+        action={can('create:records') && <Button onClick={() => create('client')}>New client</Button>}
       />
 
       <div className="toolbar">

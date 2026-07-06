@@ -1,14 +1,17 @@
 import { createContext, useContext, useMemo, useReducer, type ReactNode } from 'react'
 import type {
   Client,
+  Employee,
   Invoice,
   Job,
   Quote,
   Request,
+  Role,
   State,
   TimeEntry,
 } from './types'
 import { seed } from './seed'
+import { roleCan, type PermissionKey } from './permissions'
 
 type Action =
   | { type: 'ADD_CLIENT'; client: Client }
@@ -19,6 +22,13 @@ type Action =
   | { type: 'ADD_TIME_ENTRY'; entry: TimeEntry }
   | { type: 'APPROVE_TIME'; id: string }
   | { type: 'APPROVE_ALL_TIME' }
+  | { type: 'ADD_EMPLOYEE'; employee: Employee }
+  | { type: 'UPDATE_EMPLOYEE'; employee: Employee }
+  | { type: 'REMOVE_EMPLOYEE'; id: string }
+  | { type: 'ADD_ROLE'; role: Role }
+  | { type: 'UPDATE_ROLE'; role: Role }
+  | { type: 'DELETE_ROLE'; id: string }
+  | { type: 'SET_CURRENT_USER'; id: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -46,6 +56,26 @@ function reducer(state: State, action: Action): State {
         ...state,
         timeEntries: state.timeEntries.map((t) => ({ ...t, approved: true })),
       }
+    case 'ADD_EMPLOYEE':
+      return { ...state, employees: [...state.employees, action.employee] }
+    case 'UPDATE_EMPLOYEE':
+      return {
+        ...state,
+        employees: state.employees.map((e) => (e.id === action.employee.id ? action.employee : e)),
+      }
+    case 'REMOVE_EMPLOYEE':
+      return { ...state, employees: state.employees.filter((e) => e.id !== action.id) }
+    case 'ADD_ROLE':
+      return { ...state, roles: [...state.roles, action.role] }
+    case 'UPDATE_ROLE':
+      return {
+        ...state,
+        roles: state.roles.map((r) => (r.id === action.role.id ? action.role : r)),
+      }
+    case 'DELETE_ROLE':
+      return { ...state, roles: state.roles.filter((r) => r.id !== action.id) }
+    case 'SET_CURRENT_USER':
+      return { ...state, currentUserId: action.id }
     default:
       return state
   }
@@ -69,6 +99,21 @@ export function useStore() {
   if (!ctx) throw new Error('useStore must be used within StoreProvider')
   return ctx
 }
+
+// Resolves the signed-in employee, their role, and a `can()` permission check.
+export function useCurrentUser() {
+  const { state } = useStore()
+  const user = state.employees.find((e) => e.id === state.currentUserId) ?? state.employees[0]
+  const role = state.roles.find((r) => r.id === user?.roleId)
+  const can = (key: PermissionKey) => roleCan(role, key)
+  return { user, role, can }
+}
+
+export const roleOf = (state: State, roleId: string) =>
+  state.roles.find((r) => r.id === roleId)
+
+export const roleNameOf = (state: State, roleId: string) =>
+  roleOf(state, roleId)?.name ?? 'No role'
 
 // ---- helpers ---------------------------------------------------------------
 
