@@ -4,6 +4,7 @@ import { Modal, Field, Button, Avatar } from './components/ui'
 import { PlusIcon, TrashIcon } from '../components/Icons'
 import { useStore, newId, eurExact, itemsTotal } from '../data/store'
 import type { LineItem } from '../data/types'
+import ClientModal from './ClientModal'
 
 export type CreateKind = 'client' | 'request' | 'quote' | 'job' | 'invoice'
 
@@ -98,60 +99,6 @@ function nextNumber(prefix: string, existing: string[]) {
 const today = () => new Date().toISOString().slice(0, 10)
 
 // ---- Individual forms ------------------------------------------------------
-function ClientForm({ onClose }: { onClose: () => void }) {
-  const { dispatch } = useStore()
-  const nav = useNavigate()
-  const [f, setF] = useState({ name: '', company: '', email: '', phone: '', address: '', status: 'Lead' })
-  const set = (k: string, v: string) => setF({ ...f, [k]: v })
-
-  const save = () => {
-    if (!f.name.trim()) return
-    dispatch({
-      type: 'ADD_CLIENT',
-      client: {
-        id: newId('c'),
-        name: f.name,
-        company: f.company || undefined,
-        email: f.email,
-        phone: f.phone,
-        address: f.address,
-        status: f.status as 'Lead' | 'Active' | 'Archived',
-        createdAt: today(),
-      },
-    })
-    onClose()
-    nav('/clients')
-  }
-
-  return (
-    <Modal
-      title="New client"
-      onClose={onClose}
-      footer={
-        <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button onClick={save}>Save client</Button>
-        </>
-      }
-    >
-      <Field label="Name"><input value={f.name} onChange={(e) => set('name', e.target.value)} autoFocus /></Field>
-      <Field label="Company (optional)"><input value={f.company} onChange={(e) => set('company', e.target.value)} /></Field>
-      <div className="field-row">
-        <Field label="Email"><input value={f.email} onChange={(e) => set('email', e.target.value)} /></Field>
-        <Field label="Phone"><input value={f.phone} onChange={(e) => set('phone', e.target.value)} /></Field>
-      </div>
-      <Field label="Address"><input value={f.address} onChange={(e) => set('address', e.target.value)} /></Field>
-      <Field label="Status">
-        <select value={f.status} onChange={(e) => set('status', e.target.value)}>
-          <option>Lead</option>
-          <option>Active</option>
-          <option>Archived</option>
-        </select>
-      </Field>
-    </Modal>
-  )
-}
-
 function RequestForm({ onClose }: { onClose: () => void }) {
   const { state, dispatch } = useStore()
   const nav = useNavigate()
@@ -356,7 +303,7 @@ function InvoiceForm({ onClose }: { onClose: () => void }) {
 
 export default function CreateModals({ kind, onClose }: { kind: CreateKind; onClose: () => void }) {
   switch (kind) {
-    case 'client': return <ClientForm onClose={onClose} />
+    case 'client': return <ClientModal onClose={onClose} />
     case 'request': return <RequestForm onClose={onClose} />
     case 'quote': return <QuoteForm onClose={onClose} />
     case 'job': return <JobForm onClose={onClose} />

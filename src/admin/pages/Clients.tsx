@@ -1,24 +1,34 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { PageHeader, Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
+import { TrashIcon } from '../../components/Icons'
 import { useStore, useCurrentUser, formatDate } from '../../data/store'
 import { useCreate } from '../useCreate'
+import type { Client } from '../../data/types'
 
 const filters = ['All', 'Lead', 'Active', 'Archived'] as const
 
 export default function Clients() {
-  const { state } = useStore()
+  const { state, dispatch } = useStore()
   const { can } = useCurrentUser()
   const create = useCreate()
+  const nav = useNavigate()
   const [filter, setFilter] = useState<(typeof filters)[number]>('All')
 
   const rows = state.clients.filter((c) => filter === 'All' || c.status === filter)
+  const canManage = can('create:records')
+
+  const remove = (e: React.MouseEvent, c: Client) => {
+    e.stopPropagation()
+    if (confirm(`Remove ${c.name}? This can't be undone.`)) dispatch({ type: 'REMOVE_CLIENT', id: c.id })
+  }
 
   return (
     <div>
       <PageHeader
         title="Clients"
         subtitle={`${state.clients.length} total`}
-        action={can('create:records') && <Button onClick={() => create('client')}>New client</Button>}
+        action={canManage && <Button onClick={() => create('client')}>New client</Button>}
       />
 
       <div className="toolbar">
@@ -41,11 +51,12 @@ export default function Clients() {
                 <th>Address</th>
                 <th>Status</th>
                 <th>Added</th>
+                {canManage && <th />}
               </tr>
             </thead>
             <tbody>
               {rows.map((c) => (
-                <tr key={c.id}>
+                <tr key={c.id} className="clickable" onClick={() => nav(`/clients/${c.id}`)}>
                   <td>
                     <div className="cell-with-avatar">
                       <Avatar name={c.name} size={32} />
@@ -64,12 +75,21 @@ export default function Clients() {
                   <td className="cell-muted">{c.address}</td>
                   <td><StatusBadge status={c.status} /></td>
                   <td className="cell-muted">{formatDate(c.createdAt)}</td>
+                  {canManage && (
+                    <td className="num">
+                      <button className="row-remove" aria-label={`Remove ${c.name}`} onClick={(e) => remove(e, c)}>
+                        <TrashIcon size={18} />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      <p className="table-hint">Tip: click a client to view their jobs, revenue and full history.</p>
     </div>
   )
 }

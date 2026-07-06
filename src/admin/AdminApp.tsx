@@ -3,6 +3,7 @@ import AdminLayout from './AdminLayout'
 import Dashboard from './pages/Dashboard'
 import Schedule from './pages/Schedule'
 import Clients from './pages/Clients'
+import ClientDetail from './pages/ClientDetail'
 import Requests from './pages/Requests'
 import Quotes from './pages/Quotes'
 import Jobs from './pages/Jobs'
@@ -26,6 +27,7 @@ export default function AdminApp() {
         <Route index element={guard('view:dashboard', <Dashboard />)} />
         <Route path="schedule" element={guard('view:schedule', <Schedule />)} />
         <Route path="clients" element={guard('view:clients', <Clients />)} />
+        <Route path="clients/:id" element={guard('view:clients', <ClientDetail />)} />
         <Route path="requests" element={guard('view:requests', <Requests />)} />
         <Route path="quotes" element={guard('view:quotes', <Quotes />)} />
         <Route path="jobs" element={guard('view:jobs', <Jobs />)} />

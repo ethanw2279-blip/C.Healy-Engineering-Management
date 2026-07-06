@@ -15,6 +15,8 @@ import { roleCan, type PermissionKey } from './permissions'
 
 type Action =
   | { type: 'ADD_CLIENT'; client: Client }
+  | { type: 'UPDATE_CLIENT'; client: Client }
+  | { type: 'REMOVE_CLIENT'; id: string }
   | { type: 'ADD_REQUEST'; request: Request }
   | { type: 'ADD_QUOTE'; quote: Quote }
   | { type: 'ADD_JOB'; job: Job }
@@ -34,6 +36,13 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'ADD_CLIENT':
       return { ...state, clients: [action.client, ...state.clients] }
+    case 'UPDATE_CLIENT':
+      return {
+        ...state,
+        clients: state.clients.map((c) => (c.id === action.client.id ? action.client : c)),
+      }
+    case 'REMOVE_CLIENT':
+      return { ...state, clients: state.clients.filter((c) => c.id !== action.id) }
     case 'ADD_REQUEST':
       return { ...state, requests: [action.request, ...state.requests] }
     case 'ADD_QUOTE':
