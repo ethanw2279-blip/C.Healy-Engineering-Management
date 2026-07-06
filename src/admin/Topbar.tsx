@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { SearchIcon, BellIcon, PlusIcon, ChevronDownIcon } from '../components/Icons'
+import { SearchIcon, BellIcon, PlusIcon, ChevronDownIcon, LogoutIcon } from '../components/Icons'
 import { Button, Avatar } from './components/ui'
 import type { CreateKind } from './CreateModals'
 import { useStore, useCurrentUser } from '../data/store'
+import { isSupabaseConfigured } from '../lib/supabaseClient'
+import { useAuth } from '../auth/AuthProvider'
 
 const createOptions: { kind: CreateKind; label: string }[] = [
   { kind: 'client', label: 'Client' },
@@ -15,6 +17,7 @@ const createOptions: { kind: CreateKind; label: string }[] = [
 export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void }) {
   const { state, dispatch } = useStore()
   const { user, role, can } = useCurrentUser()
+  const { signOut } = useAuth()
   const [open, setOpen] = useState(false)
   const [viewAs, setViewAs] = useState(false)
 
@@ -26,41 +29,63 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
       </div>
 
       <div className="topbar-actions">
-        {/* Preview the app as any team member to test role permissions. */}
-        <div className="viewas-wrap" onMouseLeave={() => setViewAs(false)}>
-          <button className="viewas-btn" onClick={() => setViewAs((v) => !v)}>
-            <Avatar name={user?.name ?? '?'} color={user?.color} size={26} />
-            <span className="viewas-text">
-              <em>Viewing as</em>
-              <strong>{user?.name} · {role?.name}</strong>
-            </span>
-            <ChevronDownIcon size={16} />
-          </button>
-          {viewAs && (
-            <div className="viewas-menu">
-              <div className="viewas-head">Preview access as</div>
-              {state.employees.map((e) => {
-                const r = state.roles.find((x) => x.id === e.roleId)
-                return (
-                  <button
-                    key={e.id}
-                    className={`viewas-item ${e.id === user?.id ? 'on' : ''}`}
-                    onClick={() => {
-                      dispatch({ type: 'SET_CURRENT_USER', id: e.id })
-                      setViewAs(false)
-                    }}
-                  >
-                    <Avatar name={e.name} color={e.color} size={26} />
-                    <span className="stack-tight">
-                      <span className="cell-strong">{e.name}</span>
-                      <span className="cell-muted">{r?.name}</span>
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-          )}
-        </div>
+        {isSupabaseConfigured ? (
+          /* Logged-in user + sign out. */
+          <div className="viewas-wrap" onMouseLeave={() => setViewAs(false)}>
+            <button className="viewas-btn" onClick={() => setViewAs((v) => !v)}>
+              <Avatar name={user?.name ?? '?'} color={user?.color} size={26} />
+              <span className="viewas-text">
+                <em>Signed in</em>
+                <strong>{user?.name ?? 'Account'} · {role?.name ?? 'No role'}</strong>
+              </span>
+              <ChevronDownIcon size={16} />
+            </button>
+            {viewAs && (
+              <div className="viewas-menu">
+                <button className="viewas-item" onClick={() => signOut()}>
+                  <LogoutIcon size={20} />
+                  <span className="cell-strong">Sign out</span>
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Demo mode: preview the app as any team member to test roles. */
+          <div className="viewas-wrap" onMouseLeave={() => setViewAs(false)}>
+            <button className="viewas-btn" onClick={() => setViewAs((v) => !v)}>
+              <Avatar name={user?.name ?? '?'} color={user?.color} size={26} />
+              <span className="viewas-text">
+                <em>Viewing as</em>
+                <strong>{user?.name} · {role?.name}</strong>
+              </span>
+              <ChevronDownIcon size={16} />
+            </button>
+            {viewAs && (
+              <div className="viewas-menu">
+                <div className="viewas-head">Preview access as</div>
+                {state.employees.map((e) => {
+                  const r = state.roles.find((x) => x.id === e.roleId)
+                  return (
+                    <button
+                      key={e.id}
+                      className={`viewas-item ${e.id === user?.id ? 'on' : ''}`}
+                      onClick={() => {
+                        dispatch({ type: 'SET_CURRENT_USER', id: e.id })
+                        setViewAs(false)
+                      }}
+                    >
+                      <Avatar name={e.name} color={e.color} size={26} />
+                      <span className="stack-tight">
+                        <span className="cell-strong">{e.name}</span>
+                        <span className="cell-muted">{r?.name}</span>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         <button className="topbar-icon" aria-label="Notifications">
           <BellIcon size={21} />

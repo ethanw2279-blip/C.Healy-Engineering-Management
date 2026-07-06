@@ -1,4 +1,13 @@
-import { createContext, useContext, useMemo, useReducer, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+  type ReactNode,
+} from 'react'
 import type {
   Client,
   Employee,
@@ -12,8 +21,10 @@ import type {
 } from './types'
 import { seed } from './seed'
 import { roleCan, type PermissionKey } from './permissions'
+import { isSupabaseConfigured } from '../lib/supabaseClient'
+import { loadState, persist } from './api'
 
-type Action =
+export type Action =
   | { type: 'ADD_CLIENT'; client: Client }
   | { type: 'UPDATE_CLIENT'; client: Client }
   | { type: 'REMOVE_CLIENT'; id: string }
@@ -39,9 +50,12 @@ type Action =
   | { type: 'UPDATE_ROLE'; role: Role }
   | { type: 'DELETE_ROLE'; id: string }
   | { type: 'SET_CURRENT_USER'; id: string }
+  | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case 'HYDRATE':
+      return action.state
     case 'ADD_CLIENT':
       return { ...state, clients: [action.client, ...state.clients] }
     case 'UPDATE_CLIENT':
@@ -137,9 +151,49 @@ type Store = {
 
 const StoreContext = createContext<Store | null>(null)
 
+const EMPTY_STATE: State = {
+  roles: [], currentUserId: '', employees: [], clients: [], requests: [],
+  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [],
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, seed)
-  const value = useMemo(() => ({ state, dispatch }), [state])
+  // Demo mode (no Supabase env): start from the in-memory seed. DB mode: start
+  // empty and hydrate from Supabase.
+  const [state, rawDispatch] = useReducer(reducer, isSupabaseConfigured ? EMPTY_STATE : seed)
+  const [loading, setLoading] = useState(isSupabaseConfigured)
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    let alive = true
+    loadState()
+      .then((s) => alive && rawDispatch({ type: 'HYDRATE', state: s }))
+      .catch((e) => console.error('Failed to load data from Supabase', e))
+      .finally(() => alive && setLoading(false))
+    return () => { alive = false }
+  }, [])
+
+  // Optimistically update local state, then write the change through to
+  // Supabase. On failure, reload from the database to reconcile.
+  const dispatch = useCallback<React.Dispatch<Action>>((action) => {
+    rawDispatch(action)
+    if (isSupabaseConfigured && action.type !== 'HYDRATE') {
+      persist(action).catch(async (e) => {
+        console.error('Failed to save change to Supabase', e)
+        try {
+          const s = await loadState()
+          rawDispatch({ type: 'HYDRATE', state: s })
+        } catch {
+          /* keep optimistic state if reload also fails */
+        }
+      })
+    }
+  }, [])
+
+  const value = useMemo(() => ({ state, dispatch }), [state, dispatch])
+
+  if (isSupabaseConfigured && loading) {
+    return <div className="app-splash">Loading…</div>
+  }
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }
 
@@ -166,8 +220,9 @@ export const roleNameOf = (state: State, roleId: string) =>
 
 // ---- helpers ---------------------------------------------------------------
 
-let idCounter = 1000
-export const newId = (prefix = 'x') => `${prefix}${idCounter++}`
+// Real UUIDs so records insert cleanly into the Postgres uuid columns. The
+// prefix arg is kept for call-site compatibility but no longer used.
+export const newId = (_prefix = 'x') => crypto.randomUUID()
 
 export const eur = (n: number) =>
   new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)

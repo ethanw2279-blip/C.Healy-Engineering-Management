@@ -3,14 +3,34 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { StoreProvider } from './data/store'
+import { AuthProvider, useAuth } from './auth/AuthProvider'
+import Login from './auth/Login'
+import { isSupabaseConfigured } from './lib/supabaseClient'
 import './index.css'
+
+// When Supabase is configured, require a login before the app loads. When it
+// isn't (e.g. local demo), fall straight through to the in-memory store.
+function Gate() {
+  const { ready, session } = useAuth()
+
+  if (isSupabaseConfigured) {
+    if (!ready) return <div className="app-splash">Loading…</div>
+    if (!session) return <Login />
+  }
+
+  return (
+    <StoreProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </StoreProvider>
+  )
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <StoreProvider>
-        <App />
-      </StoreProvider>
-    </BrowserRouter>
+    <AuthProvider>
+      <Gate />
+    </AuthProvider>
   </StrictMode>,
 )

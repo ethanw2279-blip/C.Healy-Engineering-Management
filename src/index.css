@@ -107,6 +107,16 @@ ul {
   }
 }
 
+.app-splash {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5b6e72;
+  font-size: 15px;
+  background: #f4f6f6;
+}
+
 .screen {
   flex: 1;
   overflow-y: auto;
