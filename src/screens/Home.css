@@ -1,7 +1,7 @@
 /* Map background approximated with a soft tinted gradient. */
 .home-hero {
   position: relative;
-  padding: 14px 20px 0;
+  padding: calc(14px + env(safe-area-inset-top)) 20px 0;
   background: linear-gradient(180deg, #eef1ee 0%, #e7ece9 40%, #dfe8e6 100%);
   min-height: 430px;
 }
@@ -60,6 +60,7 @@
   font-size: 17px;
   font-weight: 600;
   color: var(--navy);
+  font-variant-numeric: tabular-nums;
 }
 
 .clockin-btn {
@@ -72,6 +73,15 @@
   font-size: 17px;
   padding: 12px 22px;
   border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.clockin-btn.out {
+  background: var(--red);
+}
+
+.clockin-btn:active {
+  transform: scale(0.97);
 }
 
 .visits-strip {

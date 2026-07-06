@@ -26,6 +26,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  /* Kill the grey flash on tap and iOS callout menus. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -34,8 +36,26 @@ body,
   height: 100%;
 }
 
+html {
+  /* Stop iOS from resizing text on orientation change. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background: #d9dde0;
+  /* Prevent the whole-page rubber-band bounce on iOS. */
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow selection/callout where text actually matters. */
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 button {
@@ -44,6 +64,8 @@ button {
   border: none;
   background: none;
   color: inherit;
+  /* Remove the 300ms tap delay / double-tap zoom on iOS. */
+  touch-action: manipulation;
 }
 
 a {
@@ -85,5 +107,9 @@ ul {
 .screen {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  /* Momentum scrolling + contain the bounce to this pane on iOS. */
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
+

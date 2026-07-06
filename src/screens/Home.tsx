@@ -1,8 +1,43 @@
+import { useEffect, useRef, useState } from 'react'
 import { BellIcon, SparkleIcon, PlayIcon, QuoteIcon, ListIcon, ArrowRightIcon } from '../components/Icons'
 import './screens.css'
 import './Home.css'
 
+function formatElapsed(totalSeconds: number) {
+  const h = Math.floor(totalSeconds / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
+  const s = totalSeconds % 60
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(h)}:${pad(m)}:${pad(s)}`
+}
+
 export default function Home() {
+  const [clockedIn, setClockedIn] = useState(false)
+  const [elapsed, setElapsed] = useState(0)
+  const startedAt = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (!clockedIn) return
+    const id = setInterval(() => {
+      if (startedAt.current !== null) {
+        setElapsed(Math.floor((Date.now() - startedAt.current) / 1000))
+      }
+    }, 1000)
+    return () => clearInterval(id)
+  }, [clockedIn])
+
+  const toggleClock = () => {
+    if (clockedIn) {
+      setClockedIn(false)
+      startedAt.current = null
+      setElapsed(0)
+    } else {
+      startedAt.current = Date.now()
+      setElapsed(0)
+      setClockedIn(true)
+    }
+  }
+
   return (
     <div className="home">
       {/* Map hero with greeting + clock-in card overlaid. */}
@@ -22,10 +57,15 @@ export default function Home() {
         <h1 className="home-greeting">Good afternoon, Ethan</h1>
 
         <div className="clockin-card">
-          <span className="clockin-label">Let&apos;s get started</span>
-          <button className="clockin-btn">
+          <span className="clockin-label">
+            {clockedIn ? formatElapsed(elapsed) : "Let's get started"}
+          </span>
+          <button
+            className={`clockin-btn ${clockedIn ? 'out' : ''}`}
+            onClick={toggleClock}
+          >
             <PlayIcon size={22} />
-            Clock In
+            {clockedIn ? 'Clock Out' : 'Clock In'}
           </button>
         </div>
 

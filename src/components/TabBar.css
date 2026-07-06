@@ -4,7 +4,7 @@
   justify-content: space-around;
   background: #fbfbfa;
   border-top: 1px solid var(--divider);
-  padding-bottom: env(safe-area-inset-bottom, 6px);
+  padding-bottom: max(env(safe-area-inset-bottom), 6px);
 }
 
 .tab {

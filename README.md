@@ -10,14 +10,30 @@ match the mobile app.
 
 | Tab | Status | Notes |
 | --- | --- | --- |
-| **Home** | ✅ | Greeting, Clock In card, map hero, This week, To do, Business health |
-| **Schedule** | 🚧 | Placeholder empty state |
-| **Timesheet** | 🚧 | Placeholder empty state |
+| **Home** | ✅ | Greeting, live Clock In/Out timer, map hero, This week, To do, Business health |
+| **Schedule** | ✅ | Week-day strip with per-day visit cards and status badges |
+| **Timesheet** | ✅ | Week summary with per-day hours and bars |
 | **Search** | ✅ | Search bar, Clients/Requests/Quotes filters, Recently active |
 | **More** | ✅ | Company header, tiles, settings menu, logout |
 
 Navigation uses a bottom tab bar with a floating action button, mirroring the
-native app.
+native app. **Clock In** on the Home tab starts a live running timer and flips
+to **Clock Out**.
+
+## iOS support
+
+The app is built to run as an installable, native-feeling iOS web app:
+
+- **Safe areas** — headers clear the notch and the tab bar / FAB clear the home
+  indicator via `env(safe-area-inset-*)` and `viewport-fit=cover`.
+- **Add to Home Screen** — `manifest.webmanifest`, an `apple-touch-icon`, and
+  the `apple-mobile-web-app-*` meta tags let it launch standalone (no browser
+  chrome).
+- **Native touch feel** — no tap-highlight flash, no double-tap zoom / 300ms
+  delay (`touch-action: manipulation`), and no rubber-band page bounce
+  (`overscroll-behavior`).
+
+Add it from Safari via **Share → Add to Home Screen** to run it full-screen.
 
 ## Getting started
 

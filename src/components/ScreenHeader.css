@@ -1,5 +1,5 @@
 .sh {
-  padding: 14px 20px 4px;
+  padding: calc(14px + env(safe-area-inset-top)) 20px 4px;
 }
 
 .sh-row {

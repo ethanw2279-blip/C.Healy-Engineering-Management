@@ -1,0 +1,97 @@
+.ts-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 10px 0 8px;
+}
+
+.ts-summary-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.ts-summary .muted-sub {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ts-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.ts-total span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ts-total strong {
+  font-size: 26px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ts-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ts-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.ts-daycol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 96px;
+}
+
+.ts-daycol strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.ts-daycol span {
+  font-size: 13px;
+  color: var(--navy-muted);
+}
+
+.ts-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: #eceae4;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ts-bar {
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+  min-width: 0;
+}
+
+.ts-hours {
+  min-width: 46px;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.ts-row.empty .ts-hours {
+  color: var(--text-faint);
+  font-weight: 600;
+}

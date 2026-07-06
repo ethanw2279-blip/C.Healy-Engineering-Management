@@ -1,0 +1,137 @@
+.week-strip {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px 16px;
+  justify-content: space-between;
+}
+
+.day-pill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 10px;
+  border-radius: 14px;
+  color: var(--navy-muted);
+}
+
+.day-pill.on {
+  background: var(--navy);
+  color: #fff;
+}
+
+.day-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.day-num {
+  position: relative;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.today-dot {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.day-pill.on .today-dot {
+  background: #fff;
+}
+
+.visit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 18px;
+}
+
+.visit-card {
+  display: flex;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(22, 52, 59, 0.05);
+}
+
+.visit-card.unassigned {
+  border-left-color: var(--amber);
+}
+
+.visit-time {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 74px;
+}
+
+.visit-time strong {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.visit-duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--navy-muted);
+}
+
+.visit-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-left: 1px solid var(--divider);
+  padding-left: 14px;
+}
+
+.visit-client {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.visit-service {
+  font-size: 15px;
+  color: var(--navy);
+}
+
+.visit-address {
+  font-size: 14px;
+  color: var(--navy-muted);
+}
+
+.visit-status {
+  align-self: flex-start;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e5f2ea;
+  color: var(--green-dark);
+}
+
+.visit-status.unassigned {
+  background: #f7ecd9;
+  color: var(--amber);
+}
