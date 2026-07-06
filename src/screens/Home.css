@@ -1,0 +1,221 @@
+/* Map background approximated with a soft tinted gradient. */
+.home-hero {
+  position: relative;
+  padding: 14px 20px 0;
+  background: linear-gradient(180deg, #eef1ee 0%, #e7ece9 40%, #dfe8e6 100%);
+  min-height: 430px;
+}
+
+.home-hero::after {
+  /* faint "streets" texture */
+  content: '';
+  position: absolute;
+  inset: 90px 0 0;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.7) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.home-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+
+.home-date {
+  font-size: 15px;
+  color: var(--navy-muted);
+  font-weight: 500;
+}
+
+.home-hero-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.home-greeting {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 16px 0 14px;
+  line-height: 1.1;
+}
+
+.clockin-card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 16px 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(22, 52, 59, 0.12);
+}
+
+.clockin-label {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.clockin-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 12px 22px;
+  border-radius: 10px;
+}
+
+.visits-strip {
+  position: relative;
+  z-index: 1;
+  margin-top: 150px;
+  display: flex;
+  gap: 12px;
+}
+
+.visits-empty {
+  flex: 1;
+  background: #e3e2dc;
+  border-radius: 14px;
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--navy);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.visits-viewall {
+  position: absolute;
+  right: 4px;
+  top: -46px;
+  background: #fff;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  color: var(--navy);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.muted-sub {
+  font-size: 14px;
+  color: var(--navy-muted);
+  margin-top: 2px;
+}
+
+.week-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 14px;
+  border-bottom: 1px solid var(--divider);
+  font-size: 17px;
+  color: var(--navy);
+}
+
+.week-row strong {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.todo-list {
+  border-bottom: 1px solid var(--divider);
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+}
+
+.todo-icon {
+  color: var(--navy);
+  flex-shrink: 0;
+}
+
+.todo-icon.quote {
+  color: #7a2b3a;
+}
+
+.todo-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.todo-text strong {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.todo-text span {
+  font-size: 15px;
+  color: var(--navy-muted);
+}
+
+.todo-arrow {
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.health-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.health-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.health-info strong {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.health-info span {
+  font-size: 14px;
+  color: var(--navy-muted);
+}
+
+.health-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.health-pct {
+  background: #eceae4;
+  color: var(--navy-muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.help-btn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 17px;
+}

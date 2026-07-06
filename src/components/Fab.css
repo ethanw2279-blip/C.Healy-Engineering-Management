@@ -1,0 +1,19 @@
+.fab {
+  position: absolute;
+  right: 18px;
+  bottom: 84px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(22, 52, 59, 0.35);
+  z-index: 20;
+}
+
+.fab:active {
+  transform: scale(0.96);
+}

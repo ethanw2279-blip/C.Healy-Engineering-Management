@@ -1,0 +1,44 @@
+.sh {
+  padding: 14px 20px 4px;
+}
+
+.sh-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+
+.sh-eyebrow {
+  font-size: 15px;
+  color: var(--navy-muted);
+  font-weight: 500;
+}
+
+.sh-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: var(--radius-pill, 999px);
+}
+
+.sh-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.sh-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-top: 2px;
+}
