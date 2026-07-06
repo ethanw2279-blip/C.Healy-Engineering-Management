@@ -132,6 +132,21 @@ src/
   main.tsx       # Entry point (wraps app in StoreProvider)
 ```
 
+## Database (Supabase)
+
+The app currently runs on an in-memory demo store (resets on reload). The
+Supabase backend that replaces it is being added in phases:
+
+- **Phase 1 (done):** schema, row-level security, and seed SQL live in
+  [`supabase/`](supabase/); the Supabase client is in `src/lib/`. See
+  [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md) to provision a project and load it.
+- **Phase 2 (next):** wire the pages and a login screen to Supabase so data
+  persists and role permissions are enforced by the database.
+
+Row-level security policies map onto the same permission keys as
+`src/data/permissions.ts`, so roles edited in the app stay in sync with what the
+database allows.
+
 ## Design tokens
 
 Colors are derived from the app screenshots — a deep teal-navy (`#16343B`),
