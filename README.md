@@ -1,12 +1,40 @@
 # Jobber Clone
 
-A mobile-first clone of the [Jobber](https://getjobber.com) field-service /
-construction management app, built with React + Vite + TypeScript.
+A clone of the [Jobber](https://getjobber.com) field-service / construction
+management platform, built with React + Vite + TypeScript. It ships as **two
+apps sharing one data store**:
 
-This is the **base app**: the shell, navigation, and the core screens styled to
-match the mobile app.
+- **Admin web app** (`/`) — the office/back-office dashboard: manage clients,
+  create quotes / jobs / invoices, and track every employee's hours.
+- **Field mobile app** (`/field`) — the on-site crew app with clock in/out
+  (the original mobile UI).
 
-## Screens
+Both read and write the same in-memory store (`src/data/store.tsx`), so a quote
+or client created in the admin app is immediately reflected everywhere.
+
+## Admin web app (`/`)
+
+A desktop dashboard with a left sidebar, top bar with global search, and a
+**+ Create** menu that opens modal forms for every record type.
+
+| Page | Notes |
+| --- | --- |
+| **Dashboard** | KPI cards (outstanding invoices, pipeline, active jobs, team hours) + recent quotes and upcoming jobs |
+| **Schedule** | Everyone's visits grouped by day, with assigned crew |
+| **Clients** | Filterable table (Lead/Active/Archived) + create client |
+| **Requests** | Incoming enquiries + create request |
+| **Quotes** | Filterable list with line-item totals + create quote |
+| **Jobs** | Status pipeline (Unscheduled → Complete), assigned crew + create job |
+| **Invoices** | Outstanding total, statuses (Draft/Awaiting/Past due/Paid) + create invoice |
+| **Timesheets** | **Every employee's hours**, pending approval, estimated labour cost, per-entry + bulk approve |
+| **Team** | Roster with roles, rates, job counts, and weekly hours |
+| **Reports** | Revenue, pipeline, win rate, labour cost, job value by client |
+
+**Create flows** — quotes, jobs and invoices use a shared line-item editor with
+live totals; jobs let you assign crew and set schedule dates. New records get an
+auto-incremented number (Q-, J-, INV-) and appear immediately in their list.
+
+## Field mobile app (`/field`)
 
 | Tab | Status | Notes |
 | --- | --- | --- |
@@ -16,11 +44,11 @@ match the mobile app.
 | **Search** | ✅ | Search bar, Clients/Requests/Quotes filters, Recently active |
 | **More** | ✅ | Company header, tiles, settings menu, logout |
 
-Navigation uses a bottom tab bar with a floating action button, mirroring the
-native app. **Clock In** on the Home tab starts a live running timer and flips
-to **Clock Out**.
+A bottom tab bar with a floating action button, mirroring the native app.
+**Clock In** on the Home tab starts a live running timer and flips to
+**Clock Out**.
 
-## iOS support
+## iOS support (field app)
 
 The app is built to run as an installable, native-feeling iOS web app:
 
@@ -48,11 +76,17 @@ npm run preview  # preview the production build
 
 ```
 src/
-  components/    # Shared UI: TabBar, Fab, ScreenHeader, Layout, Icons
-  screens/       # One file per tab (Home, Schedule, Timesheet, Search, More)
-  theme/         # Design tokens (colors, radius, spacing)
-  App.tsx        # Routes
-  main.tsx       # Entry point
+  admin/         # Admin web app
+    pages/       # One file per admin page (Dashboard, Clients, Quotes, …)
+    components/  # Admin UI kit (Button, Modal, Table, StatusBadge, …)
+    AdminLayout, Sidebar, Topbar, CreateModals
+  mobile/        # Field mobile app router
+  screens/       # Field app screens (Home, Schedule, Timesheet, Search, More)
+  components/    # Shared mobile UI + the icon set
+  data/          # types.ts, seed.ts, store.tsx (shared state for both apps)
+  theme/         # Design tokens
+  App.tsx        # Top-level routes: /field → mobile, /* → admin
+  main.tsx       # Entry point (wraps app in StoreProvider)
 ```
 
 ## Design tokens

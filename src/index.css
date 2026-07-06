@@ -43,11 +43,9 @@ html {
 }
 
 body {
-  background: #d9dde0;
+  background: #f4f6f6;
   /* Prevent the whole-page rubber-band bounce on iOS. */
   overscroll-behavior: none;
-  -webkit-user-select: none;
-  user-select: none;
   -webkit-touch-callout: none;
 }
 
@@ -77,11 +75,16 @@ ul {
   list-style: none;
 }
 
-/* Phone frame so the mobile layout reads clearly on desktop. */
-#root {
+/* Phone frame so the mobile field app reads clearly on desktop. */
+.mobile-shell {
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #d9dde0;
+  /* The field app opts back into app-like non-selection. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .phone {

@@ -9,11 +9,11 @@ import {
 import './TabBar.css'
 
 const tabs = [
-  { to: '/', label: 'Home', Icon: HomeIcon, end: true },
-  { to: '/schedule', label: 'Schedule', Icon: CalendarIcon },
-  { to: '/timesheet', label: 'Timesheet', Icon: ClockIcon },
-  { to: '/search', label: 'Search', Icon: SearchIcon },
-  { to: '/more', label: 'More', Icon: MoreDotsIcon },
+  { to: '/field', label: 'Home', Icon: HomeIcon, end: true },
+  { to: '/field/schedule', label: 'Schedule', Icon: CalendarIcon },
+  { to: '/field/timesheet', label: 'Timesheet', Icon: ClockIcon },
+  { to: '/field/search', label: 'Search', Icon: SearchIcon },
+  { to: '/field/more', label: 'More', Icon: MoreDotsIcon },
 ]
 
 export default function TabBar() {
