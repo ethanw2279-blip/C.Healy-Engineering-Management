@@ -1,7 +1,7 @@
 {
-  "name": "Jobber",
-  "short_name": "Jobber",
-  "description": "Field-service and construction management, on the go.",
+  "name": "C.Healy Engineering Management",
+  "short_name": "CHE CRM",
+  "description": "C.Healy Engineering Management",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
