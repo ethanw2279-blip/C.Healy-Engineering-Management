@@ -5,10 +5,13 @@ import Schedule from './pages/Schedule'
 import Clients from './pages/Clients'
 import ClientDetail from './pages/ClientDetail'
 import Requests from './pages/Requests'
+import RequestDetail from './pages/RequestDetail'
 import Quotes from './pages/Quotes'
+import QuoteDetail from './pages/QuoteDetail'
 import Jobs from './pages/Jobs'
 import JobDetail from './pages/JobDetail'
 import Invoices from './pages/Invoices'
+import InvoiceDetail from './pages/InvoiceDetail'
 import Timesheets from './pages/Timesheets'
 import Team from './pages/Team'
 import Roles from './pages/Roles'
@@ -30,10 +33,13 @@ export default function AdminApp() {
         <Route path="clients" element={guard('view:clients', <Clients />)} />
         <Route path="clients/:id" element={guard('view:clients', <ClientDetail />)} />
         <Route path="requests" element={guard('view:requests', <Requests />)} />
+        <Route path="requests/:id" element={guard('view:requests', <RequestDetail />)} />
         <Route path="quotes" element={guard('view:quotes', <Quotes />)} />
+        <Route path="quotes/:id" element={guard('view:quotes', <QuoteDetail />)} />
         <Route path="jobs" element={guard('view:jobs', <Jobs />)} />
         <Route path="jobs/:id" element={guard('view:jobs', <JobDetail />)} />
         <Route path="invoices" element={guard('view:invoices', <Invoices />)} />
+        <Route path="invoices/:id" element={guard('view:invoices', <InvoiceDetail />)} />
         <Route path="timesheets" element={guard('view:timesheets', <Timesheets />)} />
         <Route path="team" element={guard('view:team', <Team />)} />
         <Route path="roles" element={guard('manage:roles', <Roles />)} />

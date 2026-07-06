@@ -2,15 +2,18 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
 import JobModal from '../JobModal'
+import { nextNumber, today } from '../formParts'
 import {
   useStore,
   useCurrentUser,
+  newId,
   eur,
   eurExact,
   jobTotal,
   invoiceTotal,
   formatDate,
 } from '../../data/store'
+import type { Invoice } from '../../data/types'
 
 export default function JobDetail() {
   const { id } = useParams()
@@ -46,6 +49,25 @@ export default function JobDetail() {
     }
   }
 
+  // Job → Invoice: copy the job's line items into a new draft invoice due in
+  // two weeks, and mark the job as requiring invoicing → invoiced.
+  const convertToInvoice = () => {
+    const due = new Date()
+    due.setDate(due.getDate() + 14)
+    const invoice: Invoice = {
+      id: newId('i'),
+      number: nextNumber('INV-', state.invoices.map((i) => i.number)),
+      clientId: job.clientId,
+      jobId: job.id,
+      items: job.items.map((it) => ({ ...it, id: newId('li') })),
+      status: 'Draft',
+      issuedOn: today(),
+      dueOn: `${due.getFullYear()}-${String(due.getMonth() + 1).padStart(2, '0')}-${String(due.getDate()).padStart(2, '0')}`,
+    }
+    dispatch({ type: 'ADD_INVOICE', invoice })
+    nav(`/invoices/${invoice.id}`)
+  }
+
   return (
     <div>
       <Link className="back-link" to="/jobs">← Jobs</Link>
@@ -62,6 +84,7 @@ export default function JobDetail() {
         </div>
         {canManage && (
           <div className="detail-actions">
+            <Button onClick={convertToInvoice}>Create invoice</Button>
             <Button variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
             <Button variant="danger" onClick={remove}>Remove</Button>
           </div>

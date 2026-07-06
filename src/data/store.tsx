@@ -18,11 +18,17 @@ type Action =
   | { type: 'UPDATE_CLIENT'; client: Client }
   | { type: 'REMOVE_CLIENT'; id: string }
   | { type: 'ADD_REQUEST'; request: Request }
+  | { type: 'UPDATE_REQUEST'; request: Request }
+  | { type: 'REMOVE_REQUEST'; id: string }
   | { type: 'ADD_QUOTE'; quote: Quote }
+  | { type: 'UPDATE_QUOTE'; quote: Quote }
+  | { type: 'REMOVE_QUOTE'; id: string }
   | { type: 'ADD_JOB'; job: Job }
   | { type: 'UPDATE_JOB'; job: Job }
   | { type: 'REMOVE_JOB'; id: string }
   | { type: 'ADD_INVOICE'; invoice: Invoice }
+  | { type: 'UPDATE_INVOICE'; invoice: Invoice }
+  | { type: 'REMOVE_INVOICE'; id: string }
   | { type: 'ADD_TIME_ENTRY'; entry: TimeEntry }
   | { type: 'APPROVE_TIME'; id: string }
   | { type: 'APPROVE_ALL_TIME' }
@@ -47,8 +53,22 @@ function reducer(state: State, action: Action): State {
       return { ...state, clients: state.clients.filter((c) => c.id !== action.id) }
     case 'ADD_REQUEST':
       return { ...state, requests: [action.request, ...state.requests] }
+    case 'UPDATE_REQUEST':
+      return {
+        ...state,
+        requests: state.requests.map((r) => (r.id === action.request.id ? action.request : r)),
+      }
+    case 'REMOVE_REQUEST':
+      return { ...state, requests: state.requests.filter((r) => r.id !== action.id) }
     case 'ADD_QUOTE':
       return { ...state, quotes: [action.quote, ...state.quotes] }
+    case 'UPDATE_QUOTE':
+      return {
+        ...state,
+        quotes: state.quotes.map((q) => (q.id === action.quote.id ? action.quote : q)),
+      }
+    case 'REMOVE_QUOTE':
+      return { ...state, quotes: state.quotes.filter((q) => q.id !== action.id) }
     case 'ADD_JOB':
       return { ...state, jobs: [action.job, ...state.jobs] }
     case 'UPDATE_JOB':
@@ -64,6 +84,13 @@ function reducer(state: State, action: Action): State {
       }
     case 'ADD_INVOICE':
       return { ...state, invoices: [action.invoice, ...state.invoices] }
+    case 'UPDATE_INVOICE':
+      return {
+        ...state,
+        invoices: state.invoices.map((i) => (i.id === action.invoice.id ? action.invoice : i)),
+      }
+    case 'REMOVE_INVOICE':
+      return { ...state, invoices: state.invoices.filter((i) => i.id !== action.id) }
     case 'ADD_TIME_ENTRY':
       return { ...state, timeEntries: [action.entry, ...state.timeEntries] }
     case 'APPROVE_TIME':
