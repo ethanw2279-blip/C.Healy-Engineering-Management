@@ -20,6 +20,8 @@ type Action =
   | { type: 'ADD_REQUEST'; request: Request }
   | { type: 'ADD_QUOTE'; quote: Quote }
   | { type: 'ADD_JOB'; job: Job }
+  | { type: 'UPDATE_JOB'; job: Job }
+  | { type: 'REMOVE_JOB'; id: string }
   | { type: 'ADD_INVOICE'; invoice: Invoice }
   | { type: 'ADD_TIME_ENTRY'; entry: TimeEntry }
   | { type: 'APPROVE_TIME'; id: string }
@@ -49,6 +51,17 @@ function reducer(state: State, action: Action): State {
       return { ...state, quotes: [action.quote, ...state.quotes] }
     case 'ADD_JOB':
       return { ...state, jobs: [action.job, ...state.jobs] }
+    case 'UPDATE_JOB':
+      return {
+        ...state,
+        jobs: state.jobs.map((j) => (j.id === action.job.id ? action.job : j)),
+      }
+    case 'REMOVE_JOB':
+      return {
+        ...state,
+        jobs: state.jobs.filter((j) => j.id !== action.id),
+        visits: state.visits.filter((v) => v.jobId !== action.id),
+      }
     case 'ADD_INVOICE':
       return { ...state, invoices: [action.invoice, ...state.invoices] }
     case 'ADD_TIME_ENTRY':

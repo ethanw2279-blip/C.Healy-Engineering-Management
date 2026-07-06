@@ -7,6 +7,7 @@ import ClientDetail from './pages/ClientDetail'
 import Requests from './pages/Requests'
 import Quotes from './pages/Quotes'
 import Jobs from './pages/Jobs'
+import JobDetail from './pages/JobDetail'
 import Invoices from './pages/Invoices'
 import Timesheets from './pages/Timesheets'
 import Team from './pages/Team'
@@ -31,6 +32,7 @@ export default function AdminApp() {
         <Route path="requests" element={guard('view:requests', <Requests />)} />
         <Route path="quotes" element={guard('view:quotes', <Quotes />)} />
         <Route path="jobs" element={guard('view:jobs', <Jobs />)} />
+        <Route path="jobs/:id" element={guard('view:jobs', <JobDetail />)} />
         <Route path="invoices" element={guard('view:invoices', <Invoices />)} />
         <Route path="timesheets" element={guard('view:timesheets', <Timesheets />)} />
         <Route path="team" element={guard('view:team', <Team />)} />

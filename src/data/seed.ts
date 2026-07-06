@@ -58,9 +58,16 @@ export const seed: State = {
     { id: 't10', employeeId: 'e3', date: '2026-07-10', hours: 5, approved: false, note: 'Detailing prep' },
   ],
   visits: [
+    { id: 'v5', jobId: 'j3', employeeId: 'e2', date: '2026-07-01', start: '10:00', end: '12:00' },
     { id: 'v1', jobId: 'j1', employeeId: 'e2', date: '2026-07-07', start: '09:00', end: '11:00' },
     { id: 'v2', jobId: 'j1', employeeId: 'e2', date: '2026-07-07', start: '13:30', end: '15:00' },
+    { id: 'v6', jobId: 'j1', employeeId: 'e2', date: '2026-07-08', start: '09:30', end: '12:30' },
     { id: 'v3', jobId: 'j2', employeeId: 'e3', date: '2026-07-09', start: '11:00', end: '14:00' },
     { id: 'v4', jobId: 'j2', employeeId: 'e4', date: '2026-07-09', start: '11:00', end: '14:00' },
+    { id: 'v7', jobId: 'j5', employeeId: 'e3', date: '2026-07-13', start: '09:00', end: '13:00' },
+    { id: 'v8', jobId: 'j2', employeeId: 'e4', date: '2026-07-15', start: '08:30', end: '10:30' },
+    { id: 'v9', jobId: 'j1', employeeId: 'e5', date: '2026-07-20', start: '14:00', end: '16:00' },
+    { id: 'v10', jobId: 'j3', employeeId: 'e3', date: '2026-07-22', start: '11:00', end: '12:30' },
+    { id: 'v11', jobId: 'j2', employeeId: 'e2', date: '2026-07-27', start: '09:00', end: '11:00' },
   ],
 }
