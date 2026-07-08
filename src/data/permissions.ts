@@ -19,6 +19,7 @@ export const PERMISSION_GROUPS: {
       { key: 'view:jobs', label: 'Jobs' },
       { key: 'view:invoices', label: 'Invoices' },
       { key: 'view:timesheets', label: 'Timesheets' },
+      { key: 'view:ga1', label: 'GA1 Inspections' },
       { key: 'view:team', label: 'Team' },
       { key: 'view:reports', label: 'Reports' },
     ],
@@ -46,8 +47,9 @@ export const ALL_PERMISSION_KEYS: PermissionKey[] = PERMISSION_GROUPS.flatMap((g
 // Everything except role management — a strong operational admin.
 const ADMIN_PERMS = ALL_PERMISSION_KEYS.filter((k) => k !== 'manage:roles')
 
-// A field employee: sees their work, logs and reviews their hours.
-const EMPLOYEE_PERMS = ['view:schedule', 'view:jobs', 'view:clients', 'view:timesheets']
+// A field employee: sees their work, logs and reviews their hours, and the
+// inspections they carry out.
+const EMPLOYEE_PERMS = ['view:schedule', 'view:jobs', 'view:clients', 'view:timesheets', 'view:ga1']
 
 // Seed roles. Developer is a system role: full access, cannot be deleted or
 // have its permissions edited (it always holds '*').

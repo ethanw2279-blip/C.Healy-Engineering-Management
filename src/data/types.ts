@@ -115,6 +115,36 @@ export type Note = {
   createdAt: string // ISO timestamp
 }
 
+export type GA1Result = 'safe' | 'repair_required' | 'unsafe'
+export type GA1Inspection = {
+  id: ID
+  reportNumber: string
+  clientId: ID
+  examinerId: ID // an employee (competent person)
+  examinerCert: string
+  equipmentType: string
+  manufacturer: string
+  model: string
+  serialNumber: string
+  swl: string
+  yearOfManufacture: string
+  equipmentDescription: string
+  examinationDate: string
+  previousExaminationDate: string
+  nextExaminationDate: string
+  examinationLocation: string
+  safeToUse: boolean
+  defectsFound: boolean
+  overallResult: GA1Result
+  defectsDescription: string
+  reinspectionDate: string
+  additionalNotes: string
+  signature: string
+  purposeOfExamination: string
+  particularsOfTests: string
+  createdAt: string
+}
+
 export type State = {
   roles: Role[]
   currentUserId: ID
@@ -127,4 +157,5 @@ export type State = {
   timeEntries: TimeEntry[]
   visits: Visit[]
   notes: Note[]
+  ga1: GA1Inspection[]
 }

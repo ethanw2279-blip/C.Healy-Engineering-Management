@@ -74,4 +74,27 @@ export const seed: State = {
     { id: 'n1', entityType: 'client', entityId: 'c3', body: 'Fleet manager prefers early-morning visits before 9am.', authorId: 'e5', createdAt: '2026-07-05T09:12:00Z' },
     { id: 'n2', entityType: 'job', entityId: 'j1', body: 'Customer mentioned coffee stain on rear seat — bring extractor.', authorId: 'e2', createdAt: '2026-07-06T16:40:00Z' },
   ],
+  ga1: [
+    {
+      id: 'g1', reportNumber: 'GA1-1042', clientId: 'c3', examinerId: 'e1', examinerCert: 'CP-4821',
+      equipmentType: 'Telehandlers / Teleporters', manufacturer: 'JCB', model: '540-170', serialNumber: 'JCB540170X8842',
+      swl: '4,000 kg', yearOfManufacture: '2021', equipmentDescription: 'Telehandler with pallet forks',
+      examinationDate: '2026-07-02', previousExaminationDate: '2026-01-02', nextExaminationDate: '2027-07-02',
+      examinationLocation: 'Point Village Depot, Dublin', safeToUse: true, defectsFound: false, overallResult: 'safe',
+      defectsDescription: '', reinspectionDate: '', additionalNotes: 'Hydraulics and forks within tolerance.',
+      signature: 'Ethan Whitney', purposeOfExamination: '12 Monthly Testing', particularsOfTests: 'Visual + functional load test at SWL.',
+      createdAt: '2026-07-02T11:00:00Z',
+    },
+    {
+      id: 'g2', reportNumber: 'GA1-1041', clientId: 'c5', examinerId: 'e1', examinerCert: 'CP-4821',
+      equipmentType: 'Excavators', manufacturer: 'Caterpillar', model: '320', serialNumber: 'CAT0320ELMH00219',
+      swl: '3,200 kg', yearOfManufacture: '2019', equipmentDescription: '20t excavator with lifting eye',
+      examinationDate: '2026-06-20', previousExaminationDate: '2025-12-20', nextExaminationDate: '2026-12-20',
+      examinationLocation: '9 East Wall Rd, Dublin', safeToUse: false, defectsFound: true, overallResult: 'repair_required',
+      defectsDescription: 'Lifting eye shows minor deformation — replace before further lifting operations.',
+      reinspectionDate: '2026-07-20', additionalNotes: '', signature: 'Ethan Whitney',
+      purposeOfExamination: '12 Monthly Testing', particularsOfTests: 'Visual + NDT on lifting points.',
+      createdAt: '2026-06-20T14:30:00Z',
+    },
+  ],
 }

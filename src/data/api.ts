@@ -25,7 +25,7 @@ export async function loadState(): Promise<State> {
     { data: roles }, { data: employees }, { data: clients }, { data: requests },
     { data: quotes }, { data: quoteItems }, { data: jobs }, { data: jobItems },
     { data: jobAssignees }, { data: invoices }, { data: invoiceItems },
-    { data: timeEntries }, { data: visits }, { data: notes },
+    { data: timeEntries }, { data: visits }, { data: notes }, { data: ga1 },
   ] = await Promise.all([
     supabase.from('roles').select('*'),
     supabase.from('employees').select('*'),
@@ -41,6 +41,7 @@ export async function loadState(): Promise<State> {
     supabase.from('time_entries').select('*'),
     supabase.from('visits').select('*'),
     supabase.from('notes').select('*').order('created_at', { ascending: false }),
+    supabase.from('ga1_inspections').select('*').order('created_at', { ascending: false }),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) =>
@@ -92,8 +93,33 @@ export async function loadState(): Promise<State> {
       id: n.id, entityType: n.entity_type, entityId: n.entity_id, body: n.body,
       authorId: n.author_id, createdAt: n.created_at,
     })),
+    ga1: (ga1 ?? []).map((g: Row) => ({
+      id: g.id, reportNumber: g.report_number, clientId: g.client_id, examinerId: g.examiner_id,
+      examinerCert: g.examiner_cert ?? '', equipmentType: g.equipment_type ?? '', manufacturer: g.manufacturer ?? '',
+      model: g.model ?? '', serialNumber: g.serial_number ?? '', swl: g.swl ?? '',
+      yearOfManufacture: g.year_of_manufacture ?? '', equipmentDescription: g.equipment_description ?? '',
+      examinationDate: g.examination_date ?? '', previousExaminationDate: g.previous_examination_date ?? '',
+      nextExaminationDate: g.next_examination_date ?? '', examinationLocation: g.examination_location ?? '',
+      safeToUse: g.safe_to_use ?? false, defectsFound: g.defects_found ?? false, overallResult: g.overall_result ?? 'safe',
+      defectsDescription: g.defects_description ?? '', reinspectionDate: g.reinspection_date ?? '',
+      additionalNotes: g.additional_notes ?? '', signature: g.signature ?? '',
+      purposeOfExamination: g.purpose_of_examination ?? '', particularsOfTests: g.particulars_of_tests ?? '',
+      createdAt: g.created_at,
+    })),
   }
 }
+
+const ga1Row = (g: State['ga1'][number]) => ({
+  id: g.id, report_number: g.reportNumber, client_id: g.clientId, examiner_id: g.examinerId,
+  examiner_cert: g.examinerCert, equipment_type: g.equipmentType, manufacturer: g.manufacturer,
+  model: g.model, serial_number: g.serialNumber, swl: g.swl, year_of_manufacture: g.yearOfManufacture,
+  equipment_description: g.equipmentDescription, examination_date: g.examinationDate || null,
+  previous_examination_date: g.previousExaminationDate || null, next_examination_date: g.nextExaminationDate || null,
+  examination_location: g.examinationLocation, safe_to_use: g.safeToUse, defects_found: g.defectsFound,
+  overall_result: g.overallResult, defects_description: g.defectsDescription, reinspection_date: g.reinspectionDate || null,
+  additional_notes: g.additionalNotes, signature: g.signature, purpose_of_examination: g.purposeOfExamination,
+  particulars_of_tests: g.particularsOfTests, created_at: g.createdAt,
+})
 
 // ---- App-model → row mappers (for writes) ---------------------------------
 const clientRow = (c: State['clients'][number]) => ({
@@ -214,6 +240,12 @@ export async function persist(action: Action): Promise<void> {
     }
     case 'REMOVE_NOTE':
       return check(supabase.from('notes').delete().eq('id', action.id))
+
+    case 'ADD_GA1':
+    case 'UPDATE_GA1':
+      return check(supabase.from('ga1_inspections').upsert(ga1Row(action.inspection)))
+    case 'REMOVE_GA1':
+      return check(supabase.from('ga1_inspections').delete().eq('id', action.id))
 
     // Local-only actions: no persistence.
     case 'SET_CURRENT_USER':

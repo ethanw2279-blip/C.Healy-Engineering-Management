@@ -11,6 +11,7 @@ import {
 import type {
   Client,
   Employee,
+  GA1Inspection,
   Invoice,
   Job,
   Note,
@@ -53,6 +54,9 @@ export type Action =
   | { type: 'SET_CURRENT_USER'; id: string }
   | { type: 'ADD_NOTE'; note: Note }
   | { type: 'REMOVE_NOTE'; id: string }
+  | { type: 'ADD_GA1'; inspection: GA1Inspection }
+  | { type: 'UPDATE_GA1'; inspection: GA1Inspection }
+  | { type: 'REMOVE_GA1'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -146,6 +150,15 @@ function reducer(state: State, action: Action): State {
       return { ...state, notes: [action.note, ...state.notes] }
     case 'REMOVE_NOTE':
       return { ...state, notes: state.notes.filter((n) => n.id !== action.id) }
+    case 'ADD_GA1':
+      return { ...state, ga1: [action.inspection, ...state.ga1] }
+    case 'UPDATE_GA1':
+      return {
+        ...state,
+        ga1: state.ga1.map((g) => (g.id === action.inspection.id ? action.inspection : g)),
+      }
+    case 'REMOVE_GA1':
+      return { ...state, ga1: state.ga1.filter((g) => g.id !== action.id) }
     default:
       return state
   }
@@ -160,7 +173,7 @@ const StoreContext = createContext<Store | null>(null)
 
 const EMPTY_STATE: State = {
   roles: [], currentUserId: '', employees: [], clients: [], requests: [],
-  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [],
+  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [],
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {

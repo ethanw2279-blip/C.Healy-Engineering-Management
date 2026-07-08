@@ -13,6 +13,9 @@ import JobDetail from './pages/JobDetail'
 import Invoices from './pages/Invoices'
 import InvoiceDetail from './pages/InvoiceDetail'
 import Timesheets from './pages/Timesheets'
+import GA1List from './pages/GA1List'
+import GA1Detail from './pages/GA1Detail'
+import GA1Form from './pages/GA1Form'
 import Team from './pages/Team'
 import Roles from './pages/Roles'
 import Reports from './pages/Reports'
@@ -42,6 +45,10 @@ export default function AdminApp() {
         <Route path="invoices" element={guard('view:invoices', <Invoices />)} />
         <Route path="invoices/:id" element={guard('view:invoices', <InvoiceDetail />)} />
         <Route path="timesheets" element={guard('view:timesheets', <Timesheets />)} />
+        <Route path="ga1" element={guard('view:ga1', <GA1List />)} />
+        <Route path="ga1/new" element={guard('create:records', <GA1Form />)} />
+        <Route path="ga1/:id" element={guard('view:ga1', <GA1Detail />)} />
+        <Route path="ga1/:id/edit" element={guard('create:records', <GA1Form />)} />
         <Route path="team" element={guard('view:team', <Team />)} />
         <Route path="roles" element={guard('manage:roles', <Roles />)} />
         <Route path="reports" element={guard('view:reports', <Reports />)} />

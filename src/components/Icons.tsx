@@ -252,6 +252,14 @@ export const ChevronDownIcon = (p: IconProps) => (
   </Base>
 )
 
+export const ClipboardIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="5" y="5" width="14" height="16" rx="2" />
+    <path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
+    <path d="m9 13 2 2 4-4" />
+  </Base>
+)
+
 export const TrashIcon = (p: IconProps) => (
   <Base {...p}>
     <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13h10l1-13" />
