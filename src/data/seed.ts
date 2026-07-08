@@ -97,4 +97,5 @@ export const seed: State = {
       createdAt: '2026-06-20T14:30:00Z',
     },
   ],
+  attachments: [],
 }

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
 import ClientModal from '../ClientModal'
 import Notes from '../components/Notes'
+import Attachments from '../components/Attachments'
 import {
   useStore,
   useCurrentUser,
@@ -109,6 +110,11 @@ export default function ClientDetail() {
       {/* Notes */}
       <Section title="Notes">
         <Notes entityType="client" entityId={client.id} />
+      </Section>
+
+      {/* Attachments */}
+      <Section title="Files">
+        <Attachments entityType="client" entityId={client.id} />
       </Section>
 
       {/* Current jobs */}

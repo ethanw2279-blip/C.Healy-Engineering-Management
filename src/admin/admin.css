@@ -393,6 +393,21 @@
 .detail-section { margin-top: 22px; }
 .detail-section-title { font-size: 15px; font-weight: 800; color: var(--navy); margin-bottom: 10px; }
 
+/* ---- Attachments ---------------------------------------------------------*/
+.attachments { padding: 16px 18px; }
+.attach-upload { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 14px; }
+.attach-upload input[type="file"] { font-size: 13px; color: var(--navy-muted); }
+.attach-note, .attach-empty { font-size: 14px; color: var(--navy-muted); }
+.attach-error { color: var(--red); font-size: 13px; }
+.attach-list { display: flex; flex-direction: column; gap: 2px; }
+.attach-item { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--divider); }
+.attach-item:last-child { border-bottom: none; }
+.attach-name { font-size: 14px; font-weight: 600; color: var(--green-dark); text-align: left; }
+.attach-name:hover { text-decoration: underline; }
+.attach-meta { font-size: 12.5px; color: var(--navy-muted); margin-left: auto; }
+.attach-remove { color: var(--navy-muted); padding: 4px; border-radius: 6px; }
+.attach-remove:hover { color: var(--red); background: #fbf1f1; }
+
 /* ---- GA1 inspections -----------------------------------------------------*/
 .ga1-overdue { color: var(--red); font-weight: 700; }
 .ga1-alert {

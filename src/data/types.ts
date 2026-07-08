@@ -115,6 +115,17 @@ export type Note = {
   createdAt: string // ISO timestamp
 }
 
+export type Attachment = {
+  id: ID
+  entityType: 'client' | 'job'
+  entityId: ID
+  fileName: string
+  path: string // storage object path within the 'attachments' bucket
+  size: number
+  uploadedBy: ID
+  createdAt: string
+}
+
 export type GA1Result = 'safe' | 'repair_required' | 'unsafe'
 export type GA1Inspection = {
   id: ID
@@ -158,4 +169,5 @@ export type State = {
   visits: Visit[]
   notes: Note[]
   ga1: GA1Inspection[]
+  attachments: Attachment[]
 }

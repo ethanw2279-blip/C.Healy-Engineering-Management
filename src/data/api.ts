@@ -25,7 +25,7 @@ export async function loadState(): Promise<State> {
     { data: roles }, { data: employees }, { data: clients }, { data: requests },
     { data: quotes }, { data: quoteItems }, { data: jobs }, { data: jobItems },
     { data: jobAssignees }, { data: invoices }, { data: invoiceItems },
-    { data: timeEntries }, { data: visits }, { data: notes }, { data: ga1 },
+    { data: timeEntries }, { data: visits }, { data: notes }, { data: ga1 }, { data: attachments },
   ] = await Promise.all([
     supabase.from('roles').select('*'),
     supabase.from('employees').select('*'),
@@ -42,6 +42,7 @@ export async function loadState(): Promise<State> {
     supabase.from('visits').select('*'),
     supabase.from('notes').select('*').order('created_at', { ascending: false }),
     supabase.from('ga1_inspections').select('*').order('created_at', { ascending: false }),
+    supabase.from('attachments').select('*').order('created_at', { ascending: false }),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) =>
@@ -92,6 +93,10 @@ export async function loadState(): Promise<State> {
     notes: (notes ?? []).map((n: Row) => ({
       id: n.id, entityType: n.entity_type, entityId: n.entity_id, body: n.body,
       authorId: n.author_id, createdAt: n.created_at,
+    })),
+    attachments: (attachments ?? []).map((a: Row) => ({
+      id: a.id, entityType: a.entity_type, entityId: a.entity_id, fileName: a.file_name,
+      path: a.path, size: a.size ?? 0, uploadedBy: a.uploaded_by, createdAt: a.created_at,
     })),
     ga1: (ga1 ?? []).map((g: Row) => ({
       id: g.id, reportNumber: g.report_number, clientId: g.client_id, examinerId: g.examiner_id,
@@ -256,6 +261,16 @@ export async function persist(action: Action): Promise<void> {
     }
     case 'REMOVE_VISIT':
       return check(supabase.from('visits').delete().eq('id', action.id))
+
+    case 'ADD_ATTACHMENT': {
+      const a = action.attachment
+      return check(supabase.from('attachments').insert({
+        id: a.id, entity_type: a.entityType, entity_id: a.entityId, file_name: a.fileName,
+        path: a.path, size: a.size, uploaded_by: a.uploadedBy, created_at: a.createdAt,
+      }))
+    }
+    case 'REMOVE_ATTACHMENT':
+      return check(supabase.from('attachments').delete().eq('id', action.id))
 
     // Local-only actions: no persistence.
     case 'SET_CURRENT_USER':

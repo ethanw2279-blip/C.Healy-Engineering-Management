@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react'
 import type {
+  Attachment,
   Client,
   Employee,
   GA1Inspection,
@@ -61,6 +62,8 @@ export type Action =
   | { type: 'ADD_VISIT'; visit: Visit }
   | { type: 'UPDATE_VISIT'; visit: Visit }
   | { type: 'REMOVE_VISIT'; id: string }
+  | { type: 'ADD_ATTACHMENT'; attachment: Attachment }
+  | { type: 'REMOVE_ATTACHMENT'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -172,6 +175,10 @@ function reducer(state: State, action: Action): State {
       }
     case 'REMOVE_VISIT':
       return { ...state, visits: state.visits.filter((v) => v.id !== action.id) }
+    case 'ADD_ATTACHMENT':
+      return { ...state, attachments: [action.attachment, ...state.attachments] }
+    case 'REMOVE_ATTACHMENT':
+      return { ...state, attachments: state.attachments.filter((a) => a.id !== action.id) }
     default:
       return state
   }
@@ -186,7 +193,7 @@ const StoreContext = createContext<Store | null>(null)
 
 const EMPTY_STATE: State = {
   roles: [], currentUserId: '', employees: [], clients: [], requests: [],
-  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [],
+  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [], attachments: [],
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
