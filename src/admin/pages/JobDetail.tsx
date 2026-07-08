@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
 import JobModal from '../JobModal'
+import Notes from '../components/Notes'
 import { nextNumber, today } from '../formParts'
 import {
   useStore,
@@ -119,6 +120,11 @@ export default function JobDetail() {
           </div>
         </div>
       </div>
+
+      {/* Notes */}
+      <Section title="Notes">
+        <Notes entityType="job" entityId={job.id} />
+      </Section>
 
       {/* Assigned team */}
       <Section title="Assigned team">

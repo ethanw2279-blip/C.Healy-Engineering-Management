@@ -70,4 +70,8 @@ export const seed: State = {
     { id: 'v10', jobId: 'j3', employeeId: 'e3', date: '2026-07-22', start: '11:00', end: '12:30' },
     { id: 'v11', jobId: 'j2', employeeId: 'e2', date: '2026-07-27', start: '09:00', end: '11:00' },
   ],
+  notes: [
+    { id: 'n1', entityType: 'client', entityId: 'c3', body: 'Fleet manager prefers early-morning visits before 9am.', authorId: 'e5', createdAt: '2026-07-05T09:12:00Z' },
+    { id: 'n2', entityType: 'job', entityId: 'j1', body: 'Customer mentioned coffee stain on rear seat — bring extractor.', authorId: 'e2', createdAt: '2026-07-06T16:40:00Z' },
+  ],
 }

@@ -25,7 +25,7 @@ export async function loadState(): Promise<State> {
     { data: roles }, { data: employees }, { data: clients }, { data: requests },
     { data: quotes }, { data: quoteItems }, { data: jobs }, { data: jobItems },
     { data: jobAssignees }, { data: invoices }, { data: invoiceItems },
-    { data: timeEntries }, { data: visits },
+    { data: timeEntries }, { data: visits }, { data: notes },
   ] = await Promise.all([
     supabase.from('roles').select('*'),
     supabase.from('employees').select('*'),
@@ -40,6 +40,7 @@ export async function loadState(): Promise<State> {
     supabase.from('invoice_items').select('*'),
     supabase.from('time_entries').select('*'),
     supabase.from('visits').select('*'),
+    supabase.from('notes').select('*').order('created_at', { ascending: false }),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) =>
@@ -86,6 +87,10 @@ export async function loadState(): Promise<State> {
     })),
     visits: (visits ?? []).map((v: Row) => ({
       id: v.id, jobId: v.job_id, employeeId: v.employee_id, date: v.date, start: v.start_time, end: v.end_time,
+    })),
+    notes: (notes ?? []).map((n: Row) => ({
+      id: n.id, entityType: n.entity_type, entityId: n.entity_id, body: n.body,
+      authorId: n.author_id, createdAt: n.created_at,
     })),
   }
 }
@@ -199,6 +204,16 @@ export async function persist(action: Action): Promise<void> {
       return check(supabase.from('time_entries').update({ approved: true }).eq('id', action.id))
     case 'APPROVE_ALL_TIME':
       return check(supabase.from('time_entries').update({ approved: true }).eq('approved', false))
+
+    case 'ADD_NOTE': {
+      const n = action.note
+      return check(supabase.from('notes').insert({
+        id: n.id, entity_type: n.entityType, entity_id: n.entityId, body: n.body,
+        author_id: n.authorId, created_at: n.createdAt,
+      }))
+    }
+    case 'REMOVE_NOTE':
+      return check(supabase.from('notes').delete().eq('id', action.id))
 
     // Local-only actions: no persistence.
     case 'SET_CURRENT_USER':

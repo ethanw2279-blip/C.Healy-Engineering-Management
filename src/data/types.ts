@@ -106,6 +106,15 @@ export type Visit = {
   end: string // "11:00"
 }
 
+export type Note = {
+  id: ID
+  entityType: 'client' | 'job'
+  entityId: ID
+  body: string
+  authorId: ID
+  createdAt: string // ISO timestamp
+}
+
 export type State = {
   roles: Role[]
   currentUserId: ID
@@ -117,4 +126,5 @@ export type State = {
   invoices: Invoice[]
   timeEntries: TimeEntry[]
   visits: Visit[]
+  notes: Note[]
 }

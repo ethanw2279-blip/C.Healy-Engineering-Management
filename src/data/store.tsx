@@ -13,6 +13,7 @@ import type {
   Employee,
   Invoice,
   Job,
+  Note,
   Quote,
   Request,
   Role,
@@ -50,6 +51,8 @@ export type Action =
   | { type: 'UPDATE_ROLE'; role: Role }
   | { type: 'DELETE_ROLE'; id: string }
   | { type: 'SET_CURRENT_USER'; id: string }
+  | { type: 'ADD_NOTE'; note: Note }
+  | { type: 'REMOVE_NOTE'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -139,6 +142,10 @@ function reducer(state: State, action: Action): State {
       return { ...state, roles: state.roles.filter((r) => r.id !== action.id) }
     case 'SET_CURRENT_USER':
       return { ...state, currentUserId: action.id }
+    case 'ADD_NOTE':
+      return { ...state, notes: [action.note, ...state.notes] }
+    case 'REMOVE_NOTE':
+      return { ...state, notes: state.notes.filter((n) => n.id !== action.id) }
     default:
       return state
   }
@@ -153,7 +160,7 @@ const StoreContext = createContext<Store | null>(null)
 
 const EMPTY_STATE: State = {
   roles: [], currentUserId: '', employees: [], clients: [], requests: [],
-  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [],
+  quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [],
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
 import ClientModal from '../ClientModal'
+import Notes from '../components/Notes'
 import {
   useStore,
   useCurrentUser,
@@ -104,6 +105,11 @@ export default function ClientDetail() {
           </div>
         </div>
       </div>
+
+      {/* Notes */}
+      <Section title="Notes">
+        <Notes entityType="client" entityId={client.id} />
+      </Section>
 
       {/* Current jobs */}
       <Section title={`Current jobs (${currentJobs.length})`}>
