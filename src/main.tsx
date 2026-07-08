@@ -5,16 +5,18 @@ import App from './App'
 import { StoreProvider } from './data/store'
 import { AuthProvider, useAuth } from './auth/AuthProvider'
 import Login from './auth/Login'
+import ResetPassword from './auth/ResetPassword'
 import { isSupabaseConfigured } from './lib/supabaseClient'
 import './index.css'
 
 // When Supabase is configured, require a login before the app loads. When it
 // isn't (e.g. local demo), fall straight through to the in-memory store.
 function Gate() {
-  const { ready, session } = useAuth()
+  const { ready, session, recovering } = useAuth()
 
   if (isSupabaseConfigured) {
     if (!ready) return <div className="app-splash">Loading…</div>
+    if (recovering) return <ResetPassword />
     if (!session) return <Login />
   }
 

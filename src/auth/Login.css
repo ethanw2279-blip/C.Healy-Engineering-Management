@@ -76,3 +76,26 @@
 }
 .login-btn:hover { background: var(--green-dark); }
 .login-btn:disabled { opacity: 0.6; }
+
+.login-notice {
+  background: #e3f2e9;
+  color: #176b3b;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.login-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+.login-links button {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-muted);
+}
+.login-links button:hover { color: var(--green-dark); }
