@@ -247,6 +247,16 @@ export async function persist(action: Action): Promise<void> {
     case 'REMOVE_GA1':
       return check(supabase.from('ga1_inspections').delete().eq('id', action.id))
 
+    case 'ADD_VISIT':
+    case 'UPDATE_VISIT': {
+      const v = action.visit
+      return check(supabase.from('visits').upsert({
+        id: v.id, job_id: v.jobId, employee_id: v.employeeId, date: v.date, start_time: v.start, end_time: v.end,
+      }))
+    }
+    case 'REMOVE_VISIT':
+      return check(supabase.from('visits').delete().eq('id', action.id))
+
     // Local-only actions: no persistence.
     case 'SET_CURRENT_USER':
     case 'HYDRATE':

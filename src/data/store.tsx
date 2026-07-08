@@ -20,6 +20,7 @@ import type {
   Role,
   State,
   TimeEntry,
+  Visit,
 } from './types'
 import { seed } from './seed'
 import { roleCan, type PermissionKey } from './permissions'
@@ -57,6 +58,9 @@ export type Action =
   | { type: 'ADD_GA1'; inspection: GA1Inspection }
   | { type: 'UPDATE_GA1'; inspection: GA1Inspection }
   | { type: 'REMOVE_GA1'; id: string }
+  | { type: 'ADD_VISIT'; visit: Visit }
+  | { type: 'UPDATE_VISIT'; visit: Visit }
+  | { type: 'REMOVE_VISIT'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -159,6 +163,15 @@ function reducer(state: State, action: Action): State {
       }
     case 'REMOVE_GA1':
       return { ...state, ga1: state.ga1.filter((g) => g.id !== action.id) }
+    case 'ADD_VISIT':
+      return { ...state, visits: [...state.visits, action.visit] }
+    case 'UPDATE_VISIT':
+      return {
+        ...state,
+        visits: state.visits.map((v) => (v.id === action.visit.id ? action.visit : v)),
+      }
+    case 'REMOVE_VISIT':
+      return { ...state, visits: state.visits.filter((v) => v.id !== action.id) }
     default:
       return state
   }

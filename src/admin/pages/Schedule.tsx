@@ -14,12 +14,19 @@ type View = 'day' | 'week' | 'month'
 const TODAY = parseYmd('2026-07-06')
 
 export default function Schedule() {
-  const { state } = useStore()
+  const { state, dispatch } = useStore()
   const { can } = useCurrentUser()
   const create = useCreate()
   const nav = useNavigate()
   const [view, setView] = useState<View>('week')
   const [cursor, setCursor] = useState<Date>(TODAY)
+
+  // Drag a visit onto another day to reschedule it.
+  const moveVisit = (visitId: string, dateStr: string) => {
+    if (!can('create:records')) return
+    const v = state.visits.find((x) => x.id === visitId)
+    if (v && v.date !== dateStr) dispatch({ type: 'UPDATE_VISIT', visit: { ...v, date: dateStr } })
+  }
 
   const jobById = (id: string) => state.jobs.find((j) => j.id === id)
   const empById = (id: string) => state.employees.find((e) => e.id === id)
@@ -77,10 +84,10 @@ export default function Schedule() {
 
       {view === 'day' && <DayView events={eventsOn(cursor)} jobById={jobById} empById={empById} clientName={clientName} nav={nav} />}
       {view === 'week' && (
-        <WeekView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} />
+        <WeekView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} onMove={moveVisit} />
       )}
       {view === 'month' && (
-        <MonthView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} />
+        <MonthView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} onMove={moveVisit} />
       )}
     </div>
   )
@@ -123,7 +130,7 @@ function DayView({
 
 // ---- Week view -------------------------------------------------------------
 function WeekView({
-  cursor, eventsOn, empById, jobById, nav, openDay,
+  cursor, eventsOn, empById, jobById, nav, openDay, onMove,
 }: {
   cursor: Date
   eventsOn: (d: Date) => Visit[]
@@ -131,6 +138,7 @@ function WeekView({
   jobById: Helpers['jobById']
   nav: (to: string) => void
   openDay: (d: Date) => void
+  onMove: (visitId: string, dateStr: string) => void
 }) {
   const days = weekDays(cursor)
   return (
@@ -139,7 +147,12 @@ function WeekView({
         const evs = eventsOn(d)
         const today = isSameDay(d, TODAY)
         return (
-          <div key={ymd(d)} className={`week-col ${today ? 'today' : ''}`}>
+          <div
+            key={ymd(d)}
+            className={`week-col ${today ? 'today' : ''}`}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); onMove(e.dataTransfer.getData('text/plain'), ymd(d)) }}
+          >
             <button className="week-colhead" onClick={() => openDay(d)}>
               <span className="week-dow">{DOW[(d.getDay() + 6) % 7]}</span>
               <span className={`week-date ${today ? 'on' : ''}`}>{d.getDate()}</span>
@@ -149,7 +162,14 @@ function WeekView({
               {evs.map((v) => {
                 const emp = empById(v.employeeId)
                 return (
-                  <button key={v.id} className="ev-chip" style={{ borderLeftColor: emp?.color }} onClick={() => nav(`/jobs/${v.jobId}`)}>
+                  <button
+                    key={v.id}
+                    className="ev-chip"
+                    style={{ borderLeftColor: emp?.color }}
+                    draggable
+                    onDragStart={(e) => e.dataTransfer.setData('text/plain', v.id)}
+                    onClick={() => nav(`/jobs/${v.jobId}`)}
+                  >
                     <span className="ev-time">{v.start}</span>
                     <span className="ev-title">{jobById(v.jobId)?.title ?? 'Visit'}</span>
                   </button>
@@ -165,7 +185,7 @@ function WeekView({
 
 // ---- Month view ------------------------------------------------------------
 function MonthView({
-  cursor, eventsOn, empById, jobById, nav, openDay,
+  cursor, eventsOn, empById, jobById, nav, openDay, onMove,
 }: {
   cursor: Date
   eventsOn: (d: Date) => Visit[]
@@ -173,6 +193,7 @@ function MonthView({
   jobById: Helpers['jobById']
   nav: (to: string) => void
   openDay: (d: Date) => void
+  onMove: (visitId: string, dateStr: string) => void
 }) {
   const weeks = monthMatrix(cursor)
   const month = cursor.getMonth()
@@ -187,13 +208,25 @@ function MonthView({
           const outside = d.getMonth() !== month
           const today = isSameDay(d, TODAY)
           return (
-            <div key={ymd(d)} className={`month-cell ${outside ? 'outside' : ''}`}>
+            <div
+              key={ymd(d)}
+              className={`month-cell ${outside ? 'outside' : ''}`}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => { e.preventDefault(); onMove(e.dataTransfer.getData('text/plain'), ymd(d)) }}
+            >
               <button className={`month-daynum ${today ? 'on' : ''}`} onClick={() => openDay(d)}>{d.getDate()}</button>
               <div className="month-events">
                 {evs.slice(0, 3).map((v) => {
                   const emp = empById(v.employeeId)
                   return (
-                    <button key={v.id} className="ev-chip sm" style={{ borderLeftColor: emp?.color }} onClick={() => nav(`/jobs/${v.jobId}`)}>
+                    <button
+                      key={v.id}
+                      className="ev-chip sm"
+                      style={{ borderLeftColor: emp?.color }}
+                      draggable
+                      onDragStart={(e) => e.dataTransfer.setData('text/plain', v.id)}
+                      onClick={() => nav(`/jobs/${v.jobId}`)}
+                    >
                       <span className="ev-time">{v.start}</span>
                       <span className="ev-title">{jobById(v.jobId)?.title ?? 'Visit'}</span>
                     </button>
