@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { SearchIcon, BellIcon, PlusIcon, ChevronDownIcon, LogoutIcon } from '../components/Icons'
+import { BellIcon, PlusIcon, ChevronDownIcon, LogoutIcon } from '../components/Icons'
 import { Button, Avatar } from './components/ui'
 import type { CreateKind } from './CreateModals'
 import { useStore, useCurrentUser } from '../data/store'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
 import { useAuth } from '../auth/AuthProvider'
+import GlobalSearch from './GlobalSearch'
 
 const createOptions: { kind: CreateKind; label: string }[] = [
   { kind: 'client', label: 'Client' },
@@ -23,10 +24,7 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
 
   return (
     <header className="topbar">
-      <div className="topbar-search">
-        <SearchIcon size={19} />
-        <input placeholder="Search clients, jobs, quotes…" />
-      </div>
+      <GlobalSearch />
 
       <div className="topbar-actions">
         {isSupabaseConfigured ? (
