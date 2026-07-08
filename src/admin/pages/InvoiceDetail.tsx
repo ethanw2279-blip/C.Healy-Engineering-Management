@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, StatusBadge, EmptyState } from '../components/ui'
 import InvoiceModal from '../InvoiceModal'
 import { useStore, useCurrentUser, eur, eurExact, invoiceTotal, formatDate } from '../../data/store'
+import { COMPANY } from '../../data/company'
 
 export default function InvoiceDetail() {
   const { id } = useParams()
@@ -33,6 +34,17 @@ export default function InvoiceDetail() {
   }
   const markPaid = () => dispatch({ type: 'UPDATE_INVOICE', invoice: { ...invoice, status: 'Paid' } })
 
+  const emailInvoice = () => {
+    const subject = `Invoice ${invoice.number} from ${COMPANY.name}`
+    const body =
+      `Hi ${client?.name ?? ''},\n\n` +
+      `Please find invoice ${invoice.number}.\n` +
+      `Amount due: ${eur(invoiceTotal(invoice))} by ${formatDate(invoice.dueOn)}.\n\n` +
+      `Thank you,\n${COMPANY.name}`
+    window.location.href =
+      `mailto:${client?.email ?? ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  }
+
   return (
     <div>
       <Link className="back-link" to="/invoices">← Invoices</Link>
@@ -47,13 +59,17 @@ export default function InvoiceDetail() {
             </div>
           </div>
         </div>
-        {canManage && (
-          <div className="detail-actions">
-            {invoice.status !== 'Paid' && <Button onClick={markPaid}>Mark as paid</Button>}
-            <Button variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
-            <Button variant="danger" onClick={remove}>Remove</Button>
-          </div>
-        )}
+        <div className="detail-actions">
+          <Button variant="secondary" onClick={() => nav(`/invoices/${invoice.id}/print`)}>Download PDF</Button>
+          <Button variant="secondary" onClick={emailInvoice}>Email</Button>
+          {canManage && (
+            <>
+              {invoice.status !== 'Paid' && <Button onClick={markPaid}>Mark as paid</Button>}
+              <Button variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
+              <Button variant="danger" onClick={remove}>Remove</Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="detail-grid">

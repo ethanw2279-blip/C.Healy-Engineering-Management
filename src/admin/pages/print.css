@@ -1,0 +1,125 @@
+.doc-screen {
+  min-height: 100dvh;
+  background: #e9ecec;
+  padding: 24px 16px 60px;
+}
+
+.doc-toolbar {
+  max-width: 800px;
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.doc-back {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.doc-print {
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 9px;
+}
+.doc-print:hover { background: var(--green-dark); }
+
+/* The A4-ish document sheet. */
+.doc-sheet {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 48px 52px;
+  border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  color: #1a2b2f;
+}
+
+.doc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 28px;
+  border-bottom: 2px solid #eceae4;
+}
+.doc-company { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+.doc-muted { font-size: 13px; color: #6b7b7e; line-height: 1.5; }
+.doc-strong { font-size: 15px; font-weight: 700; }
+.doc-title { text-align: right; }
+.doc-title h1 { font-size: 30px; font-weight: 800; letter-spacing: 2px; color: var(--green); }
+.doc-number { font-size: 15px; font-weight: 700; color: var(--navy-muted); margin-top: 2px; }
+
+.doc-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 28px 0 8px;
+}
+.doc-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9aa6a8;
+  margin-bottom: 3px;
+}
+.doc-meta-right { text-align: right; }
+.doc-meta-right > div { margin-bottom: 6px; font-size: 14px; }
+.doc-meta-right .doc-label { min-width: 90px; margin-right: 10px; margin-bottom: 0; }
+
+.doc-subject {
+  margin: 22px 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 18px;
+}
+.doc-table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7b7e;
+  padding: 10px 8px;
+  border-bottom: 1.5px solid #d7dcdc;
+}
+.doc-table td {
+  padding: 12px 8px;
+  font-size: 14px;
+  border-bottom: 1px solid #eceae4;
+}
+.doc-table .r { text-align: right; }
+.doc-table tfoot td { border-bottom: none; padding-top: 16px; }
+.doc-total-label { font-size: 13px; font-weight: 700; color: #6b7b7e; }
+.doc-total { font-size: 20px; font-weight: 800; color: var(--navy); }
+
+.doc-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eceae4;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ---- Print ---------------------------------------------------------------*/
+@media print {
+  .doc-screen { background: #fff; padding: 0; }
+  .doc-toolbar { display: none; }
+  .doc-sheet {
+    max-width: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+  }
+  @page { margin: 18mm; }
+}

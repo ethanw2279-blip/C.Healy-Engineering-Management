@@ -16,6 +16,7 @@ import Timesheets from './pages/Timesheets'
 import Team from './pages/Team'
 import Roles from './pages/Roles'
 import Reports from './pages/Reports'
+import PrintDocument from './pages/PrintDocument'
 import { RequirePermission, NoAccess } from './components/RequirePermission'
 import type { PermissionKey } from '../data/permissions'
 import type { ReactNode } from 'react'
@@ -46,6 +47,10 @@ export default function AdminApp() {
         <Route path="reports" element={guard('view:reports', <Reports />)} />
         <Route path="no-access" element={<NoAccess />} />
       </Route>
+
+      {/* Standalone print/PDF documents — no sidebar chrome. */}
+      <Route path="quotes/:id/print" element={guard('view:quotes', <PrintDocument kind="quote" />)} />
+      <Route path="invoices/:id/print" element={guard('view:invoices', <PrintDocument kind="invoice" />)} />
     </Routes>
   )
 }

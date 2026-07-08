@@ -4,6 +4,7 @@ import { Button, StatusBadge, EmptyState } from '../components/ui'
 import QuoteModal from '../QuoteModal'
 import { nextNumber } from '../formParts'
 import { useStore, useCurrentUser, newId, eur, eurExact, quoteTotal, formatDate } from '../../data/store'
+import { COMPANY } from '../../data/company'
 import type { Job } from '../../data/types'
 
 export default function QuoteDetail() {
@@ -54,6 +55,18 @@ export default function QuoteDetail() {
     nav(`/jobs/${job.id}`)
   }
 
+  const emailQuote = () => {
+    const subject = `Quote ${quote.number} from ${COMPANY.name}`
+    const body =
+      `Hi ${client?.name ?? ''},\n\n` +
+      `Please find quote ${quote.number} — ${quote.title}.\n` +
+      `Total: ${eur(quoteTotal(quote))}.\n\n` +
+      `You can download the PDF from your account, or reply to accept.\n\n` +
+      `Kind regards,\n${COMPANY.name}`
+    window.location.href =
+      `mailto:${client?.email ?? ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  }
+
   return (
     <div>
       <Link className="back-link" to="/quotes">← Quotes</Link>
@@ -68,16 +81,20 @@ export default function QuoteDetail() {
             </div>
           </div>
         </div>
-        {canManage && (
-          <div className="detail-actions">
-            {quote.status !== 'Approved' && quote.status !== 'Converted' && (
-              <Button variant="secondary" onClick={markApproved}>Mark approved</Button>
-            )}
-            {quote.status !== 'Converted' && <Button onClick={convertToJob}>Convert to job</Button>}
-            <Button variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
-            <Button variant="danger" onClick={remove}>Remove</Button>
-          </div>
-        )}
+        <div className="detail-actions">
+          <Button variant="secondary" onClick={() => nav(`/quotes/${quote.id}/print`)}>Download PDF</Button>
+          <Button variant="secondary" onClick={emailQuote}>Email</Button>
+          {canManage && (
+            <>
+              {quote.status !== 'Approved' && quote.status !== 'Converted' && (
+                <Button variant="secondary" onClick={markApproved}>Mark approved</Button>
+              )}
+              {quote.status !== 'Converted' && <Button onClick={convertToJob}>Convert to job</Button>}
+              <Button variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
+              <Button variant="danger" onClick={remove}>Remove</Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="detail-grid">
