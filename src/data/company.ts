@@ -7,8 +7,8 @@ export const COMPANY = {
   tagline: 'Engineering Management',
   // TODO: replace with your real business details — these print on customer
   // quotes and invoices.
-  addressLines: ['Address line 1', 'City, Ireland'],
+  addressLines: ['C.Healy Engineering, Annacurra', 'City, Ireland'],
   email: 'info@chealyengineering.ie',
-  phone: '+353 00 000 0000',
+  phone: '+353 86 277 1717',
   vat: '', // optional VAT/registration number
 }
