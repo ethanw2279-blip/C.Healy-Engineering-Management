@@ -5,6 +5,7 @@ import Schedule from '../screens/Schedule'
 import Timesheet from '../screens/Timesheet'
 import Search from '../screens/Search'
 import More from '../screens/More'
+import JobView from '../screens/JobView'
 
 // The field-crew mobile app, mounted under /field. It keeps the clock in/out
 // flow, which belongs to on-site staff (not the office admin).
@@ -18,6 +19,7 @@ export default function MobileApp() {
           <Route path="timesheet" element={<Timesheet />} />
           <Route path="search" element={<Search />} />
           <Route path="more" element={<More />} />
+          <Route path="job/:id" element={<JobView />} />
         </Route>
       </Routes>
     </div>
