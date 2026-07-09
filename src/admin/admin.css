@@ -549,6 +549,31 @@
 .week-events { display: flex; flex-direction: column; gap: 6px; padding: 8px; }
 .week-empty { text-align: center; color: var(--text-faint); font-size: 13px; padding: 8px 0; }
 
+/* Add-visit affordances on the calendar. */
+.week-add {
+  margin-top: 2px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px dashed #cfd8d8;
+  color: var(--navy-muted);
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.week-col:hover .week-add { opacity: 1; }
+.week-add:hover { border-color: var(--green); color: var(--green-dark); background: #f2f9f5; }
+.day-add { padding: 12px 14px 0; }
+.add-visit-btn {
+  padding: 9px 14px;
+  border-radius: 9px;
+  border: 1px dashed #cfd8d8;
+  color: var(--green-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+.add-visit-btn:hover { border-color: var(--green); background: #f2f9f5; }
+
 /* Month grid */
 .month { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
 .month-dow { display: grid; grid-template-columns: repeat(7, 1fr); background: #fbfbfa; border-bottom: 1px solid var(--divider); }

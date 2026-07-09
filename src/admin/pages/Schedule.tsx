@@ -4,6 +4,7 @@ import { PageHeader, Button, Avatar, EmptyState } from '../components/ui'
 import { ChevronRightIcon } from '../../components/Icons'
 import { useStore, useCurrentUser } from '../../data/store'
 import { useCreate } from '../useCreate'
+import VisitModal from '../VisitModal'
 import type { Visit } from '../../data/types'
 import {
   ymd, parseYmd, addDays, addMonths, isSameDay, weekDays, monthMatrix,
@@ -21,6 +22,9 @@ export default function Schedule() {
   const nav = useNavigate()
   const [view, setView] = useState<View>('week')
   const [cursor, setCursor] = useState<Date>(TODAY)
+  // Visit add/edit modal. `date` prefills the day when adding from a calendar cell.
+  const [visitModal, setVisitModal] = useState<{ editing: Visit | null; date?: string } | null>(null)
+  const addVisit = (date?: string) => setVisitModal({ editing: null, date })
 
   // Drag a visit onto another day to reschedule it.
   const moveVisit = (visitId: string, dateStr: string) => {
@@ -64,7 +68,12 @@ export default function Schedule() {
       <PageHeader
         title="Schedule"
         subtitle="Everyone's visits"
-        action={can('create:records') && <Button onClick={() => create('job')}>New job</Button>}
+        action={can('create:records') && (
+          <>
+            <Button variant="secondary" onClick={() => addVisit(ymd(cursor))}>Add visit</Button>
+            <Button onClick={() => create('job')}>New job</Button>
+          </>
+        )}
       />
 
       <div className="cal-toolbar">
@@ -83,12 +92,16 @@ export default function Schedule() {
         </div>
       </div>
 
-      {view === 'day' && <DayView events={eventsOn(cursor)} jobById={jobById} empById={empById} clientName={clientName} nav={nav} />}
+      {view === 'day' && <DayView date={cursor} events={eventsOn(cursor)} jobById={jobById} empById={empById} clientName={clientName} nav={nav} canManage={can('create:records')} onAdd={addVisit} />}
       {view === 'week' && (
-        <WeekView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} onMove={moveVisit} />
+        <WeekView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} onMove={moveVisit} canManage={can('create:records')} onAdd={addVisit} />
       )}
       {view === 'month' && (
         <MonthView cursor={cursor} eventsOn={eventsOn} empById={empById} jobById={jobById} nav={nav} openDay={openDay} onMove={moveVisit} />
+      )}
+
+      {visitModal && (
+        <VisitModal editing={visitModal.editing} defaultDate={visitModal.date} onClose={() => setVisitModal(null)} />
       )}
     </div>
   )
@@ -101,15 +114,26 @@ type Helpers = {
 
 // ---- Day view --------------------------------------------------------------
 function DayView({
-  events, jobById, empById, clientName, nav,
+  date, events, jobById, empById, clientName, nav, canManage, onAdd,
 }: Helpers & {
+  date: Date
   events: Visit[]
   clientName: (jobId: string) => string
   nav: (to: string) => void
+  canManage: boolean
+  onAdd: (date: string) => void
 }) {
-  if (events.length === 0) return <div className="card"><EmptyState title="No visits this day" hint="Nothing scheduled." /></div>
+  if (events.length === 0) {
+    return (
+      <div className="card">
+        <EmptyState title="No visits this day" hint="Nothing scheduled." />
+        {canManage && <div className="day-add"><button className="add-visit-btn" onClick={() => onAdd(ymd(date))}>+ Add visit</button></div>}
+      </div>
+    )
+  }
   return (
     <div className="card">
+      {canManage && <div className="day-add"><button className="add-visit-btn" onClick={() => onAdd(ymd(date))}>+ Add visit</button></div>}
       {events.map((v) => {
         const job = jobById(v.jobId)
         const emp = empById(v.employeeId)
@@ -131,7 +155,7 @@ function DayView({
 
 // ---- Week view -------------------------------------------------------------
 function WeekView({
-  cursor, eventsOn, empById, jobById, nav, openDay, onMove,
+  cursor, eventsOn, empById, jobById, nav, openDay, onMove, canManage, onAdd,
 }: {
   cursor: Date
   eventsOn: (d: Date) => Visit[]
@@ -140,6 +164,8 @@ function WeekView({
   nav: (to: string) => void
   openDay: (d: Date) => void
   onMove: (visitId: string, dateStr: string) => void
+  canManage: boolean
+  onAdd: (date: string) => void
 }) {
   const days = weekDays(cursor)
   return (
@@ -176,6 +202,9 @@ function WeekView({
                   </button>
                 )
               })}
+              {canManage && (
+                <button className="week-add" onClick={() => onAdd(ymd(d))} aria-label="Add visit">+ Add</button>
+              )}
             </div>
           </div>
         )
