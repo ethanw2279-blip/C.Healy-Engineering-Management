@@ -33,7 +33,7 @@ function PortalLayout() {
     <div className="portal-shell">
       <header className="portal-header">
         <button className="portal-brand" onClick={() => nav('/portal')}>
-          <span className="portal-mark">C</span>
+          <img className="portal-mark" src="/logo-mark.png" alt="C.Healy Engineering" />
           <div>
             <strong>C.Healy Engineering</strong>
             <span>{data.client?.name}</span>

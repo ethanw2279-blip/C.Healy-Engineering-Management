@@ -29,13 +29,7 @@ export default function ResetPassword() {
   return (
     <div className="login">
       <form className="login-card" onSubmit={submit}>
-        <div className="login-brand">
-          <span className="login-mark">{COMPANY.name[0]}</span>
-          <div>
-            <strong>{COMPANY.name}</strong>
-            <span>{COMPANY.tagline}</span>
-          </div>
-        </div>
+        <img className="login-logo" src="/logo-full.png" alt={COMPANY.name} />
         <h1 className="login-title">Set a new password</h1>
 
         {done ? (

@@ -12,7 +12,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <span className="brand-mark">{COMPANY.name[0]}</span>
+        <img className="brand-mark" src="/logo-mark.png" alt={COMPANY.name} />
         <div className="brand-text">
           <strong>{COMPANY.name}</strong>
           <span>{COMPANY.tagline}</span>

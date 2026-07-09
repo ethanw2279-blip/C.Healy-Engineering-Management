@@ -1,6 +1,6 @@
 /* C.Healy CRM service worker — offline app shell + web push. */
-const CACHE = 'che-crm-v2'
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png']
+const CACHE = 'che-crm-v3'
+const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/Favicon.png', '/apple-touch-icon.png', '/icon-192.png']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

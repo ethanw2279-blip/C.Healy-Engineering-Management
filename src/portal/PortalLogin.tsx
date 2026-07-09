@@ -48,15 +48,10 @@ export default function PortalLogin() {
   return (
     <div className="login">
       <form className="login-card" onSubmit={submit}>
-        <div className="login-brand">
-          <span className="login-mark">C</span>
-          <div>
-            <strong>C.Healy Engineering</strong>
-            <span>Client portal</span>
-          </div>
-        </div>
+        <img className="login-logo" src="/logo-full.png" alt="C.Healy Engineering" />
 
         <h1 className="login-title">{title}</h1>
+        <p className="login-hint">Client portal</p>
         {mode === 'signup' && (
           <p className="login-hint">Use the email address we have on file for you.</p>
         )}
