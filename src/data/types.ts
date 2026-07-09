@@ -118,7 +118,7 @@ export type Note = {
 
 export type Attachment = {
   id: ID
-  entityType: 'client' | 'job'
+  entityType: 'client' | 'job' | 'ga1'
   entityId: ID
   fileName: string
   path: string // storage object path within the 'attachments' bucket

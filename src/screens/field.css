@@ -70,6 +70,28 @@
 .fld-save:active { background: var(--green-dark); }
 .fld-save:disabled { opacity: 0.5; }
 
+/* Photos */
+.photo-actions { display: flex; gap: 10px; margin-bottom: 12px; }
+.photo-btn {
+  flex: 1; padding: 12px; border: 1px solid #d7dcdc; border-radius: 12px;
+  background: #fff; font-size: 15px; font-weight: 700; color: var(--navy);
+}
+.photo-btn:active { background: #f4f6f6; }
+.photo-btn:disabled { opacity: 0.5; }
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.photo-thumb { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #eceeee; }
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-file {
+  display: flex; align-items: center; justify-content: center; height: 100%;
+  padding: 8px; font-size: 11px; color: var(--navy-muted); text-align: center; word-break: break-word;
+}
+.photo-del {
+  position: absolute; top: 6px; right: 6px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+
 .fld-pdf-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 100%; padding: 14px; margin-top: 8px;

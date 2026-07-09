@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { CheckIcon, ClockIcon } from '../components/Icons'
 import { useStore, useCurrentUser, eur, jobTotal } from '../data/store'
 import { fmtDayShort } from '../mobile/fieldHelpers'
+import FieldPhotos from './FieldPhotos'
 import './screens.css'
 import './field.css'
 import './JobView.css'
@@ -75,6 +76,9 @@ export default function JobView() {
             ))}
           </div>
         )}
+
+        <h3 className="fld-h3">Photos</h3>
+        <FieldPhotos entityType="job" entityId={job.id} />
 
         {canUpdate && !complete && (
           <button className="fld-complete" onClick={markComplete}>
