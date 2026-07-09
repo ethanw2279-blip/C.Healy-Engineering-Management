@@ -37,19 +37,29 @@
   color: #1a2b2f;
 }
 
-.doc-head {
+/* Branded header band — navy so the white/gold banner logo shows on print. */
+.doc-banner {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding-bottom: 28px;
+  align-items: center;
+  gap: 24px;
+  background: var(--navy);
+  border-radius: 8px;
+  padding: 22px 30px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.doc-banner-logo { height: 56px; width: auto; }
+.doc-banner-title { text-align: right; }
+.doc-banner-title h1 { font-size: 28px; font-weight: 800; letter-spacing: 2px; color: #fff; }
+.doc-banner-title .doc-number { font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-top: 2px; }
+
+.doc-contact {
+  padding: 14px 2px 24px;
   border-bottom: 2px solid #eceae4;
 }
-.doc-company { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
 .doc-muted { font-size: 13px; color: #6b7b7e; line-height: 1.5; }
 .doc-strong { font-size: 15px; font-weight: 700; }
-.doc-title { text-align: right; }
-.doc-title h1 { font-size: 30px; font-weight: 800; letter-spacing: 2px; color: var(--green); }
-.doc-number { font-size: 15px; font-weight: 700; color: var(--navy-muted); margin-top: 2px; }
 
 .doc-meta {
   display: flex;

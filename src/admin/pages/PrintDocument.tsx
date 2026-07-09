@@ -47,20 +47,18 @@ export default function PrintDocument({ kind }: { kind: 'quote' | 'invoice' }) {
       </div>
 
       <div className="doc-sheet">
-        <header className="doc-head">
-          <div>
-            <div className="doc-company">{COMPANY.name}</div>
-            {COMPANY.addressLines.map((l) => (
-              <div key={l} className="doc-muted">{l}</div>
-            ))}
-            <div className="doc-muted">{COMPANY.email} · {COMPANY.phone}</div>
-            {COMPANY.vat && <div className="doc-muted">VAT {COMPANY.vat}</div>}
-          </div>
-          <div className="doc-title">
+        <header className="doc-banner">
+          <img className="doc-banner-logo" src="/banner.png" alt={COMPANY.name} />
+          <div className="doc-banner-title">
             <h1>{heading.toUpperCase()}</h1>
             <div className="doc-number">{record.number}</div>
           </div>
         </header>
+        <div className="doc-contact doc-muted">
+          {[...COMPANY.addressLines, COMPANY.email, COMPANY.phone, COMPANY.vat && `VAT ${COMPANY.vat}`]
+            .filter(Boolean)
+            .join('  ·  ')}
+        </div>
 
         <section className="doc-meta">
           <div>
