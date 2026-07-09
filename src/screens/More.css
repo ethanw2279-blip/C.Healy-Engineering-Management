@@ -69,3 +69,19 @@
 .menu-item.danger {
   color: var(--red);
 }
+
+/* "On/Off" pill on the push-notifications row. */
+.push-state {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy-muted);
+  border: 1px solid var(--divider);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+.push-state.on {
+  color: var(--green-dark);
+  border-color: #cfe6d8;
+  background: #eef7f1;
+}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ScreenHeader from '../components/ScreenHeader'
 import {
@@ -7,10 +8,12 @@ import {
   TeamIcon,
   BuildingIcon,
   SlidersIcon,
+  BellIcon,
   LogoutIcon,
 } from '../components/Icons'
 import { useCurrentUser } from '../data/store'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
+import { isPushConfigured, isSubscribed, subscribe, unsubscribe } from '../lib/push'
 import { useAuth } from '../auth/AuthProvider'
 import './screens.css'
 import './More.css'
@@ -19,6 +22,31 @@ export default function More() {
   const { user, role, can } = useCurrentUser()
   const { signOut } = useAuth()
   const nav = useNavigate()
+
+  const [pushOn, setPushOn] = useState(false)
+  const [pushBusy, setPushBusy] = useState(false)
+
+  useEffect(() => {
+    if (isPushConfigured) isSubscribed().then(setPushOn)
+  }, [])
+
+  const togglePush = async () => {
+    if (!user || pushBusy) return
+    setPushBusy(true)
+    try {
+      if (pushOn) {
+        await unsubscribe()
+        setPushOn(false)
+      } else {
+        await subscribe(user.id)
+        setPushOn(true)
+      }
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Could not update notifications.')
+    } finally {
+      setPushBusy(false)
+    }
+  }
 
   const menu = [
     { label: 'GA1 Inspections', Icon: ClipboardIcon, show: can('view:ga1'), onClick: () => nav('/field/ga1') },
@@ -59,6 +87,13 @@ export default function More() {
               <span>{label}</span>
             </li>
           ))}
+          {isPushConfigured && (
+            <li className="menu-item" onClick={togglePush}>
+              <BellIcon size={24} />
+              <span>Push notifications</span>
+              <span className={`push-state ${pushOn ? 'on' : ''}`}>{pushBusy ? '…' : pushOn ? 'On' : 'Off'}</span>
+            </li>
+          )}
         </ul>
 
         <div className="divider" />

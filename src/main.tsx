@@ -36,3 +36,11 @@ createRoot(document.getElementById('root')!).render(
     </AuthProvider>
   </StrictMode>,
 )
+
+// Register the service worker for offline support + push (production only —
+// the dev server serves modules the SW shouldn't cache).
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((e) => console.error('SW registration failed', e))
+  })
+}

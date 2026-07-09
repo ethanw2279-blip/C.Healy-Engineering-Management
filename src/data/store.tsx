@@ -27,6 +27,7 @@ import { seed } from './seed'
 import { roleCan, type PermissionKey } from './permissions'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
 import { loadState, persist } from './api'
+import { readCache, writeCache, enqueue, flushOutbox } from './offline'
 
 export type Action =
   | { type: 'ADD_CLIENT'; client: Client }
@@ -196,29 +197,64 @@ const EMPTY_STATE: State = {
   quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [], attachments: [],
 }
 
+// Initial state: demo mode uses the in-memory seed. DB mode starts from the
+// last cached state (so the app opens instantly / offline) or empty.
+function initialState(): State {
+  if (!isSupabaseConfigured) return seed
+  return readCache() ?? EMPTY_STATE
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  // Demo mode (no Supabase env): start from the in-memory seed. DB mode: start
-  // empty and hydrate from Supabase.
-  const [state, rawDispatch] = useReducer(reducer, isSupabaseConfigured ? EMPTY_STATE : seed)
-  const [loading, setLoading] = useState(isSupabaseConfigured)
+  const [state, rawDispatch] = useReducer(reducer, undefined, initialState)
+  // Only block on first load when there's no cache to show yet.
+  const [loading, setLoading] = useState(isSupabaseConfigured && !readCache())
 
   useEffect(() => {
     if (!isSupabaseConfigured) return
     let alive = true
-    loadState()
+    // Send anything queued while offline, then pull fresh server state.
+    flushOutbox()
+      .then(() => loadState())
       .then((s) => alive && rawDispatch({ type: 'HYDRATE', state: s }))
       .catch((e) => console.error('Failed to load data from Supabase', e))
       .finally(() => alive && setLoading(false))
     return () => { alive = false }
   }, [])
 
-  // Optimistically update local state, then write the change through to
-  // Supabase. On failure, reload from the database to reconcile.
+  // Keep the offline cache in sync with the latest state.
+  useEffect(() => {
+    if (isSupabaseConfigured) writeCache(state)
+  }, [state])
+
+  // When the connection returns, flush queued writes then reconcile.
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    const onOnline = () => {
+      flushOutbox()
+        .then(() => loadState())
+        .then((s) => rawDispatch({ type: 'HYDRATE', state: s }))
+        .catch(() => { /* still flaky — try again next reconnect */ })
+    }
+    window.addEventListener('online', onOnline)
+    return () => window.removeEventListener('online', onOnline)
+  }, [])
+
+  // Optimistically update local state, then write through to Supabase. Offline,
+  // queue the write in the outbox to replay on reconnect. On a live failure,
+  // reload from the database to reconcile.
   const dispatch = useCallback<React.Dispatch<Action>>((action) => {
     rawDispatch(action)
     if (isSupabaseConfigured && action.type !== 'HYDRATE') {
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        enqueue(action)
+        return
+      }
       persist(action).catch(async (e) => {
         console.error('Failed to save change to Supabase', e)
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+          enqueue(action)
+          return
+        }
         try {
           const s = await loadState()
           rawDispatch({ type: 'HYDRATE', state: s })

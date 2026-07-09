@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Modal, Field, Button, Avatar } from './components/ui'
 import { ClientSelect, LineItems, nextNumber, blankItems } from './formParts'
 import { useStore, newId } from '../data/store'
+import { notifyAssignees } from '../lib/push'
 import type { Job, JobStatus, LineItem, Visit } from '../data/types'
 
 const STATUSES: JobStatus[] = ['Unscheduled', 'Scheduled', 'Active', 'Requires invoicing', 'Complete']
@@ -44,9 +45,13 @@ export default function JobModal({
   const toggle = (id: string) =>
     setAssigned((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]))
 
+  const clientName = state.clients.find((c) => c.id === clientId)?.name ?? 'a client'
+
   const save = () => {
     if (!clientId || !title.trim()) return
     if (editing) {
+      // Notify only crew members newly added to this job.
+      const added = assigned.filter((id) => !editing.assignedTo.includes(id))
       dispatch({
         type: 'UPDATE_JOB',
         job: {
@@ -60,6 +65,13 @@ export default function JobModal({
           endDate: end || start,
         },
       })
+      if (added.length) {
+        notifyAssignees(added, {
+          title: 'New job assigned',
+          body: `${title} — ${clientName}`,
+          url: `/field/job/${editing.id}`,
+        })
+      }
     } else {
       const job: Job = {
         id: newId('j'),
@@ -73,6 +85,14 @@ export default function JobModal({
         endDate: end || start,
       }
       dispatch({ type: 'ADD_JOB', job })
+
+      if (assigned.length) {
+        notifyAssignees(assigned, {
+          title: 'New job assigned',
+          body: `${title} — ${clientName}`,
+          url: `/field/job/${job.id}`,
+        })
+      }
 
       // Recurring: create a visit per occurrence for each assigned crew member.
       if (repeat !== 'none' && start && assigned.length) {

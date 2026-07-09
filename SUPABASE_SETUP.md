@@ -111,3 +111,51 @@ Tell me **"Supabase is connected"** and I'll start Phase 2:
 - convert each page's create/update/delete/read to Supabase calls
 - add the login screen and session gate, and retire the demo "Viewing as"
   switcher (kept only for local dev)
+
+---
+
+## Offline support & push notifications
+
+### Offline (no setup needed)
+
+The field app now works offline:
+
+- A **service worker** (`public/sw.js`) caches the app shell so it opens with no
+  signal. It registers automatically on the deployed site (production only).
+- The last-loaded data is cached in the browser, so screens render instantly.
+- Any change made offline (mark job complete, log time, etc.) is queued in a
+  **write outbox** and replayed automatically when the connection returns. A
+  banner shows "Offline — changes will sync…" while you're disconnected.
+
+Nothing to configure — it activates once deployed over HTTPS.
+
+### Push notifications (needs VAPID keys)
+
+Crew members get a push when they're assigned to a job.
+
+**1. Run the migration** — in the SQL editor, run `supabase/migrations/0008_push.sql`.
+
+**2. Generate VAPID keys** — run once locally:
+
+```
+npx web-push generate-vapid-keys
+```
+
+It prints a **Public Key** and **Private Key**.
+
+**3. Set Vercel environment variables** (Project → Settings → Environment Variables):
+
+| Variable | Value |
+| --- | --- |
+| `VITE_VAPID_PUBLIC_KEY` | the public key (safe to expose — it's in the browser) |
+| `VAPID_PRIVATE_KEY` | the private key — **server-only, never `VITE_`-prefixed** |
+| `VAPID_SUBJECT` | `mailto:you@yourdomain.com` |
+| `SUPABASE_SERVICE_ROLE_KEY` | already set for GA1 PDFs — reused by the sender |
+
+**4. Redeploy.** Then on a phone, open the app → **More → Push notifications →
+On**, accept the browser prompt. Assigning that person to a job from the admin
+app sends them a notification that deep-links to the job.
+
+> iOS note: push works only when the app is **installed to the Home Screen**
+> (Add to Home Screen in Safari) — iOS doesn't deliver web push to the browser
+> tab. Requires iOS 16.4+.

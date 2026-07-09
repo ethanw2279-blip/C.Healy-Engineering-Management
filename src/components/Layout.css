@@ -1,0 +1,11 @@
+.offline-banner {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: calc(6px + env(safe-area-inset-top)) 14px 6px;
+  background: #8a5a1f;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
