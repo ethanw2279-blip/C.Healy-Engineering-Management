@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { COMPANY } from '../data/company'
 import './Login.css'
 
 type Mode = 'signin' | 'signup' | 'forgot'
@@ -52,10 +53,10 @@ export default function Login() {
     <div className="login">
       <form className="login-card" onSubmit={submit}>
         <div className="login-brand">
-          <span className="login-mark">J</span>
+          <span className="login-mark">{COMPANY.name[0]}</span>
           <div>
-            <strong>Jobber</strong>
-            <span>Ethan Whitney Detailing</span>
+            <strong>{COMPANY.name}</strong>
+            <span>{COMPANY.tagline}</span>
           </div>
         </div>
 

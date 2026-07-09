@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from './AuthProvider'
+import { COMPANY } from '../data/company'
 import './Login.css'
 
 export default function ResetPassword() {
@@ -29,10 +30,10 @@ export default function ResetPassword() {
     <div className="login">
       <form className="login-card" onSubmit={submit}>
         <div className="login-brand">
-          <span className="login-mark">J</span>
+          <span className="login-mark">{COMPANY.name[0]}</span>
           <div>
-            <strong>Jobber</strong>
-            <span>Ethan Whitney Detailing</span>
+            <strong>{COMPANY.name}</strong>
+            <span>{COMPANY.tagline}</span>
           </div>
         </div>
         <h1 className="login-title">Set a new password</h1>

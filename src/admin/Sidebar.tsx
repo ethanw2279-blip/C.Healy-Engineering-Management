@@ -3,6 +3,7 @@ import { ClockIcon } from '../components/Icons'
 import { Avatar } from './components/ui'
 import { NAV } from './nav'
 import { useCurrentUser } from '../data/store'
+import { COMPANY } from '../data/company'
 
 export default function Sidebar() {
   const { user, role, can } = useCurrentUser()
@@ -11,10 +12,10 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <span className="brand-mark">J</span>
+        <span className="brand-mark">{COMPANY.name[0]}</span>
         <div className="brand-text">
-          <strong>Jobber</strong>
-          <span>Ethan Whitney Detailing</span>
+          <strong>{COMPANY.name}</strong>
+          <span>{COMPANY.tagline}</span>
         </div>
       </div>
 

@@ -1,16 +1,39 @@
-# Jobber Clone
+# C.Healy Engineering
 
-A clone of the [Jobber](https://getjobber.com) field-service / construction
-management platform, built with React + Vite + TypeScript. It ships as **two
-apps sharing one data store**:
+A field-service / engineering-management platform built with React + Vite +
+TypeScript, backed by Supabase (Postgres + Auth + Storage). It ships as **three
+apps sharing one database**:
 
-- **Admin web app** (`/`) — the office/back-office dashboard: manage clients,
-  create quotes / jobs / invoices, and track every employee's hours.
-- **Field mobile app** (`/field`) — the on-site crew app with clock in/out
-  (the original mobile UI).
+- **Admin web app** (`/`) — the office dashboard: clients, requests, quotes,
+  jobs, invoices, scheduling, timesheets, GA1 inspections, team & roles.
+- **Field mobile app** (`/field`) — the on-site crew app: today's work, clock
+  in/out, timesheets, job photos, GA1, offline support and push notifications.
+- **Client portal** (`/portal`) — a customer login to view their quotes, jobs
+  and invoices, and approve quotes.
 
-Both read and write the same in-memory store (`src/data/store.tsx`), so a quote
-or client created in the admin app is immediately reflected everywhere.
+With Supabase configured, all three read and write the same database with
+role- and row-level-security enforced access. Without it, the admin/field apps
+fall back to an in-memory demo store (resets on reload) for local development.
+
+## Going live — checklist
+
+1. **Provision Supabase** and set the env vars (`VITE_SUPABASE_URL`,
+   `VITE_SUPABASE_ANON_KEY`) in Vercel — see [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md).
+2. **Run the migrations in order** in the Supabase SQL editor:
+   `0001_init` → `0009_client_portal` (each file in
+   [`supabase/migrations/`](supabase/migrations)). Paste the file *contents*,
+   not the filename.
+3. **Set your business details** in [`src/data/company.ts`](src/data/company.ts)
+   (name, address, email, phone, VAT) — these brand the app and print on quotes
+   and invoices.
+4. **Deploy** (Vercel). The service worker + offline support activate over HTTPS.
+5. **Add your team** — Admin → Team. Each member signs up at `/` with the email
+   you gave them; the signup trigger links them to their record and role.
+6. **Add your clients** — Admin → Clients (or convert requests → quotes → jobs).
+7. **Invite clients to the portal** — make sure each has an email on file, then
+   send them to `/portal` to create an account with that same email.
+8. **(Optional) Push notifications** — generate VAPID keys and set the env vars,
+   then have crew enable it in the field app's *More* tab (see `SUPABASE_SETUP.md`).
 
 ## Admin web app (`/`)
 
@@ -134,21 +157,26 @@ src/
 
 ## Database (Supabase)
 
-The app currently runs on an in-memory demo store (resets on reload). The
-Supabase backend that replaces it is being added in phases:
+The app runs on Supabase (Postgres + Auth + Storage). When the env vars are
+set it loads and persists everything through the database with a login gate;
+without them it falls back to the in-memory demo store for local development.
 
-- **Phase 1 (done):** schema, row-level security, and seed SQL live in
-  [`supabase/`](supabase/); the Supabase client is in `src/lib/`. See
-  [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md) to provision a project and load it.
-- **Phase 2 (next):** wire the pages and a login screen to Supabase so data
-  persists and role permissions are enforced by the database.
+- Schema, row-level security, and migrations live in
+  [`supabase/migrations/`](supabase/migrations) (`0001`–`0009`). The data-access
+  layer is `src/data/api.ts`; the Supabase client is in `src/lib/`.
+- **Row-level security** policies map onto the same permission keys as
+  `src/data/permissions.ts`, so roles edited in the app stay in sync with what
+  the database allows. Staff, field crew, and portal clients each see only what
+  their policies permit.
+- Serverless functions in [`api/`](api/) handle GA1 PDF generation and web-push
+  sending (they use the service-role key, which is **server-only** — never
+  `VITE_`-prefixed).
 
-Row-level security policies map onto the same permission keys as
-`src/data/permissions.ts`, so roles edited in the app stay in sync with what the
-database allows.
+See [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md) for the full setup, migration, and
+push-notification instructions.
 
 ## Design tokens
 
-Colors are derived from the app screenshots — a deep teal-navy (`#16343B`),
-Jobber green (`#1F8A4C`), and warm neutral tiles (`#E9E7E0`). See
-`src/theme/tokens.ts` and the CSS custom properties in `src/index.css`.
+A deep teal-navy (`#16343B`), green (`#1F8A4C`), and warm neutral tiles
+(`#E9E7E0`). See `src/theme/tokens.ts` and the CSS custom properties in
+`src/index.css`.

@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom'
 import { PageHeader, StatusBadge, Avatar, Button } from '../components/ui'
 import { useStore, useCurrentUser, eur, quoteTotal, invoiceTotal, formatDateShort } from '../../data/store'
 import { useCreate } from '../useCreate'
+import { COMPANY } from '../../data/company'
+
+const today = new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
 export default function Dashboard() {
   const { state } = useStore()
@@ -22,7 +25,7 @@ export default function Dashboard() {
     <div>
       <PageHeader
         title="Dashboard"
-        subtitle="Monday, 6 July 2026 · Ethan Whitney Detailing"
+        subtitle={`${today} · ${COMPANY.name}`}
         action={can('create:records') && <Button onClick={() => create('quote')}>Create quote</Button>}
       />
 
