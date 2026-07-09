@@ -385,7 +385,28 @@
 .detail-stats { margin-bottom: 0; }
 
 .detail-section { margin-top: 22px; }
-.detail-section-title { font-size: 15px; font-weight: 800; color: var(--navy); margin-bottom: 10px; }
+.detail-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+/* Inline edit/remove buttons in table rows. */
+.row-action {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green-dark);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.row-action:hover { background: #eef4f0; }
+.row-action.danger { color: var(--red); }
+.row-action.danger:hover { background: #fbe9e9; }
 
 /* ---- Attachments ---------------------------------------------------------*/
 .attachments { padding: 16px 18px; }

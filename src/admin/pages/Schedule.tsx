@@ -11,7 +11,8 @@ import {
 } from './calendarUtils'
 
 type View = 'day' | 'week' | 'month'
-const TODAY = parseYmd('2026-07-06')
+// The real current day (normalised to local midnight).
+const TODAY = parseYmd(ymd(new Date()))
 
 export default function Schedule() {
   const { state, dispatch } = useStore()

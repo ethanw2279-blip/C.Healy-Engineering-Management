@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
 import JobModal from '../JobModal'
+import VisitModal from '../VisitModal'
 import Notes from '../components/Notes'
 import Attachments from '../components/Attachments'
 import { nextNumber, today } from '../formParts'
@@ -15,7 +16,7 @@ import {
   invoiceTotal,
   formatDate,
 } from '../../data/store'
-import type { Invoice } from '../../data/types'
+import type { Invoice, Visit } from '../../data/types'
 
 export default function JobDetail() {
   const { id } = useParams()
@@ -23,6 +24,7 @@ export default function JobDetail() {
   const { state, dispatch } = useStore()
   const { can } = useCurrentUser()
   const [editing, setEditing] = useState(false)
+  const [visitModal, setVisitModal] = useState<{ editing: Visit | null } | null>(null)
 
   const job = state.jobs.find((j) => j.id === id)
   if (!job) {
@@ -170,13 +172,16 @@ export default function JobDetail() {
         </table>
       </Section>
 
-      {/* Visits */}
-      <Section title={`Visits (${visits.length})`}>
+      {/* Visits — each row is a day on the Schedule calendar */}
+      <Section
+        title={`Visits (${visits.length})`}
+        action={canManage && <Button size="sm" onClick={() => setVisitModal({ editing: null })}>Add visit</Button>}
+      >
         {visits.length === 0 ? (
-          <EmptyState title="No visits scheduled" />
+          <EmptyState title="No visits scheduled" hint={canManage ? 'Add a visit for each day you’ll be on site, with its own times.' : undefined} />
         ) : (
           <table className="table">
-            <thead><tr><th>Date</th><th>Time</th><th>Assigned</th></tr></thead>
+            <thead><tr><th>Date</th><th>Time</th><th>Assigned</th>{canManage && <th className="num">Actions</th>}</tr></thead>
             <tbody>
               {visits.map((v) => {
                 const e = state.employees.find((x) => x.id === v.employeeId)
@@ -185,6 +190,12 @@ export default function JobDetail() {
                     <td className="cell-strong">{formatDate(v.date)}</td>
                     <td className="cell-muted">{v.start} – {v.end}</td>
                     <td>{e && <div className="cell-with-avatar"><Avatar name={e.name} color={e.color} size={24} />{e.name}</div>}</td>
+                    {canManage && (
+                      <td className="num">
+                        <button className="row-action" onClick={() => setVisitModal({ editing: v })}>Edit</button>
+                        <button className="row-action danger" onClick={() => { if (confirm('Remove this visit?')) dispatch({ type: 'REMOVE_VISIT', id: v.id }) }}>Remove</button>
+                      </td>
+                    )}
                   </tr>
                 )
               })}
@@ -237,14 +248,20 @@ export default function JobDetail() {
       )}
 
       {editing && <JobModal editing={job} onClose={() => setEditing(false)} />}
+      {visitModal && (
+        <VisitModal jobId={job.id} editing={visitModal.editing} onClose={() => setVisitModal(null)} />
+      )}
     </div>
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="detail-section">
-      <div className="detail-section-title">{title}</div>
+      <div className="detail-section-title">
+        <span>{title}</span>
+        {action}
+      </div>
       <div className="card">{children}</div>
     </div>
   )

@@ -94,9 +94,12 @@ export default function JobModal({
         })
       }
 
-      // Recurring: create a visit per occurrence for each assigned crew member.
-      if (repeat !== 'none' && start && assigned.length) {
-        for (let i = 0; i < Math.max(1, occurrences); i++) {
+      // Put the job on the schedule: create a visit per day for each assigned
+      // crew member. A one-off job gets a single visit on its start date; a
+      // recurring job gets one per occurrence.
+      if (start && assigned.length) {
+        const count = repeat === 'none' ? 1 : Math.max(1, occurrences)
+        for (let i = 0; i < count; i++) {
           const date = occurrenceDate(start, repeat, i)
           for (const employeeId of assigned) {
             const visit: Visit = { id: newId('v'), jobId: job.id, employeeId, date, start: visitStart, end: visitEnd }
@@ -166,8 +169,10 @@ export default function JobModal({
             </select>
           </Field>
           {repeat !== 'none' && (
+            <Field label="Occurrences"><input type="number" min={1} max={52} value={occurrences} onChange={(e) => setOccurrences(Number(e.target.value))} /></Field>
+          )}
+          {(start || repeat !== 'none') && (
             <>
-              <Field label="Occurrences"><input type="number" min={1} max={52} value={occurrences} onChange={(e) => setOccurrences(Number(e.target.value))} /></Field>
               <Field label="Visit start"><input type="time" value={visitStart} onChange={(e) => setVisitStart(e.target.value)} /></Field>
               <Field label="Visit end"><input type="time" value={visitEnd} onChange={(e) => setVisitEnd(e.target.value)} /></Field>
             </>
@@ -175,6 +180,8 @@ export default function JobModal({
         </div>
       )}
       {!editing && repeat !== 'none' && !start && <p className="form-hint">Set a start date to schedule the repeat visits.</p>}
+      {!editing && start && assigned.length === 0 && <p className="form-hint">Assign crew to place this job on the schedule.</p>}
+      {!editing && start && assigned.length > 0 && <p className="form-hint">A visit will be added to the schedule on the start date. You can add more days or change times from the job page.</p>}
 
       <LineItems items={items} setItems={setItems} />
     </Modal>
