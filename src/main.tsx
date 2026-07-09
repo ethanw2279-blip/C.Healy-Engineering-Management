@@ -6,8 +6,13 @@ import { StoreProvider } from './data/store'
 import { AuthProvider, useAuth } from './auth/AuthProvider'
 import Login from './auth/Login'
 import ResetPassword from './auth/ResetPassword'
+import ClientPortal from './portal/ClientPortal'
 import { isSupabaseConfigured } from './lib/supabaseClient'
 import './index.css'
+
+// The client portal is a separate mini-app with its own login and tightly
+// scoped data. It never touches the staff store, so branch on the path here.
+const isPortal = window.location.pathname.startsWith('/portal')
 
 // When Supabase is configured, require a login before the app loads. When it
 // isn't (e.g. local demo), fall straight through to the in-memory store.
@@ -32,7 +37,7 @@ function Gate() {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <Gate />
+      {isPortal ? <ClientPortal /> : <Gate />}
     </AuthProvider>
   </StrictMode>,
 )
