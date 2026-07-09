@@ -248,7 +248,9 @@ export function useCurrentUser() {
   const { state } = useStore()
   const user = state.employees.find((e) => e.id === state.currentUserId) ?? state.employees[0]
   const role = state.roles.find((r) => r.id === user?.roleId)
-  const can = (key: PermissionKey) => roleCan(role, key)
+  // GA1 access can be granted per person on top of the role's permissions.
+  const can = (key: PermissionKey) =>
+    roleCan(role, key) || (key === 'view:ga1' && !!user?.ga1Access)
   return { user, role, can }
 }
 

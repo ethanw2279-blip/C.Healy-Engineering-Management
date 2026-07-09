@@ -1,25 +1,3 @@
-.fld-topbar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
-  border-bottom: 1px solid var(--divider);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--navy);
-}
-.fld-back {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  font-size: 20px;
-  color: var(--navy);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.fld-back:active { background: #eef1f1; }
-
 .fld-job-title { font-size: 24px; font-weight: 800; color: var(--navy); margin: 8px 0 8px; }
 .fld-job-status { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
 .fld-job-value { font-size: 20px; font-weight: 800; color: var(--navy); }

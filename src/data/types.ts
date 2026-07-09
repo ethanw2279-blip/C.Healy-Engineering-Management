@@ -27,6 +27,7 @@ export type Employee = {
   hourlyRate: number
   color: string
   active: boolean
+  ga1Access?: boolean // per-person override granting GA1 Inspections access
 }
 
 export type ClientStatus = 'Lead' | 'Active' | 'Archived'

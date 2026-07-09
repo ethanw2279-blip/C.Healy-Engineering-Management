@@ -16,7 +16,7 @@ export default function GA1List() {
 
   const clientName = (id: string) => state.clients.find((c) => c.id === id)?.name ?? 'Unknown'
   const rows = state.ga1.filter((g) => filter === 'All' || g.overallResult === filter)
-  const canManage = can('create:records')
+  const canManage = can('view:ga1')
 
   const remove = (e: React.MouseEvent, g: GA1Inspection) => {
     e.stopPropagation()

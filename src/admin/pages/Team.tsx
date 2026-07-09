@@ -62,6 +62,10 @@ function MemberModal({ editing, onClose }: { editing: Employee | null; onClose: 
           <option value="archived">Archived</option>
         </select>
       </Field>
+      <label className="ga1-check" style={{ marginTop: 4 }}>
+        <input type="checkbox" checked={!!f.ga1Access} onChange={(e) => set({ ga1Access: e.target.checked })} />
+        GA1 Inspections access (view &amp; create inspections, web + mobile)
+      </label>
     </Modal>
   )
 }

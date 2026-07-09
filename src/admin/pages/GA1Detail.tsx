@@ -20,7 +20,7 @@ export default function GA1Detail() {
     )
   }
 
-  const canManage = can('create:records')
+  const canManage = can('view:ga1')
   const client = state.clients.find((c) => c.id === g.clientId)
   const examiner = state.employees.find((e) => e.id === g.examinerId)
   const overdue = isOverdue(g.nextExaminationDate)

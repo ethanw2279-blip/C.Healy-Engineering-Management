@@ -58,7 +58,7 @@ export async function loadState(): Promise<State> {
     })),
     employees: (employees ?? []).map((e: Row) => ({
       id: e.id, name: e.name, roleId: e.role_id, email: e.email, phone: e.phone,
-      hourlyRate: num(e.hourly_rate), color: e.color, active: e.active,
+      hourlyRate: num(e.hourly_rate), color: e.color, active: e.active, ga1Access: e.ga1_access ?? false,
     })),
     clients: (clients ?? []).map((c: Row) => ({
       id: c.id, name: c.name, company: c.company ?? undefined, email: c.email,
@@ -208,7 +208,7 @@ export async function persist(action: Action): Promise<void> {
       const e = action.employee
       return check(supabase.from('employees').upsert({
         id: e.id, name: e.name, role_id: e.roleId, email: e.email, phone: e.phone,
-        hourly_rate: e.hourlyRate, color: e.color, active: e.active,
+        hourly_rate: e.hourlyRate, color: e.color, active: e.active, ga1_access: e.ga1Access ?? false,
       }))
     }
     case 'REMOVE_EMPLOYEE':

@@ -46,9 +46,9 @@ export default function AdminApp() {
         <Route path="invoices/:id" element={guard('view:invoices', <InvoiceDetail />)} />
         <Route path="timesheets" element={guard('view:timesheets', <Timesheets />)} />
         <Route path="ga1" element={guard('view:ga1', <GA1List />)} />
-        <Route path="ga1/new" element={guard('create:records', <GA1Form />)} />
+        <Route path="ga1/new" element={guard('view:ga1', <GA1Form />)} />
         <Route path="ga1/:id" element={guard('view:ga1', <GA1Detail />)} />
-        <Route path="ga1/:id/edit" element={guard('create:records', <GA1Form />)} />
+        <Route path="ga1/:id/edit" element={guard('view:ga1', <GA1Form />)} />
         <Route path="team" element={guard('view:team', <Team />)} />
         <Route path="roles" element={guard('manage:roles', <Roles />)} />
         <Route path="reports" element={guard('view:reports', <Reports />)} />

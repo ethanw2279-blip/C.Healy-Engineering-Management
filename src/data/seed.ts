@@ -8,7 +8,7 @@ export const seed: State = {
   currentUserId: 'e1', // Ethan — Developer, so first load has full access
   employees: [
     { id: 'e1', name: 'Ethan Whitney', roleId: 'role_dev', email: 'ethan@ewdetailing.ie', phone: '087 123 4567', hourlyRate: 0, color: '#1F8A4C', active: true },
-    { id: 'e2', name: 'Marcus Reilly', roleId: 'role_employee', email: 'marcus@ewdetailing.ie', phone: '086 234 5678', hourlyRate: 22, color: '#2F86EB', active: true },
+    { id: 'e2', name: 'Marcus Reilly', roleId: 'role_employee', email: 'marcus@ewdetailing.ie', phone: '086 234 5678', hourlyRate: 22, color: '#2F86EB', active: true, ga1Access: true },
     { id: 'e3', name: 'Sofia Nolan', roleId: 'role_employee', email: 'sofia@ewdetailing.ie', phone: '085 345 6789', hourlyRate: 22, color: '#C7791C', active: true },
     { id: 'e4', name: 'Liam Byrne', roleId: 'role_employee', email: 'liam@ewdetailing.ie', phone: '083 456 7890', hourlyRate: 20, color: '#7A2B3A', active: true },
     { id: 'e5', name: 'Aoife Kelly', roleId: 'role_admin', email: 'aoife@ewdetailing.ie', phone: '089 567 8901', hourlyRate: 24, color: '#5B4FB5', active: true },

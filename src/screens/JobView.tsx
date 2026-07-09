@@ -3,6 +3,7 @@ import { CheckIcon, ClockIcon } from '../components/Icons'
 import { useStore, useCurrentUser, eur, jobTotal } from '../data/store'
 import { fmtDayShort } from '../mobile/fieldHelpers'
 import './screens.css'
+import './field.css'
 import './JobView.css'
 
 export default function JobView() {

@@ -1,0 +1,78 @@
+/* Shared styles for the field-app detail/list/form screens. */
+.fld-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  border-bottom: 1px solid var(--divider);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.fld-topbar-left { display: flex; align-items: center; gap: 10px; }
+.fld-back {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 20px;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fld-back:active { background: #eef1f1; }
+.fld-topbar-btn { color: var(--green-dark); font-weight: 700; font-size: 15px; }
+
+/* List rows */
+.fld-listrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--divider);
+}
+.fld-listrow:last-child { border-bottom: none; }
+.fld-listrow:active { background: #f7f9f9; }
+.fld-listrow-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fld-listrow-body strong { font-size: 16px; font-weight: 700; color: var(--navy); }
+.fld-listrow-body span { font-size: 14px; color: var(--navy-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fld-call {
+  font-size: 13px; font-weight: 700; color: var(--green-dark);
+  border: 1px solid #cfe6d8; border-radius: 999px; padding: 6px 14px;
+}
+
+/* Form fields */
+.fld-form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.fld-form-field > label { font-size: 13px; font-weight: 700; color: var(--navy-muted); }
+.fld-form-field input,
+.fld-form-field select,
+.fld-form-field textarea {
+  font-family: inherit;
+  font-size: 16px; /* 16px avoids iOS zoom on focus */
+  color: var(--navy);
+  border: 1px solid #d7dcdc;
+  border-radius: 10px;
+  padding: 12px 14px;
+  outline: none;
+  background: #fff;
+  width: 100%;
+}
+.fld-form-field input:focus,
+.fld-form-field select:focus,
+.fld-form-field textarea:focus { border-color: var(--green); }
+.fld-check { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--navy); padding: 8px 0; }
+.fld-check input { width: 20px; height: 20px; accent-color: var(--green); }
+.fld-save {
+  width: 100%; margin-top: 18px; padding: 15px; background: var(--green); color: #fff;
+  font-weight: 800; font-size: 16px; border-radius: 12px;
+}
+.fld-save:active { background: var(--green-dark); }
+.fld-save:disabled { opacity: 0.5; }
+
+.fld-pdf-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 100%; padding: 14px; margin-top: 8px;
+  border: 1px solid #d7dcdc; border-radius: 12px; background: #fff;
+  font-weight: 700; font-size: 15px; color: var(--navy);
+}
