@@ -5,6 +5,7 @@ import type { CreateKind } from './CreateModals'
 import { useStore, useCurrentUser } from '../data/store'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
 import { useAuth } from '../auth/AuthProvider'
+import { useOutsideClose } from './useOutsideClose'
 import GlobalSearch from './GlobalSearch'
 
 const createOptions: { kind: CreateKind; label: string }[] = [
@@ -21,6 +22,8 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
   const { signOut } = useAuth()
   const [open, setOpen] = useState(false)
   const [viewAs, setViewAs] = useState(false)
+  const viewAsRef = useOutsideClose<HTMLDivElement>(viewAs, () => setViewAs(false))
+  const createRef = useOutsideClose<HTMLDivElement>(open, () => setOpen(false))
 
   return (
     <header className="topbar">
@@ -29,7 +32,7 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
       <div className="topbar-actions">
         {isSupabaseConfigured ? (
           /* Logged-in user + sign out. */
-          <div className="viewas-wrap" onMouseLeave={() => setViewAs(false)}>
+          <div className="viewas-wrap" ref={viewAsRef}>
             <button className="viewas-btn" onClick={() => setViewAs((v) => !v)}>
               <Avatar name={user?.name ?? '?'} color={user?.color} size={26} />
               <span className="viewas-text">
@@ -49,7 +52,7 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
           </div>
         ) : (
           /* Demo mode: preview the app as any team member to test roles. */
-          <div className="viewas-wrap" onMouseLeave={() => setViewAs(false)}>
+          <div className="viewas-wrap" ref={viewAsRef}>
             <button className="viewas-btn" onClick={() => setViewAs((v) => !v)}>
               <Avatar name={user?.name ?? '?'} color={user?.color} size={26} />
               <span className="viewas-text">
@@ -90,7 +93,7 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
         </button>
 
         {can('create:records') && (
-          <div className="create-wrap" onMouseLeave={() => setOpen(false)}>
+          <div className="create-wrap" ref={createRef}>
             <Button onClick={() => setOpen((v) => !v)}>
               <PlusIcon size={18} strokeWidth={2.4} />
               Create
