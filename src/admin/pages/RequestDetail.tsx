@@ -80,6 +80,13 @@ export default function RequestDetail() {
         <div className="contact-row"><span>Status</span><strong><StatusBadge status={request.status} /></strong></div>
       </div>
 
+      {request.message && (
+        <div className="detail-section">
+          <div className="detail-section-title">Message</div>
+          <div className="card"><p style={{ whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.55 }}>{request.message}</p></div>
+        </div>
+      )}
+
       {client && (
         <div className="detail-section">
           <div className="detail-section-title">Client</div>

@@ -66,7 +66,7 @@ export async function loadState(): Promise<State> {
     })),
     requests: (requests ?? []).map((r: Row) => ({
       id: r.id, clientId: r.client_id, title: r.title, service: r.service,
-      requestedOn: r.requested_on, status: r.status,
+      requestedOn: r.requested_on, status: r.status, message: r.message ?? undefined,
     })),
     quotes: (quotes ?? []).map((q: Row) => ({
       id: q.id, number: q.number, clientId: q.client_id, title: q.title,
@@ -153,7 +153,7 @@ export async function persist(action: Action): Promise<void> {
       const r = action.request
       return check(supabase.from('requests').upsert({
         id: r.id, client_id: r.clientId, title: r.title, service: r.service,
-        requested_on: r.requestedOn, status: r.status,
+        requested_on: r.requestedOn, status: r.status, message: r.message ?? null,
       }))
     }
     case 'REMOVE_REQUEST':

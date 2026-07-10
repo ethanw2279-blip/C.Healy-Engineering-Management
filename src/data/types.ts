@@ -50,6 +50,7 @@ export type Request = {
   service: string
   requestedOn: string
   status: RequestStatus
+  message?: string // free-text enquiry, e.g. from a website contact form
 }
 
 export type QuoteStatus = 'Draft' | 'Awaiting response' | 'Approved' | 'Converted' | 'Archived'
