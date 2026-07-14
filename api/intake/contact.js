@@ -6,16 +6,41 @@ import { createClient } from '@supabase/supabase-js'
 // the database directly.
 const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-// Lock this to your site's origin in production (e.g. https://chealyengineering.ie).
-const allowedOrigin = process.env.CONTACT_ALLOWED_ORIGIN || '*'
+// Lock this to your site's origin(s), comma-separated, e.g.
+// "https://chealyengineering.ie, https://chealyengineering-com.vercel.app".
+// Leave unset (or "*") to allow any origin.
+const allowedOrigins = (process.env.CONTACT_ALLOWED_ORIGIN || '*')
+  .split(',')
+  .map((o) => normalizeOrigin(o))
+  .filter(Boolean)
 // Optional shared secret — set it AND send it as `x-form-secret` for server-side
 // calls. Leave unset for a plain browser form (protected by the honeypot below).
 const formSecret = process.env.CONTACT_FORM_SECRET
 
 const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)
 
+// Tolerate common config mistakes: trailing slash, or a missing scheme
+// ("example.com" → "https://example.com"). A browser rejects an
+// Access-Control-Allow-Origin value that isn't a full origin.
+function normalizeOrigin(o) {
+  o = (o || '').trim().replace(/\/+$/, '')
+  if (!o || o === '*') return o
+  if (!/^https?:\/\//i.test(o)) o = 'https://' + o
+  return o
+}
+
+// Echo the caller's origin when it's allowed (handles multiple domains); fall
+// back to the first configured origin.
+function resolveOrigin(reqOrigin) {
+  if (allowedOrigins.includes('*')) return '*'
+  const ro = normalizeOrigin(reqOrigin)
+  if (ro && allowedOrigins.includes(ro)) return ro
+  return allowedOrigins[0] || '*'
+}
+
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigin)
+  res.setHeader('Access-Control-Allow-Origin', resolveOrigin(req.headers.origin))
+  res.setHeader('Vary', 'Origin')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-form-secret')
 
