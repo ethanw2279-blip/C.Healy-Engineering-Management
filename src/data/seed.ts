@@ -98,4 +98,20 @@ export const seed: State = {
     },
   ],
   attachments: [],
+  products: [
+    { id: 'p1', name: 'Steel Lifting Hook — 2t', sku: 'HK-2T', description: 'Grade 80 clevis hook, 2 tonne SWL', price: 45, stock: 24, active: true, createdAt: '2026-06-01' },
+    { id: 'p2', name: 'Ratchet Load Strap 5m', sku: 'STRAP-5M', description: '5m ratchet lashing strap, 2000kg', price: 18, stock: 60, active: true, createdAt: '2026-06-01' },
+    { id: 'p3', name: 'Shackle — 3.25t Bow', sku: 'SHK-325', description: 'Galvanised bow shackle, 3.25t', price: 12, stock: 8, active: true, createdAt: '2026-06-01' },
+    { id: 'p4', name: 'Chain Sling 1-leg 3m', sku: 'CHN-1L-3M', description: 'Grade 80 single-leg chain sling', price: 120, stock: 5, active: true, createdAt: '2026-06-01' },
+  ],
+  orders: [
+    {
+      id: 'o1', number: 'ORD-1001', clientId: 'c5', status: 'Fulfilled', source: 'website',
+      note: 'Website order', invoiceId: undefined, createdAt: '2026-07-05T10:15:00Z',
+      items: [
+        { id: 'oi1', productId: 'p2', name: 'Ratchet Load Strap 5m', qty: 4, unitPrice: 18 },
+        { id: 'oi2', productId: 'p3', name: 'Shackle — 3.25t Bow', qty: 2, unitPrice: 12 },
+      ],
+    },
+  ],
 }

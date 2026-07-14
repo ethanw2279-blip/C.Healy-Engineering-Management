@@ -33,15 +33,15 @@ export function Avatar({ name, color, size = 32 }: { name: string; color?: strin
 // ---- StatusBadge -----------------------------------------------------------
 const tone: Record<string, string> = {
   // greens
-  Active: 'green', Approved: 'green', Paid: 'green', Complete: 'green', Converted: 'green',
+  Active: 'green', Approved: 'green', Paid: 'green', Complete: 'green', Converted: 'green', Fulfilled: 'green',
   // ambers
   'Awaiting response': 'amber', 'Awaiting payment': 'amber', Scheduled: 'amber',
-  'Requires invoicing': 'amber', 'Assessment complete': 'amber', Pending: 'amber',
+  'Requires invoicing': 'amber', 'Assessment complete': 'amber', Pending: 'amber', Processing: 'amber',
   Lead: 'blue', New: 'blue',
   // greys
   Draft: 'grey', Unscheduled: 'grey', Archived: 'grey',
   // reds
-  'Past due': 'red',
+  'Past due': 'red', Cancelled: 'red',
 }
 export function StatusBadge({ status }: { status: string }) {
   return <span className={`badge badge-${tone[status] ?? 'grey'}`}>{status}</span>

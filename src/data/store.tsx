@@ -16,6 +16,8 @@ import type {
   Invoice,
   Job,
   Note,
+  Order,
+  Product,
   Quote,
   Request,
   Role,
@@ -65,6 +67,12 @@ export type Action =
   | { type: 'REMOVE_VISIT'; id: string }
   | { type: 'ADD_ATTACHMENT'; attachment: Attachment }
   | { type: 'REMOVE_ATTACHMENT'; id: string }
+  | { type: 'ADD_PRODUCT'; product: Product }
+  | { type: 'UPDATE_PRODUCT'; product: Product }
+  | { type: 'REMOVE_PRODUCT'; id: string }
+  | { type: 'ADD_ORDER'; order: Order }
+  | { type: 'UPDATE_ORDER'; order: Order }
+  | { type: 'REMOVE_ORDER'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -180,6 +188,24 @@ function reducer(state: State, action: Action): State {
       return { ...state, attachments: [action.attachment, ...state.attachments] }
     case 'REMOVE_ATTACHMENT':
       return { ...state, attachments: state.attachments.filter((a) => a.id !== action.id) }
+    case 'ADD_PRODUCT':
+      return { ...state, products: [action.product, ...state.products] }
+    case 'UPDATE_PRODUCT':
+      return {
+        ...state,
+        products: state.products.map((p) => (p.id === action.product.id ? action.product : p)),
+      }
+    case 'REMOVE_PRODUCT':
+      return { ...state, products: state.products.filter((p) => p.id !== action.id) }
+    case 'ADD_ORDER':
+      return { ...state, orders: [action.order, ...state.orders] }
+    case 'UPDATE_ORDER':
+      return {
+        ...state,
+        orders: state.orders.map((o) => (o.id === action.order.id ? action.order : o)),
+      }
+    case 'REMOVE_ORDER':
+      return { ...state, orders: state.orders.filter((o) => o.id !== action.id) }
     default:
       return state
   }
@@ -195,6 +221,7 @@ const StoreContext = createContext<Store | null>(null)
 const EMPTY_STATE: State = {
   roles: [], currentUserId: '', employees: [], clients: [], requests: [],
   quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [], attachments: [],
+  products: [], orders: [],
 }
 
 // Initial state: demo mode uses the in-memory seed. DB mode starts from the
@@ -314,6 +341,7 @@ export const itemsTotal = (items: { qty: number; unitPrice: number }[]) =>
 export const quoteTotal = (q: Quote) => itemsTotal(q.items)
 export const jobTotal = (j: Job) => itemsTotal(j.items)
 export const invoiceTotal = (i: Invoice) => itemsTotal(i.items)
+export const orderTotal = (o: { items: { qty: number; unitPrice: number }[] }) => itemsTotal(o.items)
 
 export const formatDate = (iso: string) => {
   if (!iso) return '—'

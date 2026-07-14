@@ -12,6 +12,8 @@ import {
   TeamIcon,
   ChartIcon,
   SlidersIcon,
+  GiftIcon,
+  CardIcon,
 } from '../components/Icons'
 import type { PermissionKey } from '../data/permissions'
 
@@ -31,6 +33,8 @@ export const NAV: NavItem[] = [
   { to: '/quotes', label: 'Quotes', Icon: QuoteIcon, perm: 'view:quotes' },
   { to: '/jobs', label: 'Jobs', Icon: BriefcaseIcon, perm: 'view:jobs' },
   { to: '/invoices', label: 'Invoices', Icon: ReceiptIcon, perm: 'view:invoices' },
+  { to: '/shop/products', label: 'Products', Icon: GiftIcon, perm: 'view:shop' },
+  { to: '/shop/orders', label: 'Orders', Icon: CardIcon, perm: 'view:shop' },
   { to: '/timesheets', label: 'Timesheets', Icon: ClockIcon, perm: 'view:timesheets' },
   { to: '/ga1', label: 'GA1 Inspections', Icon: ClipboardIcon, perm: 'view:ga1' },
   { to: '/team', label: 'Team', Icon: TeamIcon, perm: 'view:team' },

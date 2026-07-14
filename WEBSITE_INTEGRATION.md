@@ -94,13 +94,82 @@ invoice like any other enquiry.
 
 ---
 
+## Shop: product catalogue + orders
+
+Manage products and stock in the app under **Products**, and orders under
+**Orders**. Your website can read the live catalogue and submit orders.
+
+> Run migration `supabase/migrations/0011_shop.sql` once before using these.
+
+### Read the catalogue (for your shop pages)
+
+```
+GET https://<your-app-domain>/api/shop/products
+```
+
+Returns only **active** products with live stock:
+
+```json
+{ "products": [
+  { "id": "…", "name": "Steel Lifting Hook — 2t", "sku": "HK-2T",
+    "description": "Grade 80 clevis hook", "price": 45, "stock": 21, "inStock": true }
+] }
+```
+
+Use `id` or `sku` when placing an order.
+
+### Place an order (checkout, no payment yet)
+
+```
+POST https://<your-app-domain>/api/intake/order
+Content-Type: application/json
+```
+
+```json
+{
+  "customer": { "name": "Karen Whitey", "email": "k@example.com", "phone": "086…" },
+  "items": [
+    { "sku": "HK-2T", "qty": 2 },
+    { "productId": "…", "qty": 1 }
+  ],
+  "note": "Leave at reception",
+  "_gotcha": ""
+}
+```
+
+On success it: reuses/creates the customer, files an **Order**, **draws down
+stock**, and raises an **Invoice** (status *Awaiting payment*) — so the sale
+shows in the app **and** in that customer's portal. Response:
+
+```json
+{ "ok": true, "orderNumber": "ORD-1002", "invoiceNumber": "INV-1005", "total": 102 }
+```
+
+Errors: `400` (missing/invalid fields), `409` (not enough stock, with a message
+naming the product), `500` (server problem). Each item needs `qty ≥ 1` and a
+valid `sku` or `productId`.
+
+### Example checkout call
+
+```js
+const res = await fetch('https://<your-app-domain>/api/intake/order', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    customer: { name, email, phone },
+    items: cart.map((line) => ({ sku: line.sku, qty: line.qty })),
+  }),
+});
+const result = await res.json();
+if (res.ok) showThankYou(result.orderNumber);
+else showError(result.error);
+```
+
+Both shop endpoints honour the same `CONTACT_ALLOWED_ORIGIN` setting as the
+contact form, so locking that to your site covers all three.
+
 ## Coming next
 
-The same pattern extends to the rest of what you asked about:
-
-- **Shop orders → Invoices + client portal** — a checkout endpoint creates the
-  client + invoice; it then appears in the app and in that client's portal.
-- **Stock / inventory** — a new Products area with stock levels that go down as
-  items sell.
 - **Online payment (Stripe)** — take card payment at checkout and auto-mark the
-  invoice paid.
+  invoice **Paid** (right now shop invoices are raised as *Awaiting payment*).
+- **Order confirmation emails** to the customer.

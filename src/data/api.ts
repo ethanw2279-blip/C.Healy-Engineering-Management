@@ -26,6 +26,7 @@ export async function loadState(): Promise<State> {
     { data: quotes }, { data: quoteItems }, { data: jobs }, { data: jobItems },
     { data: jobAssignees }, { data: invoices }, { data: invoiceItems },
     { data: timeEntries }, { data: visits }, { data: notes }, { data: ga1 }, { data: attachments },
+    { data: products }, { data: orders }, { data: orderItems },
   ] = await Promise.all([
     supabase.from('roles').select('*'),
     supabase.from('employees').select('*'),
@@ -43,6 +44,9 @@ export async function loadState(): Promise<State> {
     supabase.from('notes').select('*').order('created_at', { ascending: false }),
     supabase.from('ga1_inspections').select('*').order('created_at', { ascending: false }),
     supabase.from('attachments').select('*').order('created_at', { ascending: false }),
+    supabase.from('products').select('*').order('created_at', { ascending: false }),
+    supabase.from('orders').select('*').order('created_at', { ascending: false }),
+    supabase.from('order_items').select('*'),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) =>
@@ -97,6 +101,18 @@ export async function loadState(): Promise<State> {
     attachments: (attachments ?? []).map((a: Row) => ({
       id: a.id, entityType: a.entity_type, entityId: a.entity_id, fileName: a.file_name,
       path: a.path, size: a.size ?? 0, uploadedBy: a.uploaded_by, createdAt: a.created_at,
+    })),
+    products: (products ?? []).map((p: Row) => ({
+      id: p.id, name: p.name, sku: p.sku ?? '', description: p.description ?? undefined,
+      price: num(p.price), stock: num(p.stock), active: p.active, createdAt: p.created_at,
+    })),
+    orders: (orders ?? []).map((o: Row) => ({
+      id: o.id, number: o.number, clientId: o.client_id, status: o.status,
+      source: o.source ?? 'admin', note: o.note ?? undefined, invoiceId: o.invoice_id ?? undefined,
+      createdAt: o.created_at,
+      items: (orderItems ?? []).filter((r: Row) => r.order_id === o.id).map((r: Row) => ({
+        id: r.id, productId: r.product_id ?? undefined, name: r.name, qty: num(r.qty), unitPrice: num(r.unit_price),
+      })),
     })),
     ga1: (ga1 ?? []).map((g: Row) => ({
       id: g.id, reportNumber: g.report_number, clientId: g.client_id, examinerId: g.examiner_id,
@@ -261,6 +277,34 @@ export async function persist(action: Action): Promise<void> {
     }
     case 'REMOVE_VISIT':
       return check(supabase.from('visits').delete().eq('id', action.id))
+
+    case 'ADD_PRODUCT':
+    case 'UPDATE_PRODUCT': {
+      const p = action.product
+      return check(supabase.from('products').upsert({
+        id: p.id, name: p.name, sku: p.sku, description: p.description ?? null,
+        price: p.price, stock: p.stock, active: p.active, created_at: p.createdAt,
+      }))
+    }
+    case 'REMOVE_PRODUCT':
+      return check(supabase.from('products').delete().eq('id', action.id))
+
+    case 'ADD_ORDER':
+    case 'UPDATE_ORDER': {
+      const o = action.order
+      await check(supabase.from('orders').upsert({
+        id: o.id, number: o.number, client_id: o.clientId, status: o.status,
+        source: o.source, note: o.note ?? null, invoice_id: o.invoiceId ?? null, created_at: o.createdAt,
+      }))
+      await check(supabase.from('order_items').delete().eq('order_id', o.id))
+      if (o.items.length)
+        await check(supabase.from('order_items').insert(
+          o.items.map((it) => ({ id: it.id, order_id: o.id, product_id: it.productId ?? null, name: it.name, qty: it.qty, unit_price: it.unitPrice })),
+        ))
+      return
+    }
+    case 'REMOVE_ORDER':
+      return check(supabase.from('orders').delete().eq('id', action.id))
 
     case 'ADD_ATTACHMENT': {
       const a = action.attachment

@@ -19,6 +19,9 @@ import GA1Form from './pages/GA1Form'
 import Team from './pages/Team'
 import Roles from './pages/Roles'
 import Reports from './pages/Reports'
+import ShopProducts from './pages/ShopProducts'
+import ShopOrders from './pages/ShopOrders'
+import OrderDetail from './pages/OrderDetail'
 import PrintDocument from './pages/PrintDocument'
 import { RequirePermission, NoAccess } from './components/RequirePermission'
 import type { PermissionKey } from '../data/permissions'
@@ -44,6 +47,9 @@ export default function AdminApp() {
         <Route path="jobs/:id" element={guard('view:jobs', <JobDetail />)} />
         <Route path="invoices" element={guard('view:invoices', <Invoices />)} />
         <Route path="invoices/:id" element={guard('view:invoices', <InvoiceDetail />)} />
+        <Route path="shop/products" element={guard('view:shop', <ShopProducts />)} />
+        <Route path="shop/orders" element={guard('view:shop', <ShopOrders />)} />
+        <Route path="shop/orders/:id" element={guard('view:shop', <OrderDetail />)} />
         <Route path="timesheets" element={guard('view:timesheets', <Timesheets />)} />
         <Route path="ga1" element={guard('view:ga1', <GA1List />)} />
         <Route path="ga1/new" element={guard('view:ga1', <GA1Form />)} />

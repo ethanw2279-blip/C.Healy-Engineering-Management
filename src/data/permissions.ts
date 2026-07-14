@@ -20,6 +20,7 @@ export const PERMISSION_GROUPS: {
       { key: 'view:invoices', label: 'Invoices' },
       { key: 'view:timesheets', label: 'Timesheets' },
       { key: 'view:ga1', label: 'GA1 Inspections' },
+      { key: 'view:shop', label: 'Shop (products & orders)' },
       { key: 'view:team', label: 'Team' },
       { key: 'view:reports', label: 'Reports' },
     ],

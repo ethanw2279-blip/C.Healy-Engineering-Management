@@ -89,6 +89,32 @@ export type Invoice = {
   dueOn: string
 }
 
+// ---- Shop -----------------------------------------------------------------
+export type Product = {
+  id: ID
+  name: string
+  sku: string
+  description?: string
+  price: number
+  stock: number
+  active: boolean
+  createdAt: string
+}
+
+export type OrderStatus = 'New' | 'Processing' | 'Fulfilled' | 'Cancelled'
+export type OrderItem = { id: ID; productId?: ID; name: string; qty: number; unitPrice: number }
+export type Order = {
+  id: ID
+  number: string
+  clientId: ID
+  items: OrderItem[]
+  status: OrderStatus
+  source: 'admin' | 'website'
+  note?: string
+  invoiceId?: ID // the invoice generated from this order
+  createdAt: string
+}
+
 export type TimeEntry = {
   id: ID
   employeeId: ID
@@ -172,4 +198,6 @@ export type State = {
   notes: Note[]
   ga1: GA1Inspection[]
   attachments: Attachment[]
+  products: Product[]
+  orders: Order[]
 }
