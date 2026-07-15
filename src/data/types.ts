@@ -90,6 +90,7 @@ export type Invoice = {
 }
 
 // ---- Shop -----------------------------------------------------------------
+export type ProductSpec = { label: string; value: string }
 export type Product = {
   id: ID
   name: string
@@ -99,6 +100,14 @@ export type Product = {
   stock: number
   active: boolean
   createdAt: string
+  // Shop-catalogue fields (used to render the website shop).
+  slug?: string // web-address id, e.g. "spring-hitch-6t-45mmpins"
+  category?: string
+  subcategory?: string
+  short?: string // one-line summary shown on the shop grid
+  tag?: string // badge, e.g. "New in"
+  images?: string[] // photo paths/URLs
+  specs?: ProductSpec[]
 }
 
 export type OrderStatus = 'New' | 'Processing' | 'Fulfilled' | 'Cancelled'

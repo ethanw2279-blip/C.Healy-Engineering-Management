@@ -105,6 +105,10 @@ export async function loadState(): Promise<State> {
     products: (products ?? []).map((p: Row) => ({
       id: p.id, name: p.name, sku: p.sku ?? '', description: p.description ?? undefined,
       price: num(p.price), stock: num(p.stock), active: p.active, createdAt: p.created_at,
+      slug: p.slug ?? undefined, category: p.category ?? undefined, subcategory: p.subcategory ?? undefined,
+      short: p.short ?? undefined, tag: p.tag ?? undefined,
+      images: Array.isArray(p.images) ? p.images : [],
+      specs: Array.isArray(p.specs) ? p.specs : [],
     })),
     orders: (orders ?? []).map((o: Row) => ({
       id: o.id, number: o.number, clientId: o.client_id, status: o.status,
@@ -284,6 +288,8 @@ export async function persist(action: Action): Promise<void> {
       return check(supabase.from('products').upsert({
         id: p.id, name: p.name, sku: p.sku, description: p.description ?? null,
         price: p.price, stock: p.stock, active: p.active, created_at: p.createdAt,
+        slug: p.slug ?? null, category: p.category ?? null, subcategory: p.subcategory ?? null,
+        short: p.short ?? null, tag: p.tag ?? null, images: p.images ?? [], specs: p.specs ?? [],
       }))
     }
     case 'REMOVE_PRODUCT':

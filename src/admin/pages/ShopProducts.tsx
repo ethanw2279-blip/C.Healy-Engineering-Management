@@ -53,7 +53,7 @@ export default function ShopProducts() {
                     <td>
                       <div className="stack-tight">
                         <span className="cell-strong">{p.name}</span>
-                        {p.description && <span className="cell-muted">{p.description}</span>}
+                        {(p.category || p.short) && <span className="cell-muted">{[p.category, p.short].filter(Boolean).join(' · ')}</span>}
                       </div>
                     </td>
                     <td className="cell-muted">{p.sku || '—'}</td>

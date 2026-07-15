@@ -14,19 +14,31 @@ export default async function handler(req, res) {
   const supabase = createClient(url, serviceKey, { auth: { persistSession: false } })
   const { data, error } = await supabase
     .from('products')
-    .select('id, name, sku, description, price, stock')
+    .select('id, name, sku, description, price, stock, slug, category, subcategory, short, tag, images, specs')
     .eq('active', true)
-    .order('name')
+    .order('category')
   if (error) return res.status(500).json({ error: error.message })
 
-  const products = (data || []).map((p) => ({
-    id: p.id,
-    name: p.name,
-    sku: p.sku || '',
-    description: p.description || '',
-    price: Number(p.price || 0),
-    stock: Number(p.stock || 0),
-    inStock: Number(p.stock || 0) > 0,
-  }))
+  // Shaped to match what the website shop expects (title/id-slug/specs/etc.),
+  // so the storefront renders straight from the app's catalogue.
+  const products = (data || []).map((p) => {
+    const stock = Number(p.stock || 0)
+    return {
+      id: p.slug || p.id, // the website uses the slug as the product URL id
+      productId: p.id, // the real id, for placing orders
+      sku: p.sku || '',
+      title: p.name,
+      short: p.short || '',
+      description: p.description || '',
+      price: Number(p.price || 0),
+      category: p.category || '',
+      subcategory: p.subcategory || '',
+      tag: p.tag || '',
+      images: Array.isArray(p.images) ? p.images : [],
+      specs: Array.isArray(p.specs) ? p.specs : [],
+      stock,
+      inStock: stock > 0,
+    }
+  })
   return res.status(200).json({ products })
 }
