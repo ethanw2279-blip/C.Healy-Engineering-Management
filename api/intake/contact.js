@@ -61,12 +61,15 @@ export default async function handler(req, res) {
   body = body || {}
 
   // Honeypot: bots fill hidden fields. Pretend success so they don't retry.
-  if (body._gotcha || body.honeypot) return res.status(200).json({ ok: true })
+  // The website's hidden field is named "company"; also accept the common
+  // "_gotcha" / "bot-field" / "honeypot" names.
+  if (body._gotcha || body.honeypot || body['bot-field'] || body.company) {
+    return res.status(200).json({ ok: true })
+  }
 
   const name = (body.name || '').trim()
   const email = (body.email || '').trim()
   const phone = (body.phone || '').trim()
-  const company = (body.company || '').trim()
   const service = (body.service || body.subject || '').trim()
   const message = (body.message || '').trim()
 
@@ -92,7 +95,7 @@ export default async function handler(req, res) {
     } else {
       const { data: created, error: cErr } = await supabase
         .from('clients')
-        .insert({ name, email, phone, company: company || null, status: 'Lead' })
+        .insert({ name, email, phone, status: 'Lead' })
         .select('id')
         .single()
       if (cErr) throw cErr
