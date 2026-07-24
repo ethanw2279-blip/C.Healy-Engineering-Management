@@ -11,5 +11,8 @@ alter table products add column if not exists tag         text;
 alter table products add column if not exists images      jsonb not null default '[]'::jsonb;
 alter table products add column if not exists specs       jsonb not null default '[]'::jsonb;
 
--- Slugs are the website's product URLs — keep them unique when set.
-create unique index if not exists products_slug_key on products (slug) where slug is not null;
+-- Slugs are the website's product URLs — keep them unique. A plain unique index
+-- (not partial) still allows many NULL slugs and, unlike a partial index, works
+-- as an ON CONFLICT (slug) target for the product import.
+drop index if exists products_slug_key;
+create unique index if not exists products_slug_key on products (slug);
