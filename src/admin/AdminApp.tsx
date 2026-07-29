@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import AdminLayout from './AdminLayout'
 import Dashboard from './pages/Dashboard'
 import Schedule from './pages/Schedule'
@@ -31,11 +31,21 @@ const guard = (perm: PermissionKey, el: ReactNode) => (
   <RequirePermission perm={perm}>{el}</RequirePermission>
 )
 
+// On a phone, the bare domain opens the field app by default (that's the
+// on-site app). The office app stays reachable — the field "More" screen links
+// back here and sets `preferOffice`, and any deeper /admin URL loads directly.
+function RootLanding() {
+  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
+  const preferOffice = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('preferOffice') === '1'
+  if (isPhone && !preferOffice) return <Navigate to="/field" replace />
+  return guard('view:dashboard', <Dashboard />)
+}
+
 export default function AdminApp() {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
-        <Route index element={guard('view:dashboard', <Dashboard />)} />
+        <Route index element={<RootLanding />} />
         <Route path="schedule" element={guard('view:schedule', <Schedule />)} />
         <Route path="clients" element={guard('view:clients', <Clients />)} />
         <Route path="clients/:id" element={guard('view:clients', <ClientDetail />)} />

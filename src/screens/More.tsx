@@ -9,6 +9,7 @@ import {
   BuildingIcon,
   SlidersIcon,
   BellIcon,
+  GridIcon,
   LogoutIcon,
 } from '../components/Icons'
 import { useCurrentUser } from '../data/store'
@@ -48,8 +49,16 @@ export default function More() {
     }
   }
 
+  // Switch to the office/admin app. Set the flag so the phone-redirect on "/"
+  // doesn't bounce straight back here.
+  const openOffice = () => {
+    try { sessionStorage.setItem('preferOffice', '1') } catch { /* private mode */ }
+    nav('/')
+  }
+
   const menu = [
     { label: 'GA1 Inspections', Icon: ClipboardIcon, show: can('view:ga1'), onClick: () => nav('/field/ga1') },
+    { label: 'Office app', Icon: GridIcon, show: can('view:dashboard'), onClick: openOffice },
     { label: 'Profile', Icon: UserIcon, show: true },
     { label: 'Manage team', Icon: TeamIcon, show: can('manage:team') },
     { label: 'Company details', Icon: BuildingIcon, show: true },
