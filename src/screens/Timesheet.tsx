@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import ScreenHeader from '../components/ScreenHeader'
 import { useStore, useCurrentUser } from '../data/store'
 import { weekDatesISO, todayISO } from '../mobile/fieldHelpers'
+import AddHoursSheet from './AddHoursSheet'
 import './screens.css'
 import './Timesheet.css'
 
@@ -16,6 +18,7 @@ function hoursLabel(h: number) {
 export default function Timesheet() {
   const { state } = useStore()
   const { user } = useCurrentUser()
+  const [adding, setAdding] = useState(false)
   const today = todayISO()
   const week = weekDatesISO()
 
@@ -33,6 +36,8 @@ export default function Timesheet() {
       <ScreenHeader title="Timesheet" />
 
       <div className="pad">
+        <button className="ts-add" onClick={() => setAdding(true)}>+ Add hours manually</button>
+
         <div className="ts-summary">
           <div>
             <div className="ts-summary-title">This week</div>
@@ -59,6 +64,8 @@ export default function Timesheet() {
           ))}
         </ul>
       </div>
+
+      {adding && <AddHoursSheet onClose={() => setAdding(false)} />}
     </div>
   )
 }

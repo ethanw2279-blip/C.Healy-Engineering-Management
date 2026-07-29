@@ -95,3 +95,16 @@
   color: var(--text-faint);
   font-weight: 600;
 }
+
+.ts-add {
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 16px;
+  border: 1px dashed #cfd8d8;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+.ts-add:active { background: #f2f9f5; }

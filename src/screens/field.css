@@ -98,3 +98,29 @@
   border: 1px solid #d7dcdc; border-radius: 12px; background: #fff;
   font-weight: 700; font-size: 15px; color: var(--navy);
 }
+
+/* Bottom-sheet modal (e.g. manual hours entry) */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-end;
+}
+.sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+  max-height: 92vh;
+  overflow-y: auto;
+  animation: sheet-up 0.18s ease;
+}
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+.sheet-handle { width: 40px; height: 4px; border-radius: 2px; background: #d7dcdc; margin: 8px auto 14px; }
+.sheet-title { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 14px; }
+.sheet-row { display: flex; gap: 12px; }
+.sheet-row .fld-form-field { flex: 1; }
+.sheet-hours { font-size: 14px; font-weight: 700; color: var(--green-dark); margin: -4px 0 14px; }
+.sheet-hours.bad { color: #b53434; }
