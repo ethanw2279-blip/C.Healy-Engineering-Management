@@ -94,10 +94,10 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
 
         {can('create:records') && (
           <div className="create-wrap" ref={createRef}>
-            <Button onClick={() => setOpen((v) => !v)}>
+            <Button onClick={() => setOpen((v) => !v)} aria-label="Create">
               <PlusIcon size={18} strokeWidth={2.4} />
-              Create
-              <ChevronDownIcon size={16} />
+              <span className="btn-label">Create</span>
+              <span className="btn-chev"><ChevronDownIcon size={16} /></span>
             </Button>
             {open && (
               <div className="create-menu">

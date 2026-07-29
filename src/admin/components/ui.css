@@ -129,6 +129,11 @@
 .page-title { font-size: 26px; font-weight: 800; color: var(--navy); }
 .page-sub { font-size: 14px; color: var(--navy-muted); margin-top: 4px; }
 
+@media (max-width: 640px) {
+  .page-head { flex-wrap: wrap; gap: 12px; }
+  .page-title { font-size: 22px; }
+}
+
 /* ---- Empty state ---------------------------------------------------------*/
 .empty-state {
   display: flex;

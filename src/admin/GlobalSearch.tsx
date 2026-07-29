@@ -11,6 +11,7 @@ export default function GlobalSearch() {
   const nav = useNavigate()
   const [q, setQ] = useState('')
   const [focused, setFocused] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const clientName = (id: string) => state.clients.find((c) => c.id === id)?.name ?? ''
@@ -59,15 +60,16 @@ export default function GlobalSearch() {
   const showPanel = focused && q.trim().length > 0
 
   return (
-    <div className="search-wrap">
-      <div className="topbar-search">
+    <div className={`search-wrap ${mobileOpen ? 'search-open' : ''}`}>
+      {/* On mobile this shows as just the magnifier; tapping expands the field. */}
+      <div className="topbar-search" onClick={() => { setMobileOpen(true); inputRef.current?.focus() }}>
         <SearchIcon size={19} />
         <input
           ref={inputRef}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onFocus={() => setFocused(true)}
-          onBlur={() => setTimeout(() => setFocused(false), 120)}
+          onBlur={() => setTimeout(() => { setFocused(false); setMobileOpen(false) }, 120)}
           onKeyDown={(e) => { if (e.key === 'Enter' && results[0]) go(results[0].to) }}
           placeholder="Search clients, jobs, quotes…"
         />

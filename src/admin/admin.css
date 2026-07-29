@@ -688,3 +688,47 @@
   gap: 5px;
 }
 .link-btn:hover { text-decoration: underline; }
+
+/* ==========================================================================
+   Mobile (phones) — keep everything on one page, no left/right scrolling.
+   The admin app is desktop-first; these rules make it usable on a phone.
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* Never let the whole app scroll sideways; wide content scrolls in its card. */
+  .admin { overflow-x: hidden; }
+  .admin-content { padding: 16px 12px 56px; overflow-x: hidden; }
+
+  /* Slim icon-only sidebar. */
+  .sidebar { width: 60px; padding: 14px 6px; }
+
+  /* Topbar becomes compact icons. */
+  .topbar { position: relative; height: 58px; padding: 0 10px; gap: 6px; }
+
+  /* Global search: just a magnifier until tapped, then a full-width overlay. */
+  .search-wrap { width: auto; max-width: none; flex-shrink: 0; }
+  .topbar-search { width: 42px; height: 42px; padding: 0; justify-content: center; cursor: pointer; }
+  .topbar-search input { display: none; }
+  .search-wrap.search-open { position: absolute; left: 10px; right: 10px; top: 8px; z-index: 70; }
+  .search-wrap.search-open .topbar-search { width: 100%; height: 42px; padding: 9px 14px; justify-content: flex-start; }
+  .search-wrap.search-open .topbar-search input { display: block; }
+  .search-wrap.search-open + .topbar-actions { visibility: hidden; }
+
+  /* Account switcher → avatar only. */
+  .viewas-text { display: none; }
+  .viewas-btn { padding: 4px; gap: 2px; }
+
+  /* Create button → plus icon only (page action buttons keep their labels). */
+  .topbar-actions .btn-label,
+  .topbar-actions .btn-chev { display: none; }
+  .topbar-actions .btn { padding: 9px 12px; }
+
+  /* Wide tables scroll inside their card instead of stretching the page. */
+  .card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table { min-width: 520px; }
+
+  /* Stat cards stack in one column. */
+  .stat-grid { grid-template-columns: 1fr; }
+
+  /* Modals fill the small screen. */
+  .modal { width: calc(100vw - 24px); max-width: none; }
+}
