@@ -103,7 +103,7 @@
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 200; /* above the bottom tab bar and FAB */
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: flex-end;
@@ -112,8 +112,9 @@
   width: 100%;
   background: #fff;
   border-radius: 20px 20px 0 0;
-  padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
-  max-height: 92vh;
+  /* Extra bottom padding so the last buttons clear the bottom tab bar. */
+  padding: 8px 18px calc(84px + env(safe-area-inset-bottom));
+  max-height: 88dvh;
   overflow-y: auto;
   animation: sheet-up 0.18s ease;
 }

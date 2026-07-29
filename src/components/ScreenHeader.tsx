@@ -1,4 +1,4 @@
-import { BellIcon, SparkleIcon } from './Icons'
+import { BellIcon } from './Icons'
 import './ScreenHeader.css'
 
 type Props = {
@@ -6,26 +6,25 @@ type Props = {
   title?: string
   /** Small muted line above content (e.g. the date). */
   eyebrow?: string
-  /** Show the notification bell alongside the AI sparkle button. */
+  /** Show the notification bell. */
   showBell?: boolean
 }
 
 export default function ScreenHeader({ title, eyebrow, showBell }: Props) {
   return (
     <header className="sh">
-      <div className="sh-row">
-        {eyebrow ? <span className="sh-eyebrow">{eyebrow}</span> : <span />}
-        <div className="sh-actions">
+      {(eyebrow || showBell) && (
+        <div className="sh-row">
+          {eyebrow ? <span className="sh-eyebrow">{eyebrow}</span> : <span />}
           {showBell && (
-            <button className="sh-icon-btn" aria-label="Notifications">
-              <BellIcon size={22} />
-            </button>
+            <div className="sh-actions">
+              <button className="sh-icon-btn" aria-label="Notifications">
+                <BellIcon size={22} />
+              </button>
+            </div>
           )}
-          <button className="sh-icon-btn sh-ai" aria-label="AI assistant">
-            <SparkleIcon size={20} />
-          </button>
         </div>
-      </div>
+      )}
       {title && <h1 className="sh-title">{title}</h1>}
     </header>
   )
