@@ -53,7 +53,6 @@ export default function GA1Detail() {
             <div className="detail-sub">
               {client && <Link className="link" to={`/clients/${client.id}`}>{client.name}</Link>}
               <span className={`badge badge-${resultTone[g.overallResult]}`}>{RESULT_LABELS[g.overallResult]}</span>
-              {g.safeToUse && <span className="badge badge-green">Safe to use</span>}
               {g.defectsFound && <span className="badge badge-red">Defects found</span>}
             </div>
           </div>

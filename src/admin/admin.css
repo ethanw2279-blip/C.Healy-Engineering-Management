@@ -732,3 +732,15 @@
   /* Modals fill the small screen. */
   .modal { width: calc(100vw - 24px); max-width: none; }
 }
+
+/* Detail pages (GA1, Jobs, Orders, Clients…): on phones, drop the action
+   buttons below the title + badges instead of running off the right edge. */
+@media (max-width: 640px) {
+  .detail-head { flex-direction: column; align-items: stretch; }
+  .detail-id { align-items: flex-start; }
+  .detail-sub { flex-wrap: wrap; row-gap: 6px; }
+  .detail-actions { flex-wrap: wrap; }
+  .detail-actions > a { flex: 1 1 130px; display: inline-flex; }
+  .detail-actions > a > .btn { width: 100%; }
+  .detail-actions > .btn { flex: 1 1 130px; }
+}
