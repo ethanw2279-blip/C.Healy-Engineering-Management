@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { BellIcon, SparkleIcon, PlayIcon, ClockIcon, ArrowRightIcon } from '../components/Icons'
+import { BellIcon, PlayIcon, ClockIcon, ArrowRightIcon } from '../components/Icons'
 import { useStore, useCurrentUser } from '../data/store'
 import { useClock } from '../mobile/useClock'
 import { greeting, firstName, fmtDay, todayISO, weekDatesISO, visitsForUser } from '../mobile/fieldHelpers'
@@ -32,7 +32,6 @@ export default function Home() {
           <span className="home-date">{fmtDay(today)}</span>
           <div className="home-hero-actions">
             <button className="sh-icon-btn" aria-label="Notifications"><BellIcon size={22} /></button>
-            <button className="sh-icon-btn" aria-label="AI assistant"><SparkleIcon size={20} /></button>
           </div>
         </div>
 
@@ -89,8 +88,6 @@ export default function Home() {
           <span><ClockIcon size={18} /> Total completed time</span>
           <strong>{weekHours.toFixed(2)}h</strong>
         </div>
-
-        <button className="help-btn" onClick={() => nav('/field/more')}>Need Help?</button>
       </div>
     </div>
   )

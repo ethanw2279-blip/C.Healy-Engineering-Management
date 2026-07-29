@@ -244,13 +244,16 @@ export async function persist(action: Action): Promise<void> {
     case 'DELETE_ROLE':
       return check(supabase.from('roles').delete().eq('id', action.id))
 
-    case 'ADD_TIME_ENTRY': {
+    case 'ADD_TIME_ENTRY':
+    case 'UPDATE_TIME_ENTRY': {
       const t = action.entry
-      return check(supabase.from('time_entries').insert({
+      return check(supabase.from('time_entries').upsert({
         id: t.id, employee_id: t.employeeId, job_id: t.jobId ?? null, date: t.date,
         hours: t.hours, note: t.note ?? null, approved: t.approved,
       }))
     }
+    case 'REMOVE_TIME_ENTRY':
+      return check(supabase.from('time_entries').delete().eq('id', action.id))
     case 'APPROVE_TIME':
       return check(supabase.from('time_entries').update({ approved: true }).eq('id', action.id))
     case 'APPROVE_ALL_TIME':

@@ -3,6 +3,7 @@ import ScreenHeader from '../components/ScreenHeader'
 import { useStore, useCurrentUser } from '../data/store'
 import { weekDatesISO, todayISO } from '../mobile/fieldHelpers'
 import AddHoursSheet from './AddHoursSheet'
+import type { TimeEntry } from '../data/types'
 import './screens.css'
 import './Timesheet.css'
 
@@ -19,17 +20,21 @@ export default function Timesheet() {
   const { state } = useStore()
   const { user } = useCurrentUser()
   const [adding, setAdding] = useState(false)
+  const [editing, setEditing] = useState<TimeEntry | null>(null)
   const today = todayISO()
   const week = weekDatesISO()
 
+  const myWeekEntries = state.timeEntries
+    .filter((t) => user && t.employeeId === user.id && week.includes(t.date))
+    .sort((a, b) => b.date.localeCompare(a.date))
+
   const hoursOn = (iso: string) =>
-    state.timeEntries
-      .filter((t) => user && t.employeeId === user.id && t.date === iso)
-      .reduce((s, t) => s + t.hours, 0)
+    myWeekEntries.filter((t) => t.date === iso).reduce((s, t) => s + t.hours, 0)
 
   const perDay = week.map((iso) => ({ iso, hours: hoursOn(iso) }))
   const total = perDay.reduce((s, d) => s + d.hours, 0)
   const maxH = Math.max(...perDay.map((d) => d.hours), 1)
+  const fmtShort = (iso: string) => `${DOW_LONG[(new Date(iso).getDay() + 6) % 7].slice(0, 3)} ${Number(iso.slice(8))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
 
   return (
     <div>
@@ -63,9 +68,34 @@ export default function Timesheet() {
             </li>
           ))}
         </ul>
+
+        {myWeekEntries.length > 0 && (
+          <div className="ts-entries">
+            <div className="ts-entries-title">Your entries</div>
+            {myWeekEntries.map((t) => {
+              const job = state.jobs.find((j) => j.id === t.jobId)
+              const editable = !t.approved
+              return (
+                <button
+                  key={t.id}
+                  className={`ts-entry ${editable ? 'editable' : ''}`}
+                  onClick={() => editable && setEditing(t)}
+                >
+                  <div className="ts-entry-body">
+                    <strong>{fmtShort(t.date)}</strong>
+                    <span>{job ? job.title : t.note || 'Time entry'}</span>
+                  </div>
+                  <div className="ts-entry-hours">{hoursLabel(t.hours)}</div>
+                  {t.approved ? <span className="ts-entry-lock">Approved</span> : <span className="muted-sub" style={{ fontSize: 12 }}>Edit</span>}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {adding && <AddHoursSheet onClose={() => setAdding(false)} />}
+      {editing && <AddHoursSheet editing={editing} onClose={() => setEditing(null)} />}
     </div>
   )
 }

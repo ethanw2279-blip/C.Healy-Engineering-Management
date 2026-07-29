@@ -124,3 +124,41 @@
 .sheet-row .fld-form-field { flex: 1; }
 .sheet-hours { font-size: 14px; font-weight: 700; color: var(--green-dark); margin: -4px 0 14px; }
 .sheet-hours.bad { color: #b53434; }
+
+.sheet-delete {
+  width: 100%; margin-top: 10px; padding: 13px;
+  background: #fff; color: #b53434; border: 1px solid #f0d3d3;
+  border-radius: 12px; font-weight: 700; font-size: 15px;
+}
+.sheet-delete:active { background: #fbe9e9; }
+
+/* Timesheet entry rows */
+.ts-entries { margin-top: 20px; }
+.ts-entries-title { font-size: 15px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+.ts-entry {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; text-align: left;
+  padding: 12px 4px; border-bottom: 1px solid var(--divider);
+}
+.ts-entry:last-child { border-bottom: none; }
+.ts-entry-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ts-entry-body strong { font-size: 15px; color: var(--navy); }
+.ts-entry-body span { font-size: 13px; color: var(--navy-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ts-entry-hours { font-size: 15px; font-weight: 800; color: var(--navy); }
+.ts-entry-lock { font-size: 11px; font-weight: 700; color: var(--green-dark); background: #eef7f1; border-radius: 999px; padding: 3px 8px; }
+.ts-entry.editable:active { background: #f7f9f9; }
+
+/* FAB create menu */
+.fab-menu { display: flex; flex-direction: column; }
+.fab-menu-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 4px; border-bottom: 1px solid var(--divider);
+  font-size: 16px; font-weight: 600; color: var(--navy);
+}
+.fab-menu-item:last-child { border-bottom: none; }
+.fab-menu-item:active { background: #f7f9f9; }
+.fab-menu-icon {
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  background: #eef4f1; color: var(--green-dark);
+  display: flex; align-items: center; justify-content: center;
+}

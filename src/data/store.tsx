@@ -48,6 +48,8 @@ export type Action =
   | { type: 'UPDATE_INVOICE'; invoice: Invoice }
   | { type: 'REMOVE_INVOICE'; id: string }
   | { type: 'ADD_TIME_ENTRY'; entry: TimeEntry }
+  | { type: 'UPDATE_TIME_ENTRY'; entry: TimeEntry }
+  | { type: 'REMOVE_TIME_ENTRY'; id: string }
   | { type: 'APPROVE_TIME'; id: string }
   | { type: 'APPROVE_ALL_TIME' }
   | { type: 'ADD_EMPLOYEE'; employee: Employee }
@@ -130,6 +132,13 @@ function reducer(state: State, action: Action): State {
       return { ...state, invoices: state.invoices.filter((i) => i.id !== action.id) }
     case 'ADD_TIME_ENTRY':
       return { ...state, timeEntries: [action.entry, ...state.timeEntries] }
+    case 'UPDATE_TIME_ENTRY':
+      return {
+        ...state,
+        timeEntries: state.timeEntries.map((t) => (t.id === action.entry.id ? action.entry : t)),
+      }
+    case 'REMOVE_TIME_ENTRY':
+      return { ...state, timeEntries: state.timeEntries.filter((t) => t.id !== action.id) }
     case 'APPROVE_TIME':
       return {
         ...state,
