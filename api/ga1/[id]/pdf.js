@@ -41,7 +41,9 @@ export default async function handler(req, res) {
   pass.on('end', () => {
     const pdf = Buffer.concat(chunks)
     res.setHeader('Content-Type', 'application/pdf')
-    res.setHeader('Content-Disposition', `inline; filename="${g.report_number || 'GA1'}.pdf"`)
+    // "attachment" so mobile/desktop offer a save/share action rather than just
+    // rendering the PDF inline with no obvious way to download it.
+    res.setHeader('Content-Disposition', `attachment; filename="${g.report_number || 'GA1'}.pdf"`)
     res.setHeader('Content-Length', pdf.length)
     res.end(pdf)
   })
