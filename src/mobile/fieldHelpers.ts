@@ -33,12 +33,12 @@ export function visitsForUser(state: State, userId: string): ResolvedVisit[] {
   return state.visits
     .filter((v) => v.employeeId === userId)
     .map((v) => {
-      const job = state.jobs.find((j) => j.id === v.jobId)
+      const job = v.jobId ? state.jobs.find((j) => j.id === v.jobId) : undefined
       const client = state.clients.find((c) => c.id === job?.clientId)
       return {
         ...v,
-        jobTitle: job?.title ?? 'Visit',
-        clientName: client?.name ?? '',
+        jobTitle: job?.title ?? v.title ?? v.category ?? 'Visit',
+        clientName: client?.name ?? (v.category && v.category !== 'Job' ? v.category : ''),
         address: client?.address ?? '',
       }
     })

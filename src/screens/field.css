@@ -163,3 +163,16 @@
   background: #eef4f1; color: var(--green-dark);
   display: flex; align-items: center; justify-content: center;
 }
+
+/* Type picker chips (schedule item category) */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick-chip {
+  padding: 9px 16px; border-radius: 999px;
+  border: 1px solid #d7dcdc; background: #fff;
+  font-size: 14px; font-weight: 600; color: var(--navy);
+}
+.pick-chip.on { border-color: var(--green); background: #eef7f1; color: var(--green-dark); }
+
+/* Non-job schedule blocks (travel, shop trips) aren't tappable through to a job. */
+.visit-card.no-job { cursor: default; }
+.visit-card.no-job .visit-service { color: var(--green-dark); font-weight: 700; }

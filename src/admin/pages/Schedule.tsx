@@ -33,9 +33,9 @@ export default function Schedule() {
     if (v && v.date !== dateStr) dispatch({ type: 'UPDATE_VISIT', visit: { ...v, date: dateStr } })
   }
 
-  const jobById = (id: string) => state.jobs.find((j) => j.id === id)
+  const jobById = (id?: string) => state.jobs.find((j) => j.id === id)
   const empById = (id: string) => state.employees.find((e) => e.id === id)
-  const clientName = (jobId: string) => {
+  const clientName = (jobId?: string) => {
     const job = jobById(jobId)
     return state.clients.find((c) => c.id === job?.clientId)?.name ?? ''
   }
@@ -108,7 +108,7 @@ export default function Schedule() {
 }
 
 type Helpers = {
-  jobById: (id: string) => { title: string } | undefined
+  jobById: (id?: string) => { title: string } | undefined
   empById: (id: string) => { name: string; color: string } | undefined
 }
 
@@ -118,7 +118,7 @@ function DayView({
 }: Helpers & {
   date: Date
   events: Visit[]
-  clientName: (jobId: string) => string
+  clientName: (jobId?: string) => string
   nav: (to: string) => void
   canManage: boolean
   onAdd: (date: string) => void
@@ -138,12 +138,12 @@ function DayView({
         const job = jobById(v.jobId)
         const emp = empById(v.employeeId)
         return (
-          <button key={v.id} className="agenda-row" onClick={() => nav(`/jobs/${v.jobId}`)}>
+          <button key={v.id} className="agenda-row" onClick={() => v.jobId && nav(`/jobs/${v.jobId}`)}>
             <div className="agenda-time"><strong>{v.start}</strong><span>{v.end}</span></div>
             <div className="agenda-bar" style={{ background: emp?.color ?? '#1F8A4C' }} />
             <div className="agenda-body">
-              <strong>{job?.title ?? 'Visit'}</strong>
-              <span>{clientName(v.jobId)}</span>
+              <strong>{job?.title ?? v.title ?? 'Visit'}</strong>
+              <span>{v.jobId ? clientName(v.jobId) : v.category ?? ''}</span>
             </div>
             {emp && <div className="cell-with-avatar"><Avatar name={emp.name} color={emp.color} size={28} /><span className="cell-muted">{emp.name}</span></div>}
           </button>
@@ -195,10 +195,10 @@ function WeekView({
                     style={{ borderLeftColor: emp?.color }}
                     draggable
                     onDragStart={(e) => e.dataTransfer.setData('text/plain', v.id)}
-                    onClick={() => nav(`/jobs/${v.jobId}`)}
+                    onClick={() => v.jobId && nav(`/jobs/${v.jobId}`)}
                   >
                     <span className="ev-time">{v.start}</span>
-                    <span className="ev-title">{jobById(v.jobId)?.title ?? 'Visit'}</span>
+                    <span className="ev-title">{jobById(v.jobId)?.title ?? v.title ?? 'Visit'}</span>
                   </button>
                 )
               })}
@@ -255,10 +255,10 @@ function MonthView({
                       style={{ borderLeftColor: emp?.color }}
                       draggable
                       onDragStart={(e) => e.dataTransfer.setData('text/plain', v.id)}
-                      onClick={() => nav(`/jobs/${v.jobId}`)}
+                      onClick={() => v.jobId && nav(`/jobs/${v.jobId}`)}
                     >
                       <span className="ev-time">{v.start}</span>
-                      <span className="ev-title">{jobById(v.jobId)?.title ?? 'Visit'}</span>
+                      <span className="ev-title">{jobById(v.jobId)?.title ?? v.title ?? 'Visit'}</span>
                     </button>
                   )
                 })}

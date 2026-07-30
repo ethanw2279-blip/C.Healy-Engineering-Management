@@ -134,13 +134,16 @@ export type TimeEntry = {
   approved: boolean
 }
 
+export type VisitCategory = 'Job' | 'Travel' | 'Shop trip' | 'Other'
 export type Visit = {
   id: ID
-  jobId: ID
+  jobId?: ID // set for job visits; empty for travel / shop trips / other blocks
   employeeId: ID
   date: string // ISO yyyy-mm-dd
   start: string // "09:00"
   end: string // "11:00"
+  title?: string // label when there's no job (e.g. "Collect steel")
+  category?: VisitCategory
 }
 
 export type Note = {

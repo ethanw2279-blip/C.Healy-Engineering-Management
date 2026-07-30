@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusIcon, BriefcaseIcon, UserIcon, ClipboardIcon, ClockIcon } from './Icons'
+import { PlusIcon, BriefcaseIcon, UserIcon, ClipboardIcon, ClockIcon, CalendarIcon } from './Icons'
 import { useCurrentUser } from '../data/store'
 import AddHoursSheet from '../screens/AddHoursSheet'
 import NewClientSheet from '../screens/NewClientSheet'
 import NewJobSheet from '../screens/NewJobSheet'
+import NewVisitSheet from '../screens/NewVisitSheet'
 import './Fab.css'
 
-type Sheet = 'menu' | 'hours' | 'client' | 'job' | null
+type Sheet = 'menu' | 'hours' | 'visit' | 'client' | 'job' | null
 
 export default function Fab() {
   const { can } = useCurrentUser()
@@ -17,6 +18,7 @@ export default function Fab() {
   const canManage = can('create:records')
 
   const actions = [
+    { label: 'Add to schedule', Icon: CalendarIcon, show: true, onClick: () => setSheet('visit') },
     { label: 'Add hours', Icon: ClockIcon, show: true, onClick: () => setSheet('hours') },
     { label: 'New job', Icon: BriefcaseIcon, show: canManage, onClick: () => setSheet('job') },
     { label: 'New client', Icon: UserIcon, show: canManage, onClick: () => setSheet('client') },
@@ -46,6 +48,7 @@ export default function Fab() {
         </div>
       )}
 
+      {sheet === 'visit' && <NewVisitSheet onClose={() => setSheet(null)} />}
       {sheet === 'hours' && <AddHoursSheet onClose={() => setSheet(null)} />}
       {sheet === 'client' && <NewClientSheet onClose={() => setSheet(null)} />}
       {sheet === 'job' && <NewJobSheet onClose={() => setSheet(null)} />}

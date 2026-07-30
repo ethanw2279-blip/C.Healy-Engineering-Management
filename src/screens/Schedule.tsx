@@ -4,6 +4,7 @@ import ScreenHeader from '../components/ScreenHeader'
 import { CalendarIcon, ClockIcon } from '../components/Icons'
 import { useStore, useCurrentUser } from '../data/store'
 import { weekDatesISO, todayISO, visitsForUser } from '../mobile/fieldHelpers'
+import NewVisitSheet from './NewVisitSheet'
 import './screens.css'
 import './Schedule.css'
 
@@ -16,6 +17,7 @@ export default function Schedule() {
   const today = todayISO()
   const week = weekDatesISO()
   const [selected, setSelected] = useState(week.includes(today) ? today : week[0])
+  const [adding, setAdding] = useState(false)
 
   const myVisits = user ? visitsForUser(state, user.id) : []
   const visits = myVisits.filter((v) => v.date === selected)
@@ -44,30 +46,44 @@ export default function Schedule() {
       <div className="divider" />
 
       <div className="pad">
+        <button className="ts-add" onClick={() => setAdding(true)}>+ Add to schedule</button>
+
         {visits.length === 0 ? (
           <div className="placeholder">
             <CalendarIcon size={44} />
-            <h2>No visits</h2>
-            <p>You have nothing scheduled for this day.</p>
+            <h2>Nothing scheduled</h2>
+            <p>Add a job, travel time or a shop trip for this day.</p>
           </div>
         ) : (
           <ul className="visit-list">
             {visits.map((v) => (
-              <li key={v.id} className="visit-card scheduled" onClick={() => nav(`/field/job/${v.jobId}`)}>
+              <li
+                key={v.id}
+                className={`visit-card scheduled ${v.jobId ? '' : 'no-job'}`}
+                onClick={() => v.jobId && nav(`/field/job/${v.jobId}`)}
+              >
                 <div className="visit-time">
                   <strong>{v.start}</strong>
                   <span className="visit-duration"><ClockIcon size={14} /> {v.end}</span>
                 </div>
                 <div className="visit-body">
                   <strong className="visit-client">{v.jobTitle}</strong>
-                  <span className="visit-service">{v.clientName}</span>
-                  {v.address && <span className="visit-address">{v.address}</span>}
+                  {v.jobId ? (
+                    <>
+                      <span className="visit-service">{v.clientName}</span>
+                      {v.address && <span className="visit-address">{v.address}</span>}
+                    </>
+                  ) : (
+                    <span className="visit-service">{v.category ?? 'Other'}</span>
+                  )}
                 </div>
               </li>
             ))}
           </ul>
         )}
       </div>
+
+      {adding && <NewVisitSheet defaultDate={selected} onClose={() => setAdding(false)} />}
     </div>
   )
 }

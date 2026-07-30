@@ -92,7 +92,8 @@ export async function loadState(): Promise<State> {
       hours: num(t.hours), note: t.note ?? undefined, approved: t.approved,
     })),
     visits: (visits ?? []).map((v: Row) => ({
-      id: v.id, jobId: v.job_id, employeeId: v.employee_id, date: v.date, start: v.start_time, end: v.end_time,
+      id: v.id, jobId: v.job_id ?? undefined, employeeId: v.employee_id, date: v.date,
+      start: v.start_time, end: v.end_time, title: v.title ?? undefined, category: v.category ?? undefined,
     })),
     notes: (notes ?? []).map((n: Row) => ({
       id: n.id, entityType: n.entity_type, entityId: n.entity_id, body: n.body,
@@ -279,7 +280,8 @@ export async function persist(action: Action): Promise<void> {
     case 'UPDATE_VISIT': {
       const v = action.visit
       return check(supabase.from('visits').upsert({
-        id: v.id, job_id: v.jobId, employee_id: v.employeeId, date: v.date, start_time: v.start, end_time: v.end,
+        id: v.id, job_id: v.jobId ?? null, employee_id: v.employeeId, date: v.date,
+        start_time: v.start, end_time: v.end, title: v.title ?? null, category: v.category ?? null,
       }))
     }
     case 'REMOVE_VISIT':
