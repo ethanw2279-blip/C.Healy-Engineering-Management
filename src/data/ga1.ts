@@ -5,10 +5,18 @@ export const EQUIPMENT_TYPES = [
   'Telehandlers / Teleporters',
   'Forklifts',
   'Cranes',
+  'Truck Mounted Cranes',
+  'Loader Cranes / HIABs',
+  'Gantries and Jib Cranes',
   'MEWPs / Cherry Pickers / Scissor Lifts',
   'Hoists and Winches',
-  'Gantries and Jib Cranes',
-  'Truck Mounted Cranes',
+  'Vehicle / Tail Lifts',
+  'Slings, Chains & Shackles',
+  'Lifting Beams / Spreader Beams',
+  'Excavator Quick Hitches',
+  'Man Baskets / Work Platforms',
+  'Road Saws',
+  'Cutting Equipment',
 ]
 
 export const RESULT_LABELS: Record<GA1Result, string> = {

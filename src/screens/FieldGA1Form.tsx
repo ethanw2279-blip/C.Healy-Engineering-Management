@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useStore, useCurrentUser, newId } from '../data/store'
-import { EQUIPMENT_TYPES, RESULT_LABELS, addMonths } from '../data/ga1'
+import { RESULT_LABELS, addMonths } from '../data/ga1'
+import EquipmentSelect from '../components/EquipmentSelect'
 import type { GA1Inspection, GA1Result } from '../data/types'
 import './screens.css'
 import './field.css'
@@ -9,6 +10,13 @@ import './JobView.css'
 
 const RESULTS: GA1Result[] = ['safe', 'repair_required', 'unsafe']
 const today = () => new Date().toISOString().slice(0, 10)
+
+// Defined at module scope (not inside the component) so it stays a stable
+// component type — otherwise React remounts its children on every keystroke,
+// wiping any internal state (e.g. the equipment "add new" toggle).
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div className="fld-form-field"><label>{label}</label>{children}</div>
+)
 
 function nextReport(existing: string[]) {
   const nums = existing.map((n) => parseInt(n.replace(/\D/g, ''), 10)).filter((n) => !Number.isNaN(n))
@@ -61,10 +69,6 @@ export default function FieldGA1Form() {
     nav(`/field/ga1/${f.id}`)
   }
 
-  const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div className="fld-form-field"><label>{label}</label>{children}</div>
-  )
-
   return (
     <div>
       <div className="fld-topbar">
@@ -87,10 +91,7 @@ export default function FieldGA1Form() {
           </select>
         </Field>
         <Field label="Equipment type">
-          <select value={f.equipmentType} onChange={(e) => set({ equipmentType: e.target.value })}>
-            <option value="">Select…</option>
-            {EQUIPMENT_TYPES.map((t) => <option key={t}>{t}</option>)}
-          </select>
+          <EquipmentSelect value={f.equipmentType} onChange={(v) => set({ equipmentType: v })} />
         </Field>
         <Field label="Manufacturer"><input value={f.manufacturer} onChange={(e) => set({ manufacturer: e.target.value })} /></Field>
         <Field label="Model"><input value={f.model} onChange={(e) => set({ model: e.target.value })} /></Field>

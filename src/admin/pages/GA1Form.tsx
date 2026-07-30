@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, Field } from '../components/ui'
 import { nextNumber, today } from '../formParts'
 import { useStore, newId } from '../../data/store'
-import { EQUIPMENT_TYPES, RESULT_LABELS, addMonths } from '../../data/ga1'
+import { RESULT_LABELS, addMonths } from '../../data/ga1'
+import EquipmentSelect from '../../components/EquipmentSelect'
 import type { GA1Inspection, GA1Result } from '../../data/types'
 
 const RESULTS: GA1Result[] = ['safe', 'repair_required', 'unsafe']
@@ -88,10 +89,7 @@ export default function GA1Form() {
       <FormCard title="Equipment">
         <div className="field-row">
           <Field label="Equipment type">
-            <select value={f.equipmentType} onChange={(e) => set({ equipmentType: e.target.value })}>
-              <option value="">Select…</option>
-              {EQUIPMENT_TYPES.map((t) => <option key={t}>{t}</option>)}
-            </select>
+            <EquipmentSelect value={f.equipmentType} onChange={(v) => set({ equipmentType: v })} />
           </Field>
           <Field label="Manufacturer"><input value={f.manufacturer} onChange={(e) => set({ manufacturer: e.target.value })} /></Field>
           <Field label="Model"><input value={f.model} onChange={(e) => set({ model: e.target.value })} /></Field>
