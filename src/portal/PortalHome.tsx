@@ -30,6 +30,21 @@ export default function PortalHome() {
       )}
 
       <section className="portal-section">
+        <h2>GA1 Reports</h2>
+        {data.ga1.length === 0 ? (
+          <p className="portal-muted">No GA1 reports yet.</p>
+        ) : (
+          <button className="portal-card" onClick={() => nav('/portal/ga1')}>
+            <div className="portal-card-main">
+              <strong>{data.ga1.length} inspection {data.ga1.length === 1 ? 'report' : 'reports'}</strong>
+              <span>View certificates and download your register</span>
+            </div>
+            <span className="badge badge-grey">Open →</span>
+          </button>
+        )}
+      </section>
+
+      <section className="portal-section">
         <h2>Quotes</h2>
         {data.quotes.length === 0 ? (
           <p className="portal-muted">No quotes yet.</p>

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import type { Client, Invoice, Job, Quote } from '../data/types'
+import type { Client, GA1Inspection, Invoice, Job, Quote } from '../data/types'
 
 // Scoped data for the signed-in client. Every query relies on row-level
 // security to return only this client's own rows (see 0009_client_portal.sql).
@@ -14,6 +14,39 @@ export type PortalState = {
   quotes: Quote[]
   jobs: Job[]
   invoices: Invoice[]
+  ga1: GA1Inspection[]
+}
+
+// GA1 rows come back snake_cased from Postgres; map to the app's camelCase type.
+function mapGA1(r: Row): GA1Inspection {
+  return {
+    id: r.id,
+    reportNumber: r.report_number ?? '',
+    clientId: r.client_id,
+    examinerId: r.examiner_id ?? '',
+    examinerCert: r.examiner_cert ?? '',
+    equipmentType: r.equipment_type ?? '',
+    manufacturer: r.manufacturer ?? '',
+    model: r.model ?? '',
+    serialNumber: r.serial_number ?? '',
+    swl: r.swl ?? '',
+    yearOfManufacture: r.year_of_manufacture ?? '',
+    equipmentDescription: r.equipment_description ?? '',
+    examinationDate: r.examination_date ?? '',
+    previousExaminationDate: r.previous_examination_date ?? '',
+    nextExaminationDate: r.next_examination_date ?? '',
+    examinationLocation: r.examination_location ?? '',
+    safeToUse: !!r.safe_to_use,
+    defectsFound: !!r.defects_found,
+    overallResult: r.overall_result ?? 'safe',
+    defectsDescription: r.defects_description ?? '',
+    reinspectionDate: r.reinspection_date ?? '',
+    additionalNotes: r.additional_notes ?? '',
+    signature: r.signature ?? '',
+    purposeOfExamination: r.purpose_of_examination ?? '',
+    particularsOfTests: r.particulars_of_tests ?? '',
+    createdAt: r.created_at ?? '',
+  }
 }
 
 type PortalStore = {
@@ -25,7 +58,7 @@ type PortalStore = {
 }
 
 const PortalContext = createContext<PortalStore | null>(null)
-const EMPTY: PortalState = { client: null, quotes: [], jobs: [], invoices: [] }
+const EMPTY: PortalState = { client: null, quotes: [], jobs: [], invoices: [], ga1: [] }
 
 async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
   // Ensure this login is linked to a client record (by matching email).
@@ -35,6 +68,7 @@ async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
   const [
     { data: clients }, { data: quotes }, { data: quoteItems },
     { data: jobs }, { data: jobItems }, { data: invoices }, { data: invoiceItems },
+    { data: ga1 },
   ] = await Promise.all([
     supabase.from('clients').select('*'),
     supabase.from('quotes').select('*').order('created_at', { ascending: false }),
@@ -43,6 +77,7 @@ async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
     supabase.from('job_items').select('*'),
     supabase.from('invoices').select('*').order('issued_on', { ascending: false }),
     supabase.from('invoice_items').select('*'),
+    supabase.from('ga1_inspections').select('*').order('examination_date', { ascending: false }),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) => mapItems((rows ?? []).filter((r) => r[key] === id))
@@ -66,6 +101,7 @@ async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
         id: i.id, number: i.number, clientId: i.client_id, jobId: i.job_id ?? undefined,
         status: i.status, issuedOn: i.issued_on, dueOn: i.due_on, items: itemsFor(invoiceItems, 'invoice_id', i.id),
       })),
+      ga1: (ga1 ?? []).map(mapGA1),
     },
   }
 }

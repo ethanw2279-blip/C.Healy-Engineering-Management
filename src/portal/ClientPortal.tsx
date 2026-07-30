@@ -6,6 +6,7 @@ import PortalLogin from './PortalLogin'
 import PortalHome from './PortalHome'
 import PortalQuote from './PortalQuote'
 import PortalInvoice from './PortalInvoice'
+import PortalGA1 from './PortalGA1'
 import './portal.css'
 
 function PortalLayout() {
@@ -39,6 +40,10 @@ function PortalLayout() {
             <span>{data.client?.name}</span>
           </div>
         </button>
+        <nav className="portal-nav">
+          <button onClick={() => nav('/portal')}>Home</button>
+          <button onClick={() => nav('/portal/ga1')}>GA1 Reports</button>
+        </nav>
         <button className="portal-signout" onClick={() => supabase.auth.signOut()}>Sign out</button>
       </header>
       <main className="portal-main">
@@ -71,6 +76,7 @@ export default function ClientPortal() {
         <Routes>
           <Route element={<PortalLayout />}>
             <Route path="/portal" element={<PortalHome />} />
+            <Route path="/portal/ga1" element={<PortalGA1 />} />
             <Route path="/portal/quotes/:id" element={<PortalQuote />} />
             <Route path="/portal/invoices/:id" element={<PortalInvoice />} />
             <Route path="*" element={<Navigate to="/portal" replace />} />

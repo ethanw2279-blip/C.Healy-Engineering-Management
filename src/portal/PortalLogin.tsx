@@ -6,9 +6,13 @@ type Mode = 'signin' | 'signup' | 'forgot'
 
 // Client-facing login. Same email+password flow as staff, but branded for the
 // customer and pointed back at the portal.
+// A deep link from a "your reports are ready" email carries ?email=… so we can
+// pre-fill it (account linking matches on this exact address).
+const prefillEmail = new URLSearchParams(window.location.search).get('email') ?? ''
+
 export default function PortalLogin() {
   const [mode, setMode] = useState<Mode>('signin')
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(prefillEmail)
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)

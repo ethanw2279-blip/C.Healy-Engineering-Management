@@ -744,3 +744,7 @@
   .detail-actions > a > .btn { width: 100%; }
   .detail-actions > .btn { flex: 1 1 130px; }
 }
+
+/* GA1 register actions on the client detail page. */
+.ga1-register-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
+.ga1-register-msg { margin-bottom: 12px; font-size: 13px; color: var(--muted, #5b6e72); }

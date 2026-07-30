@@ -117,6 +117,31 @@
 .badge-red { background: #fbe4e4; color: #b53434; }
 .badge-grey { background: #eceeee; color: #5b6e72; }
 
+/* Header nav (Home / GA1 Reports). */
+.portal-nav { display: flex; gap: 6px; margin-left: auto; margin-right: 12px; }
+.portal-nav button {
+  padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 14px;
+  color: var(--navy); background: transparent;
+}
+.portal-nav button:hover { background: #f0f3f3; }
+
+/* GA1 register export buttons — inline row, not full width. */
+.portal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.portal-actions .portal-btn { margin-top: 0; width: auto; padding: 11px 18px; font-size: 15px; }
+
+/* GA1 register table. */
+.portal-table-wrap { overflow-x: auto; background: #fff; border: 1px solid #e4e8e8; border-radius: 14px; }
+.portal-ga1-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 720px; }
+.portal-ga1-table th {
+  text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.03em;
+  color: #fff; background: var(--navy); padding: 10px 12px; white-space: nowrap;
+}
+.portal-ga1-table td { padding: 10px 12px; border-bottom: 1px solid #eef1f1; vertical-align: top; }
+.portal-ga1-table tr:last-child td { border-bottom: none; }
+.portal-ga1-table tr:nth-child(even) td { background: #f7f9fb; }
+.portal-link { color: var(--green-dark); font-weight: 700; text-decoration: none; }
+.portal-link:hover { text-decoration: underline; }
+
 @media print {
   .no-print, .portal-header { display: none !important; }
   .portal-shell { background: #fff; }
