@@ -19,8 +19,15 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
 )
 
 function nextReport(existing: string[]) {
-  const nums = existing.map((n) => parseInt(n.replace(/\D/g, ''), 10)).filter((n) => !Number.isNaN(n))
-  return `GA1-${(nums.length ? Math.max(...nums) : 1000) + 1}`
+  // Parse the digits after "GA1-" (not all digits — the "1" in GA1 would
+  // otherwise fold in and make numbers balloon each time).
+  const nums = existing
+    .map((n) => parseInt(String(n).replace(/^GA1-/i, '').replace(/\D/g, ''), 10))
+    .filter((n) => !Number.isNaN(n))
+  let next = (nums.length ? Math.max(...nums) : 1000) + 1
+  const used = new Set(existing)
+  while (used.has(`GA1-${next}`)) next++
+  return `GA1-${next}`
 }
 
 export default function FieldGA1Form() {

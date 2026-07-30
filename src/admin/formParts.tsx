@@ -10,10 +10,15 @@ export const today = () => new Date().toISOString().slice(0, 10)
 export const blankItems = (): LineItem[] => [{ id: newId('li'), name: '', qty: 1, unitPrice: 0 }]
 
 export function nextNumber(prefix: string, existing: string[]) {
+  // Parse the number AFTER the prefix. Stripping all non-digits would fold a
+  // digit in the prefix (e.g. the "1" in "GA1-") into the count, which makes
+  // GA1 numbers balloon each time (GA1-1042 → GA1-11043 → GA1-111044 …).
   const nums = existing
-    .map((n) => parseInt(n.replace(/\D/g, ''), 10))
+    .map((n) => parseInt((n.startsWith(prefix) ? n.slice(prefix.length) : n).replace(/\D/g, ''), 10))
     .filter((n) => !Number.isNaN(n))
-  const next = (nums.length ? Math.max(...nums) : 1000) + 1
+  let next = (nums.length ? Math.max(...nums) : 1000) + 1
+  const used = new Set(existing)
+  while (used.has(`${prefix}${next}`)) next++ // never collide with an existing number
   return `${prefix}${next}`
 }
 
