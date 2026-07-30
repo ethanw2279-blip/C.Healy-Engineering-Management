@@ -13,12 +13,14 @@ export function nextNumber(prefix: string, existing: string[]) {
   // Parse the number AFTER the prefix. Stripping all non-digits would fold a
   // digit in the prefix (e.g. the "1" in "GA1-") into the count, which makes
   // GA1 numbers balloon each time (GA1-1042 → GA1-11043 → GA1-111044 …).
+  // Ignore anything beyond the safe-integer range — those are corrupted numbers
+  // from the old bug, and +1 on them never advances (which would hang).
   const nums = existing
     .map((n) => parseInt((n.startsWith(prefix) ? n.slice(prefix.length) : n).replace(/\D/g, ''), 10))
-    .filter((n) => !Number.isNaN(n))
+    .filter((n) => Number.isSafeInteger(n))
   let next = (nums.length ? Math.max(...nums) : 1000) + 1
   const used = new Set(existing)
-  while (used.has(`${prefix}${next}`)) next++ // never collide with an existing number
+  for (let guard = 0; used.has(`${prefix}${next}`) && guard < 100000; guard++) next++
   return `${prefix}${next}`
 }
 
