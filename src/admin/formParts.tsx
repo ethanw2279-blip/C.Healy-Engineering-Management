@@ -9,16 +9,24 @@ export const today = () => new Date().toISOString().slice(0, 10)
 
 export const blankItems = (): LineItem[] => [{ id: newId('li'), name: '', qty: 1, unitPrice: 0 }]
 
+// No document counter legitimately reaches a million. Anything at or above this
+// is corrupt data from the old ballooning bug (GA1-11111111111111056 …). We
+// ignore those when picking the next number — crucially, values past
+// Number.MAX_SAFE_INTEGER can't be incremented in floating point, so feeding
+// one into the collision guard below would spin forever and freeze the app.
+const SANE_MAX = 1_000_000
+
 export function nextNumber(prefix: string, existing: string[]) {
   // Parse the number AFTER the prefix. Stripping all non-digits would fold a
   // digit in the prefix (e.g. the "1" in "GA1-") into the count, which makes
   // GA1 numbers balloon each time (GA1-1042 → GA1-11043 → GA1-111044 …).
   const nums = existing
+    .map((n) => String(n))
     .map((n) => parseInt((n.startsWith(prefix) ? n.slice(prefix.length) : n).replace(/\D/g, ''), 10))
-    .filter((n) => !Number.isNaN(n))
+    .filter((n) => Number.isSafeInteger(n) && n > 0 && n < SANE_MAX)
   let next = (nums.length ? Math.max(...nums) : 1000) + 1
   const used = new Set(existing)
-  while (used.has(`${prefix}${next}`)) next++ // never collide with an existing number
+  while (used.has(`${prefix}${next}`)) next++ // bounded: next stays a small safe integer
   return `${prefix}${next}`
 }
 

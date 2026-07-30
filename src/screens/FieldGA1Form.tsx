@@ -18,15 +18,22 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
   <div className="fld-form-field"><label>{label}</label>{children}</div>
 )
 
+// No report counter legitimately reaches a million. Anything at or above this
+// is corrupt data from the old ballooning bug (GA1-11111111111111056 …). We
+// ignore those when picking the next number — crucially, values past
+// Number.MAX_SAFE_INTEGER can't be incremented in floating point, so feeding
+// one into the collision guard below would spin forever and freeze the app.
+const SANE_MAX = 1_000_000
+
 function nextReport(existing: string[]) {
   // Parse the digits after "GA1-" (not all digits — the "1" in GA1 would
   // otherwise fold in and make numbers balloon each time).
   const nums = existing
     .map((n) => parseInt(String(n).replace(/^GA1-/i, '').replace(/\D/g, ''), 10))
-    .filter((n) => !Number.isNaN(n))
+    .filter((n) => Number.isSafeInteger(n) && n > 0 && n < SANE_MAX)
   let next = (nums.length ? Math.max(...nums) : 1000) + 1
   const used = new Set(existing)
-  while (used.has(`GA1-${next}`)) next++
+  while (used.has(`GA1-${next}`)) next++ // bounded: next stays a small safe integer
   return `GA1-${next}`
 }
 
