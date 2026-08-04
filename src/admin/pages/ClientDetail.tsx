@@ -14,6 +14,8 @@ import {
   formatDate,
   formatDateShort,
 } from '../../data/store'
+import { GA1_EXAM_TYPE, ga1Description, registerStatus } from '../../data/ga1'
+import { downloadRegisterCsv, downloadRegisterPdf, emailReportsToClient } from '../../data/ga1Export'
 
 export default function ClientDetail() {
   const { id } = useParams()
@@ -21,6 +23,8 @@ export default function ClientDetail() {
   const { state, dispatch } = useStore()
   const { can } = useCurrentUser()
   const [editing, setEditing] = useState(false)
+  const [ga1Busy, setGa1Busy] = useState<null | 'email' | 'pdf'>(null)
+  const [ga1Msg, setGa1Msg] = useState<string | null>(null)
 
   const client = state.clients.find((c) => c.id === id)
   if (!client) {
@@ -37,6 +41,37 @@ export default function ClientDetail() {
   const quotes = state.quotes.filter((q) => q.clientId === client.id)
   const invoices = state.invoices.filter((i) => i.clientId === client.id)
   const requests = state.requests.filter((r) => r.clientId === client.id)
+
+  const ga1 = state.ga1.filter((g) => g.clientId === client.id)
+  const registerName = client.company || client.name
+
+  const emailReports = async () => {
+    setGa1Msg(null)
+    setGa1Busy('email')
+    try {
+      const { sentTo, reportCount } = await emailReportsToClient(client.id)
+      setGa1Msg(`Sent a portal link for ${reportCount} report${reportCount === 1 ? '' : 's'} to ${sentTo}.`)
+    } catch (e) {
+      setGa1Msg(e instanceof Error ? e.message : 'Could not send the email.')
+    } finally {
+      setGa1Busy(null)
+    }
+  }
+  const registerCsv = () => {
+    setGa1Msg(null)
+    downloadRegisterCsv(ga1, registerName, formatDate)
+  }
+  const registerPdf = async () => {
+    setGa1Msg(null)
+    setGa1Busy('pdf')
+    try {
+      await downloadRegisterPdf(registerName, client.id)
+    } catch (e) {
+      setGa1Msg(e instanceof Error ? e.message : 'Could not download the register.')
+    } finally {
+      setGa1Busy(null)
+    }
+  }
 
   const currentJobs = jobs.filter((j) => j.status !== 'Complete')
   const pastJobs = jobs.filter((j) => j.status === 'Complete')
@@ -196,6 +231,45 @@ export default function ClientDetail() {
                   <td className="cell-muted">{formatDate(i.dueOn)}</td>
                   <td><StatusBadge status={i.status} /></td>
                   <td className="num cell-strong">{eur(invoiceTotal(i))}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </Section>
+
+      {/* GA1 reports + register */}
+      <Section title={`GA1 reports (${ga1.length})`}>
+        {canManage && (
+          <div className="ga1-register-bar">
+            <Button variant="secondary" size="sm" onClick={emailReports} disabled={ga1Busy !== null || !client.email}>
+              {ga1Busy === 'email' ? 'Sending…' : 'Email reports to client'}
+            </Button>
+            <Button variant="secondary" size="sm" onClick={registerPdf} disabled={ga1Busy !== null || ga1.length === 0}>
+              {ga1Busy === 'pdf' ? 'Preparing…' : 'Download register (PDF)'}
+            </Button>
+            <Button variant="secondary" size="sm" onClick={registerCsv} disabled={ga1.length === 0}>
+              Download register (CSV)
+            </Button>
+            {!client.email && <span className="cell-muted">Add an email address to send reports.</span>}
+          </div>
+        )}
+        {ga1Msg && <div className="ga1-register-msg">{ga1Msg}</div>}
+        {ga1.length === 0 ? (
+          <EmptyState title="No GA1 reports" />
+        ) : (
+          <table className="table">
+            <thead><tr><th>Exam Type</th><th>Serial No.</th><th>Description</th><th>Exam Date</th><th>Next Exam</th><th>Status</th><th>Cert No.</th></tr></thead>
+            <tbody>
+              {ga1.map((g) => (
+                <tr key={g.id} className="clickable" onClick={() => nav(`/ga1/${g.id}`)}>
+                  <td className="cell-muted">{GA1_EXAM_TYPE}</td>
+                  <td>{g.serialNumber || '—'}</td>
+                  <td className="cell-muted">{ga1Description(g)}</td>
+                  <td className="cell-muted">{formatDate(g.examinationDate)}</td>
+                  <td className="cell-muted">{formatDate(g.nextExaminationDate)}</td>
+                  <td><StatusBadge status={registerStatus(g)} /></td>
+                  <td className="cell-strong">{g.reportNumber}</td>
                 </tr>
               ))}
             </tbody>
