@@ -17,9 +17,11 @@ create table if not exists client_users (
   auth_user_id  uuid references auth.users (id) on delete set null,
   role          text not null default 'member' check (role in ('owner','member','viewer')),
   invited_by    uuid,
-  created_at    timestamptz not null default now(),
-  unique (client_id, lower(email))
+  created_at    timestamptz not null default now()
 );
+-- One membership per email per client. A case-insensitive expression can't go
+-- in a table-level UNIQUE constraint, so it's a unique index.
+create unique index if not exists client_users_client_email_idx on client_users (client_id, lower(email));
 create index if not exists client_users_auth_idx on client_users (auth_user_id);
 
 -- The client id for the signed-in user — now via the primary link OR a
