@@ -17,7 +17,8 @@ import Equipment from './screens/Equipment'
 import Request from './screens/Request'
 import Documents from './screens/Documents'
 import Settings from './screens/Settings'
-import ComingSoon from './screens/ComingSoon'
+import Shop from './screens/Shop'
+import Pay from './screens/Pay'
 import './portal.css'
 
 type Theme = 'light' | 'dark'
@@ -59,8 +60,8 @@ function Screen() {
     case 'request': return <Request />
     case 'documents': return <Documents />
     case 'settings': return <Settings />
-    case 'shop': return <ComingSoon title="Parts & orders" blurb="Reorder consumables and lifting gear, delivered with your next visit. Wiring up next." />
-    case 'pay': return <ComingSoon title="Pay invoice" blurb="Secure card and bank payment. Wiring up next." />
+    case 'shop': return <Shop />
+    case 'pay': return <Pay />
     default: return <Overview />
   }
 }
