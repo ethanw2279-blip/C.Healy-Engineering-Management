@@ -9,12 +9,25 @@ type Row = Record<string, any>
 const num = (v: unknown) => Number(v ?? 0)
 const mapItems = (rows: Row[]) => rows.map((r) => ({ id: r.id, name: r.name, qty: num(r.qty), unitPrice: num(r.unit_price) }))
 
+export type PortalDoc = { id: string; name: string; kind: string; category: 'Certificates' | 'Files'; date: string; url?: string; attachmentId?: string; size: number }
+export type PortalProduct = { id: string; name: string; sku: string; description: string; price: number; stock: number }
+export type PortalOrder = { id: string; number: string; status: string; createdAt: string; items: { name: string; qty: number; unitPrice: number }[]; total: number }
+export type PortalMember = { id: string; email: string; role: string; linked: boolean }
+export type NotifPrefs = { gaReminders: boolean; invoiceReminders: boolean; quoteUpdates: boolean; jobUpdates: boolean; marketing: boolean; notifyEmail: string }
+
+export const DEFAULT_PREFS: NotifPrefs = { gaReminders: true, invoiceReminders: true, quoteUpdates: true, jobUpdates: true, marketing: false, notifyEmail: '' }
+
 export type PortalState = {
   client: Client | null
   quotes: Quote[]
   jobs: Job[]
   invoices: Invoice[]
   ga1: GA1Inspection[]
+  documents: PortalDoc[]
+  products: PortalProduct[]
+  orders: PortalOrder[]
+  members: PortalMember[]
+  prefs: NotifPrefs
 }
 
 // GA1 rows come back snake_cased from Postgres; map to the app's camelCase type.
@@ -58,17 +71,20 @@ type PortalStore = {
 }
 
 const PortalContext = createContext<PortalStore | null>(null)
-const EMPTY: PortalState = { client: null, quotes: [], jobs: [], invoices: [], ga1: [] }
+const EMPTY: PortalState = { client: null, quotes: [], jobs: [], invoices: [], ga1: [], documents: [], products: [], orders: [], members: [], prefs: DEFAULT_PREFS }
 
 async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
   // Ensure this login is linked to a client record (by matching email).
   const { data: cid } = await supabase.rpc('link_client_account')
   if (!cid) return { state: EMPTY, linked: false }
 
+  // Later tables (attachments, shop, members, prefs) may not exist yet if the
+  // Stage 3 migration hasn't been run — every query defaults to empty on error.
   const [
     { data: clients }, { data: quotes }, { data: quoteItems },
     { data: jobs }, { data: jobItems }, { data: invoices }, { data: invoiceItems },
-    { data: ga1 },
+    { data: ga1 }, { data: attachments }, { data: products }, { data: orders },
+    { data: orderItems }, { data: members }, { data: prefsRows },
   ] = await Promise.all([
     supabase.from('clients').select('*'),
     supabase.from('quotes').select('*').order('created_at', { ascending: false }),
@@ -78,10 +94,28 @@ async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
     supabase.from('invoices').select('*').order('issued_on', { ascending: false }),
     supabase.from('invoice_items').select('*'),
     supabase.from('ga1_inspections').select('*').order('examination_date', { ascending: false }),
+    supabase.from('attachments').select('*').order('created_at', { ascending: false }),
+    supabase.from('products').select('*').eq('active', true).order('name'),
+    supabase.from('orders').select('*').order('created_at', { ascending: false }),
+    supabase.from('order_items').select('*'),
+    supabase.from('client_users').select('*'),
+    supabase.from('client_notification_prefs').select('*'),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) => mapItems((rows ?? []).filter((r) => r[key] === id))
   const c = (clients ?? [])[0] as Row | undefined
+  const ga1Rows = (ga1 ?? []).map(mapGA1)
+
+  // Documents = GA1 certificates + files attached to the client / their jobs.
+  const documents: PortalDoc[] = [
+    ...ga1Rows.map((g) => ({ id: `ga1-${g.id}`, name: `GA1 ${g.reportNumber} — ${g.equipmentType || g.serialNumber}`, kind: 'GA1 Certificate', category: 'Certificates' as const, date: g.examinationDate, url: `/api/ga1/${g.id}/pdf`, size: 0 })),
+    ...(attachments ?? []).map((a: Row) => ({ id: `att-${a.id}`, name: a.file_name, kind: a.entity_type === 'job' ? 'Job document' : 'Document', category: 'Files' as const, date: a.created_at, attachmentId: a.id, size: num(a.size) })),
+  ]
+
+  const pr = (prefsRows ?? [])[0] as Row | undefined
+  const prefs: NotifPrefs = pr
+    ? { gaReminders: !!pr.ga1_reminders, invoiceReminders: !!pr.invoice_reminders, quoteUpdates: !!pr.quote_updates, jobUpdates: !!pr.job_updates, marketing: !!pr.marketing, notifyEmail: pr.notify_email ?? '' }
+    : { ...DEFAULT_PREFS, notifyEmail: c?.email ?? '' }
 
   return {
     linked: true,
@@ -101,7 +135,15 @@ async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
         id: i.id, number: i.number, clientId: i.client_id, jobId: i.job_id ?? undefined,
         status: i.status, issuedOn: i.issued_on, dueOn: i.due_on, items: itemsFor(invoiceItems, 'invoice_id', i.id),
       })),
-      ga1: (ga1 ?? []).map(mapGA1),
+      ga1: ga1Rows,
+      documents,
+      products: (products ?? []).map((p: Row) => ({ id: p.id, name: p.name, sku: p.sku ?? '', description: p.description ?? '', price: num(p.price), stock: num(p.stock) })),
+      orders: (orders ?? []).map((o: Row) => {
+        const its = mapItems((orderItems ?? []).filter((r) => r.order_id === o.id))
+        return { id: o.id, number: o.number, status: o.status, createdAt: o.created_at, items: its, total: its.reduce((s, it) => s + it.qty * it.unitPrice, 0) }
+      }),
+      members: (members ?? []).map((m: Row) => ({ id: m.id, email: m.email, role: m.role, linked: !!m.auth_user_id })),
+      prefs,
     },
   }
 }

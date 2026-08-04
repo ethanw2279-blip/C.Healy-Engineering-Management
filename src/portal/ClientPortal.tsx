@@ -15,6 +15,8 @@ import { Jobs, JobDetail } from './screens/Jobs'
 import { Invoices, InvoiceDetail } from './screens/Invoices'
 import Equipment from './screens/Equipment'
 import Request from './screens/Request'
+import Documents from './screens/Documents'
+import Settings from './screens/Settings'
 import ComingSoon from './screens/ComingSoon'
 import './portal.css'
 
@@ -55,9 +57,9 @@ function Screen() {
     case 'invoice': return <InvoiceDetail />
     case 'equipment': return <Equipment />
     case 'request': return <Request />
-    case 'documents': return <ComingSoon title="Documents" blurb="Certificates, method statements and reports — all your issued documents in one place. Wiring up next." />
+    case 'documents': return <Documents />
+    case 'settings': return <Settings />
     case 'shop': return <ComingSoon title="Parts & orders" blurb="Reorder consumables and lifting gear, delivered with your next visit. Wiring up next." />
-    case 'settings': return <ComingSoon title="Account" blurb="Notification preferences, people on your account, and billing details. Wiring up next." />
     case 'pay': return <ComingSoon title="Pay invoice" blurb="Secure card and bank payment. Wiring up next." />
     default: return <Overview />
   }
