@@ -28,6 +28,7 @@ function initialView(): NavState {
   if (p.includes('/invoices')) return { view: 'invoices' }
   if (p.includes('/documents')) return { view: 'documents' }
   if (p.includes('/shop') || p.includes('/parts')) return { view: 'shop' }
+  if (p.includes('/pay')) return { view: 'pay' }
   if (p.includes('/request')) return { view: 'request' }
   if (p.includes('/settings') || p.includes('/account')) return { view: 'settings' }
   return { view: 'home' }
