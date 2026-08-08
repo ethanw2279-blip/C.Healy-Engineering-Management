@@ -48,6 +48,18 @@ export async function downloadRegisterPdf(clientName: string, clientId?: string)
   triggerDownload(await res.blob(), `GA1-Register-${slug(clientName)}.pdf`)
 }
 
+/** Download the selected GA1 certificates bundled into one .zip. */
+export async function downloadGA1Zip(ids: string[], clientName: string) {
+  if (ids.length === 0) throw new Error('No reports selected.')
+  const token = await bearer()
+  const res = await fetch(`/api/ga1/zip?ids=${encodeURIComponent(ids.join(','))}`, { headers: { Authorization: `Bearer ${token}` } })
+  if (!res.ok) {
+    const msg = await res.json().catch(() => ({}))
+    throw new Error(msg.error || `Zip download failed (${res.status}).`)
+  }
+  triggerDownload(await res.blob(), `GA1-Reports-${slug(clientName)}.zip`)
+}
+
 /** Email a client a portal link to their GA1 reports (staff only). */
 export async function emailReportsToClient(clientId: string): Promise<{ sentTo: string; reportCount: number }> {
   const token = await bearer()
