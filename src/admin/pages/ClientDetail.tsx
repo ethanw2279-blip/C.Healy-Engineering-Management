@@ -15,7 +15,7 @@ import {
   formatDateShort,
 } from '../../data/store'
 import { GA1_EXAM_TYPE, ga1Description, registerStatus } from '../../data/ga1'
-import { downloadRegisterCsv, downloadRegisterPdf, emailReportsToClient } from '../../data/ga1Export'
+import { downloadRegisterCsv, downloadRegisterPdf, emailReportsToClient, downloadGA1Zip } from '../../data/ga1Export'
 
 export default function ClientDetail() {
   const { id } = useParams()
@@ -23,8 +23,9 @@ export default function ClientDetail() {
   const { state, dispatch } = useStore()
   const { can } = useCurrentUser()
   const [editing, setEditing] = useState(false)
-  const [ga1Busy, setGa1Busy] = useState<null | 'email' | 'pdf'>(null)
+  const [ga1Busy, setGa1Busy] = useState<null | 'email' | 'pdf' | 'zip'>(null)
   const [ga1Msg, setGa1Msg] = useState<string | null>(null)
+  const [ga1Selected, setGa1Selected] = useState<Set<string>>(new Set())
 
   const client = state.clients.find((c) => c.id === id)
   if (!client) {
@@ -68,6 +69,23 @@ export default function ClientDetail() {
       await downloadRegisterPdf(registerName, client.id)
     } catch (e) {
       setGa1Msg(e instanceof Error ? e.message : 'Could not download the register.')
+    } finally {
+      setGa1Busy(null)
+    }
+  }
+  const toggleGa1 = (id: string) => setGa1Selected((prev) => {
+    const next = new Set(prev)
+    next.has(id) ? next.delete(id) : next.add(id)
+    return next
+  })
+  const toggleGa1All = () => setGa1Selected((prev) => (prev.size === ga1.length ? new Set() : new Set(ga1.map((g) => g.id))))
+  const downloadZip = async () => {
+    setGa1Msg(null)
+    setGa1Busy('zip')
+    try {
+      await downloadGA1Zip([...ga1Selected], registerName)
+    } catch (e) {
+      setGa1Msg(e instanceof Error ? e.message : 'Could not download the zip.')
     } finally {
       setGa1Busy(null)
     }
@@ -251,6 +269,9 @@ export default function ClientDetail() {
             <Button variant="secondary" size="sm" onClick={registerCsv} disabled={ga1.length === 0}>
               Download register (CSV)
             </Button>
+            <Button variant="secondary" size="sm" onClick={downloadZip} disabled={ga1Busy !== null || ga1Selected.size === 0}>
+              {ga1Busy === 'zip' ? 'Zipping…' : `Download selected (ZIP)${ga1Selected.size ? ` · ${ga1Selected.size}` : ''}`}
+            </Button>
             {!client.email && <span className="cell-muted">Add an email address to send reports.</span>}
           </div>
         )}
@@ -259,10 +280,18 @@ export default function ClientDetail() {
           <EmptyState title="No GA1 reports" />
         ) : (
           <table className="table">
-            <thead><tr><th>Exam Type</th><th>Serial No.</th><th>Description</th><th>Exam Date</th><th>Next Exam</th><th>Status</th><th>Cert No.</th></tr></thead>
+            <thead><tr>
+              {canManage && <th style={{ width: 32 }}><input type="checkbox" aria-label="Select all GA1 reports" checked={ga1Selected.size === ga1.length && ga1.length > 0} onChange={toggleGa1All} /></th>}
+              <th>Exam Type</th><th>Serial No.</th><th>Description</th><th>Exam Date</th><th>Next Exam</th><th>Status</th><th>Cert No.</th>
+            </tr></thead>
             <tbody>
               {ga1.map((g) => (
                 <tr key={g.id} className="clickable" onClick={() => nav(`/ga1/${g.id}`)}>
+                  {canManage && (
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <input type="checkbox" aria-label={`Select ${g.reportNumber}`} checked={ga1Selected.has(g.id)} onChange={() => toggleGa1(g.id)} />
+                    </td>
+                  )}
                   <td className="cell-muted">{GA1_EXAM_TYPE}</td>
                   <td>{g.serialNumber || '—'}</td>
                   <td className="cell-muted">{ga1Description(g)}</td>
