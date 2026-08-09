@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useStore, eur, eurExact, itemsTotal, formatDate } from '../../data/store'
+import { useStore, eurExact, itemsTotal, formatDate } from '../../data/store'
 import { COMPANY } from '../../data/company'
 import type { LineItem } from '../../data/types'
 import './print.css'
@@ -47,7 +47,10 @@ export default function PrintDocument({ kind }: { kind: 'quote' | 'invoice' }) {
   }
 
   const items = record.items as LineItem[]
-  const total = itemsTotal(items)
+  // Line prices are net (VAT-exclusive): subtotal → VAT → gross amount due.
+  const subtotal = itemsTotal(items)
+  const vat = subtotal * (COMPANY.vatRate / 100)
+  const total = subtotal + vat
   const heading = kind === 'quote' ? 'Quote' : 'Invoice'
 
   // Brand lockup: first word on line one, the remainder on line two
@@ -159,13 +162,17 @@ export default function PrintDocument({ kind }: { kind: 'quote' | 'invoice' }) {
             {/* Totals */}
             <section className="doc-totals">
               <div className="doc-totals-inner">
-                <div className="doc-total-row bordered">
+                <div className="doc-total-row">
                   <span>Subtotal</span>
-                  <span>{eurExact(total)}</span>
+                  <span>{eurExact(subtotal)}</span>
+                </div>
+                <div className="doc-total-row bordered">
+                  <span>VAT @ {COMPANY.vatRate}%</span>
+                  <span>{eurExact(vat)}</span>
                 </div>
                 <div className="doc-amount-due">
                   <span className="label">Amount due</span>
-                  <span className="value">{eur(total)}</span>
+                  <span className="value">{eurExact(total)}</span>
                 </div>
               </div>
             </section>

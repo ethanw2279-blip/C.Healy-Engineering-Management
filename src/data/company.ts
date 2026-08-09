@@ -10,5 +10,8 @@ export const COMPANY = {
   addressLines: ['C.Healy Engineering, Annacurragh, Ireland'],
   email: 'info@chealyengineering.ie',
   phone: '+353 86 277 1717',
-  vat: '', // optional VAT/registration number
+  vat: '', // optional VAT/registration number (printed on quotes/invoices)
+  // VAT rate applied to quote/invoice line totals. Line prices are treated as
+  // net (VAT-exclusive); the document shows Subtotal → VAT → Amount due.
+  vatRate: 23,
 }
