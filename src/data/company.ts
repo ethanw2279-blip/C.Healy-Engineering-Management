@@ -4,10 +4,10 @@
 // truth, so changing them here updates everywhere.
 export const COMPANY = {
   name: 'C.Healy Engineering',
-  tagline: 'Engineering Management',
+  tagline: 'MOBILE WELDING & FABRICATION',
   // TODO: replace with your real business details — these print on customer
   // quotes and invoices.
-  addressLines: ['C.Healy Engineering, Annacurra', 'City, Ireland'],
+  addressLines: ['C.Healy Engineering, Annacurragh, Ireland'],
   email: 'info@chealyengineering.ie',
   phone: '+353 86 277 1717',
   vat: '', // optional VAT/registration number
