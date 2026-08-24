@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useStore, useCurrentUser, newId } from '../data/store'
 import { todayISO } from '../mobile/fieldHelpers'
-import type { TimeEntry } from '../data/types'
+import type { TimeEntry, TimeEntryKind } from '../data/types'
 import './field.css'
 import './Timesheet.css'
 
@@ -14,11 +14,21 @@ function hoursBetween(start: string, end: string) {
 }
 
 // Manual time entry for the field app — for when someone forgets to clock in/out.
-// Pass `editing` to change or delete an existing (unapproved) entry.
-export default function AddHoursSheet({ editing, onClose }: { editing?: TimeEntry; onClose: () => void }) {
+// Pass `editing` to change or delete an existing (unapproved) entry, or `kind`
+// to preset Working vs Travel hours (e.g. the "Travel hours" quick action).
+export default function AddHoursSheet({
+  editing,
+  kind: initialKind,
+  onClose,
+}: {
+  editing?: TimeEntry
+  kind?: TimeEntryKind
+  onClose: () => void
+}) {
   const { state, dispatch } = useStore()
   const { user } = useCurrentUser()
 
+  const [kind, setKind] = useState<TimeEntryKind>(editing?.kind ?? initialKind ?? 'work')
   const [date, setDate] = useState(editing?.date ?? todayISO())
   const [start, setStart] = useState('08:00')
   const [end, setEnd] = useState('16:00')
@@ -37,6 +47,7 @@ export default function AddHoursSheet({ editing, onClose }: { editing?: TimeEntr
       jobId: jobId || undefined,
       date,
       hours,
+      kind,
       note: note.trim() || 'Manual entry',
       approved: false,
     }
@@ -59,7 +70,28 @@ export default function AddHoursSheet({ editing, onClose }: { editing?: TimeEntr
     <div className="sheet-overlay" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
         <div className="sheet-handle" />
-        <h2 className="sheet-title">{editing ? 'Edit hours' : 'Add hours'}</h2>
+        <h2 className="sheet-title">{editing ? 'Edit hours' : kind === 'travel' ? 'Add travel hours' : 'Add hours'}</h2>
+
+        <div className="hours-kind" role="tablist" aria-label="Hours type">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={kind === 'work'}
+            className={`hours-kind-opt ${kind === 'work' ? 'is-work' : ''}`}
+            onClick={() => setKind('work')}
+          >
+            Working hours
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={kind === 'travel'}
+            className={`hours-kind-opt ${kind === 'travel' ? 'is-travel' : ''}`}
+            onClick={() => setKind('travel')}
+          >
+            Travel hours
+          </button>
+        </div>
 
         <div className="fld-form-field">
           <label>Date</label>

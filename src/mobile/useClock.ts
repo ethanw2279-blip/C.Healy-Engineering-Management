@@ -33,7 +33,7 @@ export function useClock() {
     const hours = Math.round(((Date.now() - startedAt) / 3600000) * 100) / 100
     dispatch({
       type: 'ADD_TIME_ENTRY',
-      entry: { id: newId('t'), employeeId: user.id, date: todayISO(), hours, note: 'Clocked via mobile', approved: false },
+      entry: { id: newId('t'), employeeId: user.id, date: todayISO(), hours, kind: 'work', note: 'Clocked via mobile', approved: false },
     })
     localStorage.removeItem(key)
     setStartedAt(null)

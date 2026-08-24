@@ -1,11 +1,37 @@
-.doc-screen {
-  min-height: 100dvh;
-  background: #e9ecec;
-  padding: 24px 16px 60px;
+/* C. Healy Engineering — customer document sheet (quotes & invoices).
+   Dark/brass brand recreation of the uploaded Invoice_A4 design.
+   Fonts: Archivo (display) + IBM Plex Mono (labels/figures), from Google Fonts.
+   The sheet is true A4 (210mm) and never scaled down — long documents simply
+   flow onto additional A4 pages. All spacing is in mm/pt so the on-screen
+   preview and the printed PDF are pixel-for-pixel the same. */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --doc-bg: #080a0d;        /* page ground */
+  --doc-panel: #15181A;     /* header band */
+  --doc-callout: #12161f;   /* tagline strip */
+  --doc-ink: #F7F6F3;       /* primary text */
+  --doc-ink-2: #C9CDD1;     /* meta figures */
+  --doc-ink-3: #9AA0A5;     /* body secondary */
+  --doc-ink-mut: #6E7479;   /* mono labels */
+  --doc-brass: #C0993F;
+  --doc-brass-2: #8A6A22;
+  --doc-hair: rgba(255, 255, 255, 0.07);
+  --doc-brass-grad: linear-gradient(110deg, #C0993F, #8A6A22);
+  --font-display: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 }
 
+/* ---- Screen scaffold (hidden when printing) ------------------------------ */
+.doc-screen {
+  min-height: 100dvh;
+  background: #0d0f12;
+  padding: 24px 16px 60px;
+  overflow-x: auto;
+}
 .doc-toolbar {
-  max-width: 800px;
+  width: 210mm;
+  max-width: 100%;
   margin: 0 auto 18px;
   display: flex;
   justify-content: space-between;
@@ -14,122 +40,262 @@
 .doc-back {
   font-size: 14px;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--doc-brass);
 }
 .doc-print {
-  background: var(--green);
-  color: #fff;
-  font-weight: 700;
+  background: var(--doc-brass-grad);
+  color: #15181A;
+  font-weight: 800;
   font-size: 14px;
-  padding: 10px 18px;
-  border-radius: 9px;
+  padding: 10px 20px;
+  border-radius: 100px;
 }
-.doc-print:hover { background: var(--green-dark); }
+.doc-print:hover { filter: brightness(1.06); }
 
-/* The A4-ish document sheet. */
+/* ---- The A4 sheet -------------------------------------------------------- */
 .doc-sheet {
-  max-width: 800px;
+  width: 210mm;
+  min-height: 297mm;
   margin: 0 auto;
-  background: #fff;
-  padding: 48px 52px;
-  border-radius: 6px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-  color: #1a2b2f;
-}
-
-/* Branded header band — navy so the white/gold banner logo shows on print. */
-.doc-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  background: var(--navy);
-  border-radius: 8px;
-  padding: 22px 30px;
+  background: var(--doc-bg);
+  color: var(--doc-ink);
+  font-family: var(--font-display);
+  box-shadow: 0 22px 48px -22px rgba(0, 0, 0, 0.85);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  display: flex;
+  flex-direction: column;
 }
-.doc-banner-logo { height: 56px; width: auto; }
-.doc-banner-title { text-align: right; }
-.doc-banner-title h1 { font-size: 28px; font-weight: 800; letter-spacing: 2px; color: #fff; }
-.doc-banner-title .doc-number { font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-top: 2px; }
+.doc-body { flex: 1 0 auto; }
+.doc-pad { padding: 0 14mm; }
 
-.doc-contact {
-  padding: 14px 2px 24px;
-  border-bottom: 2px solid #eceae4;
-}
-.doc-muted { font-size: 13px; color: #6b7b7e; line-height: 1.5; }
-.doc-strong { font-size: 15px; font-weight: 700; }
-
-.doc-meta {
+/* Header band */
+.doc-head {
+  background: var(--doc-panel);
+  padding: 14mm 14mm 12mm;
   display: flex;
   justify-content: space-between;
-  gap: 24px;
-  margin: 28px 0 8px;
+  align-items: flex-start;
+  gap: 14mm;
+  border-bottom: 1px solid var(--doc-hair);
 }
-.doc-label {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
+.doc-brand-name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 19pt;
+  line-height: 1;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #9aa6a8;
-  margin-bottom: 3px;
 }
-.doc-meta-right { text-align: right; }
-.doc-meta-right > div { margin-bottom: 6px; font-size: 14px; }
-.doc-meta-right .doc-label { min-width: 90px; margin-right: 10px; margin-bottom: 0; }
+.doc-brand-rule {
+  width: 34px;
+  height: 2px;
+  margin: 5mm 0;
+  background: var(--doc-brass-grad);
+}
+.doc-brand-tag {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--doc-ink-mut);
+  line-height: 1.9;
+}
+.doc-head-right { text-align: right; }
+.doc-kind {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30pt;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  color: var(--doc-brass);
+  text-transform: uppercase;
+  margin-bottom: 6mm;
+}
+.doc-meta {
+  font-family: var(--font-mono);
+  font-size: 8.5pt;
+  line-height: 2;
+  color: var(--doc-ink-2);
+  letter-spacing: 0.06em;
+}
+.doc-meta .due { color: var(--doc-brass); }
+
+/* Bill-to block */
+.doc-billto {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 10mm;
+  padding: 9mm 0 8mm;
+  border-bottom: 1px solid var(--doc-hair);
+}
+.doc-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--doc-ink-mut);
+  margin-bottom: 3mm;
+}
+.doc-party {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11.5pt;
+  color: var(--doc-ink);
+  margin-bottom: 1.5mm;
+}
+.doc-lines { font-size: 9.5pt; line-height: 1.65; color: var(--doc-ink-3); }
+.doc-detail-list { font-family: var(--font-mono); font-size: 9pt; line-height: 1.9; color: var(--doc-ink); }
+.doc-detail-list .due { color: var(--doc-brass); }
 
 .doc-subject {
-  margin: 22px 0 10px;
-  font-size: 16px;
+  margin: 8mm 0 0;
+  font-family: var(--font-display);
   font-weight: 700;
-  color: var(--navy);
+  font-size: 12pt;
+  color: var(--doc-ink);
 }
 
+/* Line-item table */
 .doc-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 18px;
+  margin-top: 8mm;
 }
 .doc-table thead th {
-  text-align: left;
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 7pt;
+  font-weight: 500;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #6b7b7e;
-  padding: 10px 8px;
-  border-bottom: 1.5px solid #d7dcdc;
+  color: var(--doc-ink-mut);
+  padding: 0 0 3mm;
+  border-bottom: 1.5px solid var(--doc-brass);
+  text-align: left;
 }
+.doc-table th.r, .doc-table td.r { text-align: right; }
+.doc-table th.c-qty { width: 16mm; }
+.doc-table th.c-unit { width: 28mm; }
+.doc-table th.c-amt { width: 30mm; }
 .doc-table td {
-  padding: 12px 8px;
-  font-size: 14px;
-  border-bottom: 1px solid #eceae4;
+  padding: 4.5mm 0;
+  border-bottom: 1px solid var(--doc-hair);
+  vertical-align: top;
 }
-.doc-table .r { text-align: right; }
-.doc-table tfoot td { border-bottom: none; padding-top: 16px; }
-.doc-total-label { font-size: 13px; font-weight: 700; color: #6b7b7e; }
-.doc-total { font-size: 20px; font-weight: 800; color: var(--navy); }
+.doc-table td:first-child { padding-right: 6mm; }
+.doc-item-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 10pt;
+  color: var(--doc-ink);
+  line-height: 1.35;
+}
+.doc-item-detail { font-size: 9pt; color: var(--doc-ink-mut); line-height: 1.55; margin-top: 1.2mm; }
+.doc-num { font-family: var(--font-mono); font-size: 9.5pt; }
+.doc-num.ink { color: var(--doc-ink); }
+.doc-num.mut { color: var(--doc-ink-3); }
+.doc-empty { color: var(--doc-ink-mut); font-size: 9.5pt; padding: 6mm 0; }
 
-.doc-footer {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #eceae4;
-  font-size: 13px;
-  line-height: 1.6;
+/* Totals */
+.doc-totals {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 7mm;
+}
+.doc-totals-inner { width: 78mm; display: flex; flex-direction: column; gap: 3mm; }
+.doc-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 9.5pt;
+  color: var(--doc-ink-3);
+}
+.doc-total-row.bordered { padding-bottom: 3mm; border-bottom: 1px solid var(--doc-hair); }
+.doc-amount-due {
+  background: var(--doc-brass-grad);
+  color: #15181A;
+  padding: 5mm 6mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 2mm;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.doc-amount-due .label {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.doc-amount-due .value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16pt;
+  letter-spacing: -0.01em;
 }
 
-/* ---- Print ---------------------------------------------------------------*/
+/* Terms + notes */
+.doc-terms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10mm;
+  margin-top: 10mm;
+  padding-top: 7mm;
+  border-top: 1px solid var(--doc-hair);
+  break-inside: avoid;
+}
+.doc-terms .body { font-size: 9.5pt; line-height: 1.7; color: var(--doc-ink-3); }
+
+.doc-callout {
+  margin: 9mm 0 6mm;
+  padding: 5mm 6mm;
+  background: var(--doc-callout);
+  border-left: 2px solid var(--doc-brass);
+  break-inside: avoid;
+}
+.doc-callout .lead {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 9.5pt;
+  color: var(--doc-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.doc-callout .sub { font-size: 9.5pt; color: var(--doc-ink-mut); }
+
+/* Footer strip */
+.doc-foot {
+  background: var(--doc-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12mm;
+  padding: 6mm 14mm 9mm;
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--doc-ink-mut);
+  border-top: 1px solid var(--doc-hair);
+}
+
+/* ---- Print --------------------------------------------------------------- */
 @media print {
-  .doc-screen { background: #fff; padding: 0; }
+  html, body { background: var(--doc-bg) !important; }
+  html, body, .doc-sheet {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .doc-screen { background: var(--doc-bg); padding: 0; overflow: visible; }
   .doc-toolbar { display: none; }
   .doc-sheet {
-    max-width: none;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 0;
+    width: auto;
+    min-height: auto;
     margin: 0;
+    box-shadow: none;
   }
-  @page { margin: 18mm; }
+  /* True A4, full-bleed dark ground. Content longer than one page flows onto
+     additional A4 pages — never scaled to fit. */
+  @page { size: A4; margin: 0; }
 }

@@ -3,6 +3,7 @@ import Layout from '../components/Layout'
 import Home from '../screens/Home'
 import Schedule from '../screens/Schedule'
 import Timesheet from '../screens/Timesheet'
+import TimesheetPay from '../screens/TimesheetPay'
 import Search from '../screens/Search'
 import More from '../screens/More'
 import JobView from '../screens/JobView'
@@ -22,6 +23,7 @@ export default function MobileApp() {
           <Route index element={<Home />} />
           <Route path="schedule" element={<Schedule />} />
           <Route path="timesheet" element={<Timesheet />} />
+          <Route path="timesheet/pay" element={<TimesheetPay />} />
           <Route path="search" element={<Search />} />
           <Route path="more" element={<More />} />
           <Route path="job/:id" element={<JobView />} />

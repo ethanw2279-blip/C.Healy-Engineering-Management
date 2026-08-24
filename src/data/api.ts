@@ -62,7 +62,8 @@ export async function loadState(): Promise<State> {
     })),
     employees: (employees ?? []).map((e: Row) => ({
       id: e.id, name: e.name, roleId: e.role_id, email: e.email, phone: e.phone,
-      hourlyRate: num(e.hourly_rate), color: e.color, active: e.active, ga1Access: e.ga1_access ?? false,
+      hourlyRate: num(e.hourly_rate), travelRate: num(e.travel_rate), color: e.color,
+      active: e.active, ga1Access: e.ga1_access ?? false,
     })),
     clients: (clients ?? []).map((c: Row) => ({
       id: c.id, name: c.name, company: c.company ?? undefined, email: c.email,
@@ -89,7 +90,8 @@ export async function loadState(): Promise<State> {
     })),
     timeEntries: (timeEntries ?? []).map((t: Row) => ({
       id: t.id, employeeId: t.employee_id, jobId: t.job_id ?? undefined, date: t.date,
-      hours: num(t.hours), note: t.note ?? undefined, approved: t.approved,
+      hours: num(t.hours), kind: t.kind === 'travel' ? 'travel' : 'work',
+      note: t.note ?? undefined, approved: t.approved,
     })),
     visits: (visits ?? []).map((v: Row) => ({
       id: v.id, jobId: v.job_id ?? undefined, employeeId: v.employee_id, date: v.date,
@@ -229,7 +231,8 @@ export async function persist(action: Action): Promise<void> {
       const e = action.employee
       return check(supabase.from('employees').upsert({
         id: e.id, name: e.name, role_id: e.roleId, email: e.email, phone: e.phone,
-        hourly_rate: e.hourlyRate, color: e.color, active: e.active, ga1_access: e.ga1Access ?? false,
+        hourly_rate: e.hourlyRate, travel_rate: e.travelRate ?? 0, color: e.color,
+        active: e.active, ga1_access: e.ga1Access ?? false,
       }))
     }
     case 'REMOVE_EMPLOYEE':
@@ -250,7 +253,7 @@ export async function persist(action: Action): Promise<void> {
       const t = action.entry
       return check(supabase.from('time_entries').upsert({
         id: t.id, employee_id: t.employeeId, job_id: t.jobId ?? null, date: t.date,
-        hours: t.hours, note: t.note ?? null, approved: t.approved,
+        hours: t.hours, kind: t.kind ?? 'work', note: t.note ?? null, approved: t.approved,
       }))
     }
     case 'REMOVE_TIME_ENTRY':
