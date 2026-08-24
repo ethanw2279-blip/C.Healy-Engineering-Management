@@ -16,6 +16,7 @@ function MemberModal({ editing, onClose }: { editing: Employee | null; onClose: 
       email: '',
       phone: '',
       hourlyRate: 0,
+      travelRate: 0,
       color: COLORS[state.employees.length % COLORS.length],
       active: true,
     },
@@ -55,6 +56,12 @@ function MemberModal({ editing, onClose }: { editing: Employee | null; onClose: 
         <Field label="Hourly rate (€)">
           <input type="number" min={0} value={f.hourlyRate} onChange={(e) => set({ hourlyRate: Number(e.target.value) })} />
         </Field>
+      </div>
+      <div className="field-row">
+        <Field label="Travel rate (€/h)">
+          <input type="number" min={0} value={f.travelRate} onChange={(e) => set({ travelRate: Number(e.target.value) })} />
+        </Field>
+        <div />
       </div>
       <Field label="Status">
         <select value={f.active ? 'active' : 'archived'} onChange={(e) => set({ active: e.target.value === 'active' })}>
@@ -127,7 +134,12 @@ export default function Team() {
                       <span className="cell-muted">{e.phone}</span>
                     </div>
                   </td>
-                  <td className="num cell-muted">{e.hourlyRate ? `${eur(e.hourlyRate)}/h` : '—'}</td>
+                  <td className="num cell-muted">
+                    <div className="stack-tight">
+                      <span>{e.hourlyRate ? `${eur(e.hourlyRate)}/h` : '—'}</span>
+                      {e.travelRate > 0 && <span className="cell-muted">{eur(e.travelRate)}/h travel</span>}
+                    </div>
+                  </td>
                   <td className="num cell-strong">{hoursFor(e.id)}h</td>
                   <td><StatusBadge status={e.active ? 'Active' : 'Archived'} /></td>
                   {can('manage:team') && (

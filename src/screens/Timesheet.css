@@ -69,10 +69,21 @@
 
 .ts-bar-wrap {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+}
+
+.ts-track {
   height: 8px;
   background: #eceae4;
   border-radius: 999px;
   overflow: hidden;
+}
+
+.ts-track-travel {
+  height: 5px;
 }
 
 .ts-bar {
@@ -80,6 +91,10 @@
   background: var(--green);
   border-radius: 999px;
   min-width: 0;
+}
+
+.ts-bar-travel {
+  background: #2f86eb;
 }
 
 .ts-hours {
@@ -96,10 +111,15 @@
   font-weight: 600;
 }
 
-.ts-add {
-  width: 100%;
-  padding: 13px;
+.ts-add-row {
+  display: flex;
+  gap: 10px;
   margin-bottom: 16px;
+}
+
+.ts-add {
+  flex: 1;
+  padding: 13px;
   border: 1px dashed #cfd8d8;
   border-radius: 12px;
   background: #fff;
@@ -108,3 +128,144 @@
   color: var(--green-dark);
 }
 .ts-add:active { background: #f2f9f5; }
+
+.ts-add-travel { color: #1f6fd6; }
+.ts-add-travel:active { background: #eff5fd; }
+
+/* Banner is now a button that opens the pay breakdown. */
+.ts-summary-btn {
+  width: 100%;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  gap: 14px;
+}
+.ts-summary-btn:active { filter: brightness(1.1); }
+
+.ts-summary-go {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  padding-left: 12px;
+}
+
+.ts-travel-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e7f0fd;
+  color: #1f6fd6;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+/* Working / Travel toggle in the add-hours sheet. */
+.hours-kind {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  margin-bottom: 14px;
+  background: #f0efe9;
+  border-radius: 12px;
+}
+.hours-kind-opt {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy-muted);
+}
+.hours-kind-opt.is-work {
+  background: #fff;
+  color: var(--green-dark);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.hours-kind-opt.is-travel {
+  background: #fff;
+  color: #1f6fd6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Pay screen ---------------------------------------------------------- */
+.pay-weeknav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 14px;
+}
+.pay-week-btn {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 1px solid var(--divider);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--navy);
+}
+.pay-week-btn:disabled { opacity: 0.35; }
+.pay-week-mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.pay-week-mid strong { font-size: 17px; font-weight: 800; color: var(--navy); }
+
+.pay-grand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.pay-grand span { font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+.pay-grand strong { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+.pay-card {
+  border: 1px solid var(--divider);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+.pay-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.pay-card-head h3 { font-size: 15px; font-weight: 800; color: var(--navy); margin: 0; }
+.pay-card-total { margin-left: auto; font-size: 17px; font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; }
+.pay-dot { width: 10px; height: 10px; border-radius: 999px; flex: none; }
+.pay-dot-total { background: var(--navy); }
+.pay-dot-work { background: var(--green); }
+.pay-dot-travel { background: #2f86eb; }
+
+.pay-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px solid var(--divider);
+}
+.pay-line-label { flex: 1; font-size: 14px; color: var(--navy-muted); }
+.pay-line-hours { font-size: 13px; color: var(--text-faint); font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
+.pay-line-gross { font-size: 15px; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; min-width: 72px; text-align: right; }
+.pay-line.pending .pay-line-gross { color: var(--navy-muted); }
+
+.pay-note { margin-top: 14px; font-size: 12px; line-height: 1.5; }

@@ -25,6 +25,7 @@ export type Employee = {
   email: string
   phone: string
   hourlyRate: number
+  travelRate: number // €/h paid for travel time (0 = travel unpaid)
   color: string
   active: boolean
   ga1Access?: boolean // per-person override granting GA1 Inspections access
@@ -124,12 +125,14 @@ export type Order = {
   createdAt: string
 }
 
+export type TimeEntryKind = 'work' | 'travel'
 export type TimeEntry = {
   id: ID
   employeeId: ID
   jobId?: ID
   date: string // ISO yyyy-mm-dd
   hours: number
+  kind: TimeEntryKind // 'work' = normal working hours, 'travel' = travel time
   note?: string
   approved: boolean
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusIcon, BriefcaseIcon, UserIcon, ClipboardIcon, ClockIcon, CalendarIcon } from './Icons'
+import { PlusIcon, BriefcaseIcon, UserIcon, ClipboardIcon, ClockIcon, CalendarIcon, TruckIcon } from './Icons'
 import { useCurrentUser } from '../data/store'
 import AddHoursSheet from '../screens/AddHoursSheet'
 import NewClientSheet from '../screens/NewClientSheet'
@@ -8,7 +8,7 @@ import NewJobSheet from '../screens/NewJobSheet'
 import NewVisitSheet from '../screens/NewVisitSheet'
 import './Fab.css'
 
-type Sheet = 'menu' | 'hours' | 'visit' | 'client' | 'job' | null
+type Sheet = 'menu' | 'hours' | 'travel' | 'visit' | 'client' | 'job' | null
 
 export default function Fab() {
   const { can } = useCurrentUser()
@@ -20,6 +20,7 @@ export default function Fab() {
   const actions = [
     { label: 'Add to schedule', Icon: CalendarIcon, show: true, onClick: () => setSheet('visit') },
     { label: 'Add hours', Icon: ClockIcon, show: true, onClick: () => setSheet('hours') },
+    { label: 'Travel hours', Icon: TruckIcon, show: true, onClick: () => setSheet('travel') },
     { label: 'New job', Icon: BriefcaseIcon, show: canManage, onClick: () => setSheet('job') },
     { label: 'New client', Icon: UserIcon, show: canManage, onClick: () => setSheet('client') },
     { label: 'New GA1 inspection', Icon: ClipboardIcon, show: can('view:ga1'), onClick: () => { setSheet(null); nav('/field/ga1/new') } },
@@ -50,6 +51,7 @@ export default function Fab() {
 
       {sheet === 'visit' && <NewVisitSheet onClose={() => setSheet(null)} />}
       {sheet === 'hours' && <AddHoursSheet onClose={() => setSheet(null)} />}
+      {sheet === 'travel' && <AddHoursSheet kind="travel" onClose={() => setSheet(null)} />}
       {sheet === 'client' && <NewClientSheet onClose={() => setSheet(null)} />}
       {sheet === 'job' && <NewJobSheet onClose={() => setSheet(null)} />}
     </>

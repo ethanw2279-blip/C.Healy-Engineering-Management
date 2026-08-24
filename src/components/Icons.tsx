@@ -41,6 +41,15 @@ export const ClockIcon = (p: IconProps) => (
   </Base>
 )
 
+export const TruckIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M3 6.5h10.5v8.5H3z" />
+    <path d="M13.5 9.5H17l3 3v2.5h-6.5z" />
+    <circle cx="7" cy="17.5" r="1.8" />
+    <circle cx="16.5" cy="17.5" r="1.8" />
+  </Base>
+)
+
 export const SearchIcon = (p: IconProps) => (
   <Base {...p}>
     <circle cx="11" cy="11" r="6.5" />
