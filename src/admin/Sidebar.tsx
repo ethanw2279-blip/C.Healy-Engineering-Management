@@ -4,6 +4,7 @@ import { Avatar } from './components/ui'
 import { NAV } from './nav'
 import { useCurrentUser } from '../data/store'
 import { COMPANY } from '../data/company'
+import ThemeToggle from '../theme/ThemeToggle'
 
 export default function Sidebar() {
   const { user, role, can } = useCurrentUser()
@@ -32,6 +33,7 @@ export default function Sidebar() {
         <ClockIcon size={20} />
         <span>Field app ↗</span>
       </NavLink>
+      <ThemeToggle variant="sidebar" />
 
       <div className="sidebar-user">
         <Avatar name={user?.name ?? '?'} color={user?.color} size={34} />

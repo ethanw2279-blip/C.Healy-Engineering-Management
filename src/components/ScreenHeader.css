@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #fff;
+  background: var(--surface);
   border-radius: var(--radius-pill, 999px);
 }
 
@@ -31,7 +31,7 @@
   align-items: center;
   justify-content: center;
   color: var(--navy);
-  background: #fff;
+  background: var(--surface);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 

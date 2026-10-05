@@ -82,6 +82,6 @@
 }
 .push-state.on {
   color: var(--green-dark);
-  border-color: #cfe6d8;
-  background: #eef7f1;
+  border-color: var(--green-line);
+  background: var(--green-soft);
 }

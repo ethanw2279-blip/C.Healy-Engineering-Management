@@ -22,7 +22,7 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg, 16px);
   --radius-lg: 16px;
