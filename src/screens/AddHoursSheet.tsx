@@ -70,13 +70,14 @@ export default function AddHoursSheet({
   const tripOk = !isTrip || !!editing || (km > 0 && !!reason.trim())
   const valid = !!user && !!date && hours > 0 && tripOk
 
-  // Picking a job fills "To" with the client's address when it's still empty.
+  // Picking a job fills "To" with the job's site address (or the client's) when it's still empty.
   const pickJob = (id: string) => {
     setJobId(id)
     if (!isTrip || toPlace.trim()) return
     const job = state.jobs.find((j) => j.id === id)
     const client = state.clients.find((c) => c.id === job?.clientId)
-    if (client?.address) setToPlace(client.address)
+    const where = job?.siteAddress?.trim() || client?.address
+    if (where) setToPlace(where)
   }
 
   const save = () => {
