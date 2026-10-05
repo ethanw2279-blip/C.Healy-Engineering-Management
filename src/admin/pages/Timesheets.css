@@ -1,0 +1,124 @@
+/* Office Timesheets page — filters, labour/travel rollup, responsive cards. */
+
+.ts-head-actions { display: flex; gap: 10px; }
+
+/* ---- Filter toolbar ------------------------------------------------------ */
+.ts-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 16px;
+  margin-bottom: 20px;
+}
+.ts-fld { display: flex; flex-direction: column; gap: 5px; }
+.ts-fld > label {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.4px; color: var(--navy-muted); padding-left: 2px;
+}
+.ts-seg { display: inline-flex; background: #f1f3f2; border-radius: 9px; padding: 3px; gap: 2px; }
+.ts-seg button {
+  padding: 8px 14px; border: none; background: transparent; border-radius: 7px;
+  font-size: 13px; font-weight: 700; color: var(--navy-muted); cursor: pointer;
+}
+.ts-seg button.on { background: #fff; color: var(--navy); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
+.ts-seg button.on.labour { color: var(--green-dark); }
+.ts-seg button.on.travel { color: #1b64c4; }
+
+.ts-step { display: flex; align-items: center; gap: 4px; }
+.ts-step button {
+  width: 34px; height: 34px; border: 1px solid var(--border); background: #fff;
+  border-radius: 9px; font-size: 18px; line-height: 1; color: var(--navy); cursor: pointer;
+}
+.ts-step button:disabled { opacity: 0.4; cursor: default; }
+.ts-step .lbl { padding: 0 8px; text-align: center; min-width: 110px; }
+.ts-step .lbl strong { display: block; font-size: 14px; font-weight: 800; color: var(--navy); }
+.ts-step .lbl span { font-size: 11.5px; color: var(--navy-muted); }
+
+.ts-daterow { display: flex; align-items: center; gap: 8px; }
+.ts-dash { color: var(--navy-muted); }
+.ts-input, .ts-select {
+  border: 1px solid var(--border); background: #fff; border-radius: 9px;
+  padding: 8px 11px; font-size: 13.5px; font-weight: 600; color: var(--navy);
+}
+.ts-select { min-width: 170px; }
+.ts-hint { font-size: 12.5px; color: var(--text-faint); align-self: center; margin-left: auto; }
+
+/* ---- Stat dots ----------------------------------------------------------- */
+.ts-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 3px; }
+.ts-dot.g { background: var(--green); }
+.ts-dot.b { background: #2f86eb; }
+.ts-dot.n { background: var(--navy); }
+.ts-dot.a { background: var(--amber); }
+.stat-meta b { color: var(--amber); }
+
+/* ---- Tables -------------------------------------------------------------- */
+.ts-card { margin-bottom: 22px; }
+.ts-panel-sub { font-size: 12.5px; color: var(--navy-muted); font-weight: 600; }
+.ts-travel-num { color: #1b64c4; font-weight: 700; }
+.ts-splitbar { display: flex; height: 6px; border-radius: 999px; overflow: hidden; background: #eef0ef; width: 120px; }
+.ts-splitbar i { height: 100%; }
+.ts-splitbar .lab { background: var(--green); }
+.ts-splitbar .tra { background: #2f86eb; }
+.ts-foot td { background: #fbfbfa; font-weight: 800; color: var(--navy); border-top: 2px solid var(--divider); }
+
+.ts-approve-wk {
+  font-size: 12.5px; font-weight: 700; color: var(--green-dark);
+  border: 1px solid #cfe6d8; background: #f2f9f5; border-radius: 8px;
+  padding: 6px 12px; cursor: pointer; white-space: nowrap;
+}
+.ts-approve-wk:hover { background: #e9f5ee; }
+.ts-approve-wk.full { width: 100%; padding: 11px; font-size: 13.5px; }
+
+/* ---- Mobile card layouts (hidden on desktop) ----------------------------- */
+.ts-emp-cards, .ts-entry-cards { display: none; }
+
+.ts-emp-card { padding: 14px 16px; border-bottom: 1px solid var(--divider); }
+.ts-emp-card:last-child { border-bottom: none; }
+.ts-emp-top { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.ts-emp-pay { margin-left: auto; text-align: right; }
+.ts-emp-pay strong { font-size: 16px; font-weight: 800; color: var(--navy); }
+.ts-emp-pay span { display: block; font-size: 11px; color: var(--navy-muted); }
+.ts-metrics { display: flex; gap: 8px; margin-bottom: 12px; }
+.ts-metric { flex: 1; background: #fafbfa; border: 1px solid var(--divider); border-radius: 10px; padding: 8px 6px; text-align: center; }
+.ts-metric b { display: block; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ts-metric.lab b { color: var(--green-dark); }
+.ts-metric.tra b { color: #1b64c4; }
+.ts-metric.tot b { color: var(--navy); }
+.ts-metric small { font-size: 10.5px; color: var(--navy-muted); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 700; }
+.ts-allclear { text-align: center; font-size: 12.5px; color: var(--navy-muted); padding: 4px; }
+
+.ts-entry-card { padding: 13px 16px; border-bottom: 1px solid var(--divider); }
+.ts-entry-card:last-child { border-bottom: none; }
+.ts-entry-h { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+.ts-entry-date { margin-left: auto; font-size: 12px; color: var(--navy-muted); }
+.ts-entry-b { display: flex; align-items: center; gap: 8px; }
+.ts-entry-b .cell-muted { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ts-entry-hrs { font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; }
+.ts-entry-foot { margin-top: 9px; }
+.ts-entry-approve {
+  margin-top: 9px; font-size: 12.5px; font-weight: 700; color: var(--navy);
+  border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 7px 12px; cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .ts-toolbar { gap: 12px; }
+  .ts-fld { flex: 1 1 100%; }
+  .ts-seg { width: 100%; }
+  .ts-seg button { flex: 1; }
+  .ts-step { width: 100%; justify-content: space-between; }
+  .ts-select, .ts-input { width: 100%; }
+  .ts-daterow { width: 100%; }
+  .ts-daterow .ts-input { flex: 1; }
+  .ts-hint { margin-left: 0; }
+
+  .ts-desktop { display: none; }
+  .ts-emp-cards, .ts-entry-cards { display: block; }
+
+  /* Keep the four stat cards as a compact 2×2 grid on phones. */
+  .ts-stats { grid-template-columns: 1fr 1fr; gap: 11px; }
+  .ts-stats .stat-value { font-size: 22px; }
+}

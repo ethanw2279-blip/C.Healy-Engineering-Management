@@ -50,6 +50,14 @@ export const TruckIcon = (p: IconProps) => (
   </Base>
 )
 
+export const DownloadIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M12 4v10" />
+    <path d="M8 10.5 12 14.5 16 10.5" />
+    <path d="M5 19h14" />
+  </Base>
+)
+
 export const SearchIcon = (p: IconProps) => (
   <Base {...p}>
     <circle cx="11" cy="11" r="6.5" />
