@@ -263,3 +263,43 @@
   background: color-mix(in srgb, var(--green) 55%, transparent);
 }
 .week-bar.today .week-bar-fill { background: var(--green); }
+
+/* ---- Trip under way ------------------------------------------------------ */
+.trip-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  color: var(--blue-ink);
+  background: var(--blue-soft);
+  border: 1px solid color-mix(in srgb, var(--lead-blue) 35%, transparent);
+}
+.trip-card-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.trip-card-tag {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trip-card-info strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+.trip-card-btn {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border-radius: 11px;
+  background: var(--lead-blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}

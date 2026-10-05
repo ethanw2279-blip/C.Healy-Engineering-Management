@@ -135,6 +135,13 @@ export type TimeEntry = {
   kind: TimeEntryKind // 'work' = normal working hours, 'travel' = travel time
   note?: string
   approved: boolean
+  // Trip details — only used on travel entries.
+  startTime?: string // "08:15"
+  endTime?: string // "09:00"
+  km?: number
+  reason?: string // e.g. "Collect materials"
+  fromPlace?: string
+  toPlace?: string
 }
 
 export type VisitCategory = 'Job' | 'Travel' | 'Shop trip' | 'Other'

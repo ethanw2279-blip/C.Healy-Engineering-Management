@@ -14,6 +14,7 @@ import {
 } from '../components/Icons'
 import { useStore, useCurrentUser } from '../data/store'
 import { useClock } from '../mobile/useClock'
+import { useTrip } from '../mobile/useTrip'
 import NotificationBell from '../components/NotificationBell'
 import { greeting, firstName, fmtDay, fmtDayShort, todayISO, weekDatesISO, visitsForUser } from '../mobile/fieldHelpers'
 import AddHoursSheet from './AddHoursSheet'
@@ -35,6 +36,7 @@ export default function Home() {
   const { user, can } = useCurrentUser()
   const nav = useNavigate()
   const { clockedIn, elapsed, clockIn, clockOut } = useClock()
+  const { trip, elapsed: tripElapsed } = useTrip()
   const [sheet, setSheet] = useState<'hours' | 'travel' | null>(null)
 
   const today = todayISO()
@@ -66,7 +68,7 @@ export default function Home() {
     { label: 'Clients', Icon: UserIcon, show: true, onClick: () => nav('/field/clients') },
     { label: 'GA1 reports', Icon: ClipboardIcon, show: can('view:ga1'), onClick: () => nav('/field/ga1') },
     { label: 'Add hours', Icon: ClockIcon, show: true, onClick: () => setSheet('hours') },
-    { label: 'Travel', Icon: TruckIcon, show: true, onClick: () => setSheet('travel') },
+    { label: trip ? 'Finish trip' : 'Travel', Icon: TruckIcon, show: true, onClick: () => setSheet('travel') },
   ].filter((s) => s.show)
 
   return (
@@ -80,6 +82,18 @@ export default function Home() {
       </header>
 
       <div className="pad">
+        {/* A trip that's under way: tap to finish it */}
+        {trip && (
+          <button className="trip-card" onClick={() => setSheet('travel')}>
+            <TruckIcon size={22} />
+            <div className="trip-card-info">
+              <span className="trip-card-tag">Trip under way{trip.toPlace ? ` · to ${trip.toPlace}` : ''}</span>
+              <strong>{formatElapsed(tripElapsed)}</strong>
+            </div>
+            <span className="trip-card-btn">Finish trip</span>
+          </button>
+        )}
+
         {/* Next scheduled job: the first thing on screen */}
         {nextVisit ? (
           <section className="next-card">
