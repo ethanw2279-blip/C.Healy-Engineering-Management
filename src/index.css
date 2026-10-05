@@ -15,11 +15,81 @@
   --amber: #C7791C;
   --lead-blue: #2F86EB;
 
+  /* Surfaces. Use these instead of hard-coded colours so dark mode follows. */
+  --page: #F4F6F6;
+  --shell: #D9DDE0;
+  --surface: #FFFFFF;
+  --surface-2: #FAFBFA;
+  --surface-3: #EEF1F1;
+  --hover: #F4F6F6;
+  --border-strong: #D7DCDC;
+  /* Navy blocks with white text (FAB, tab-bar badge, hero cards, sidebar). */
+  --brand: #16343B;
+  --sidebar: #16343B;
+
+  /* Tinted status backgrounds, borders and their ink colours. */
+  --green-soft: #EEF7F1;
+  --green-line: #CFE6D8;
+  --red-soft: #FBEDED;
+  --red-line: #F0D3D3;
+  --red-ink: #B53434;
+  --amber-soft: #F9EDD8;
+  --amber-ink: #9A5B12;
+  --blue-soft: #E7F0FD;
+  --blue-ink: #1B64C4;
+  --plum-soft: #F3E8EE;
+  --plum-ink: #7A2B3A;
+
+  color-scheme: light;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Dark theme. `data-theme` is set on <html> by src/theme/theme.ts (and the
+   inline script in index.html, so there's no light flash on load). */
+:root[data-theme='dark'] {
+  --navy: #E4ECEE;
+  --navy-muted: #9DB0B4;
+  --green: #26975A;
+  --green-dark: #5FCB8E;
+  --tile: #1F2A2D;
+  --tile-border: #2B383C;
+  --bg: #121A1C;
+  --border: #253236;
+  --divider: #212D31;
+  --text: #E4ECEE;
+  --text-muted: #93A5A9;
+  --text-faint: #6C7E82;
+  --red: #EF6B6B;
+  --amber: #E19A45;
+  --lead-blue: #5AA2F2;
+
+  --page: #0D1314;
+  --shell: #070B0C;
+  --surface: #172124;
+  --surface-2: #1A2528;
+  --surface-3: #222F33;
+  --hover: #1F2B2E;
+  --border-strong: #34454A;
+  --brand: #24515B;
+  --sidebar: #0F1A1D;
+
+  --green-soft: rgba(38, 151, 90, 0.18);
+  --green-line: rgba(95, 203, 142, 0.35);
+  --red-soft: rgba(239, 107, 107, 0.15);
+  --red-line: rgba(239, 107, 107, 0.35);
+  --red-ink: #F29191;
+  --amber-soft: rgba(225, 154, 69, 0.16);
+  --amber-ink: #EBB46F;
+  --blue-soft: rgba(90, 162, 242, 0.16);
+  --blue-ink: #8DBEF7;
+  --plum-soft: rgba(214, 120, 150, 0.16);
+  --plum-ink: #E6A3B7;
+
+  color-scheme: dark;
 }
 
 * {
@@ -43,7 +113,7 @@ html {
 }
 
 body {
-  background: #f4f6f6;
+  background: var(--page);
   /* Prevent the whole-page rubber-band bounce on iOS. */
   overscroll-behavior: none;
   -webkit-touch-callout: none;
@@ -81,7 +151,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #d9dde0;
+  background: var(--shell);
   /* The field app opts back into app-like non-selection. */
   -webkit-user-select: none;
   user-select: none;
@@ -112,9 +182,9 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #5b6e72;
+  color: var(--navy-muted);
   font-size: 15px;
-  background: #f4f6f6;
+  background: var(--page);
 }
 
 .screen {

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
   padding: 14px 16px;
   color: var(--navy-muted);
@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #e3e2dc;
+  background: var(--surface-3);
   border-radius: 999px;
   padding: 12px 20px;
   font-size: 16px;
