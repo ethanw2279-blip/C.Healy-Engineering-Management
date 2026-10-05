@@ -17,7 +17,7 @@
 }
 
 .day-pill.on {
-  background: var(--navy);
+  background: var(--brand);
   color: #fff;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .day-pill.on .today-dot {
-  background: #fff;
+  background: var(--surface);
 }
 
 .visit-list {
@@ -77,7 +77,7 @@
 .visit-card {
   display: flex;
   gap: 14px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-left: 4px solid var(--green);
   border-radius: 14px;
@@ -145,11 +145,11 @@
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #e5f2ea;
+  background: var(--green-soft);
   color: var(--green-dark);
 }
 
 .visit-status.unassigned {
-  background: #f7ecd9;
+  background: var(--amber-soft);
   color: var(--amber);
 }

@@ -16,6 +16,7 @@ import { useCurrentUser } from '../data/store'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
 import { isPushConfigured, isSubscribed, subscribe, unsubscribe } from '../lib/push'
 import { useAuth } from '../auth/AuthProvider'
+import ThemeToggle from '../theme/ThemeToggle'
 import './screens.css'
 import './More.css'
 
@@ -103,6 +104,7 @@ export default function More() {
               <span className={`push-state ${pushOn ? 'on' : ''}`}>{pushBusy ? '…' : pushOn ? 'On' : 'Off'}</span>
             </li>
           )}
+          <ThemeToggle variant="menu" />
         </ul>
 
         <div className="divider" />

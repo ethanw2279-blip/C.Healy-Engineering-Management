@@ -14,12 +14,12 @@
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 .btn-primary { background: var(--green); color: #fff; }
 .btn-primary:hover { background: var(--green-dark); }
-.btn-secondary { background: #fff; color: var(--navy); border: 1px solid #d7dcdc; }
-.btn-secondary:hover { background: #f4f6f6; }
+.btn-secondary { background: var(--surface); color: var(--navy); border: 1px solid var(--border-strong); }
+.btn-secondary:hover { background: var(--hover); }
 .btn-ghost { background: transparent; color: var(--navy); }
-.btn-ghost:hover { background: #eef1f1; }
-.btn-danger { background: #fff; color: var(--red); border: 1px solid #eccccc; }
-.btn-danger:hover { background: #fbf1f1; }
+.btn-ghost:hover { background: var(--surface-3); }
+.btn-danger { background: var(--surface); color: var(--red); border: 1px solid var(--red-line); }
+.btn-danger:hover { background: var(--red-soft); }
 
 /* ---- Avatar --------------------------------------------------------------*/
 .avatar {
@@ -43,11 +43,11 @@
   border-radius: 999px;
   white-space: nowrap;
 }
-.badge-green { background: #e3f2e9; color: #176B3B; }
-.badge-amber { background: #f9edd8; color: #9a5b12; }
-.badge-blue { background: #e3eefc; color: #1b64c4; }
-.badge-red { background: #fbe4e4; color: #b53434; }
-.badge-grey { background: #eceeee; color: #5b6e72; }
+.badge-green { background: var(--green-soft); color: var(--green-dark); }
+.badge-amber { background: var(--amber-soft); color: var(--amber-ink); }
+.badge-blue { background: var(--blue-soft); color: var(--blue-ink); }
+.badge-red { background: var(--red-soft); color: var(--red-ink); }
+.badge-grey { background: var(--surface-3); color: var(--navy-muted); }
 
 /* ---- Modal ---------------------------------------------------------------*/
 .modal-overlay {
@@ -62,7 +62,7 @@
   overflow-y: auto;
 }
 .modal {
-  background: #fff;
+  background: var(--surface);
   border-radius: 14px;
   width: 100%;
   max-width: 520px;
@@ -83,7 +83,7 @@
 }
 .modal-head h2 { font-size: 19px; font-weight: 800; color: var(--navy); }
 .modal-close { color: var(--navy-muted); padding: 4px; border-radius: 6px; }
-.modal-close:hover { background: #eef1f1; }
+.modal-close:hover { background: var(--surface-3); }
 .modal-body { padding: 22px; }
 .modal-foot {
   display: flex;
@@ -102,11 +102,11 @@
   font-family: inherit;
   font-size: 14px;
   color: var(--navy);
-  border: 1px solid #d7dcdc;
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   padding: 10px 12px;
   outline: none;
-  background: #fff;
+  background: var(--surface);
   width: 100%;
 }
 .field input:focus,
@@ -149,7 +149,7 @@
 
 /* ---- Card + table (shared) ----------------------------------------------*/
 .card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
@@ -164,7 +164,7 @@
   color: var(--navy-muted);
   padding: 14px 18px;
   border-bottom: 1px solid var(--divider);
-  background: #fbfbfa;
+  background: var(--surface-2);
 }
 .table tbody td {
   padding: 14px 18px;
@@ -176,7 +176,7 @@
 .table tbody tr:last-child td { border-bottom: none; }
 .table tbody tr { cursor: default; }
 .table tbody tr.clickable { cursor: pointer; }
-.table tbody tr.clickable:hover { background: #f7f9f9; }
+.table tbody tr.clickable:hover { background: var(--surface-2); }
 .table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .cell-strong { font-weight: 700; }
 .cell-muted { color: var(--navy-muted); font-size: 13px; }
