@@ -49,7 +49,7 @@ export async function loadState(): Promise<State> {
     supabase.from('products').select('*').order('created_at', { ascending: false }),
     supabase.from('orders').select('*').order('created_at', { ascending: false }),
     supabase.from('order_items').select('*'),
-    // Stock tables arrive with migration 0022; before that these come back empty.
+    // Stock tables arrive with migration 0024; before that these come back empty.
     supabase.from('stock_locations').select('*').order('sort'),
     supabase.from('stock_items').select('*').order('name'),
     supabase.from('stock_levels').select('*'),
