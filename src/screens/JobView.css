@@ -4,7 +4,7 @@
 
 .fld-h3 { font-size: 15px; font-weight: 800; color: var(--navy); margin: 20px 0 10px; }
 
-.fld-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.fld-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
 .fld-row {
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
   padding: 14px 16px; border-bottom: 1px solid var(--divider); font-size: 15px;
@@ -32,8 +32,8 @@
 .fld-done {
   margin-top: 26px;
   padding: 14px;
-  background: #e3f2e9;
-  color: #176b3b;
+  background: var(--green-soft);
+  color: var(--green-dark);
   font-weight: 700;
   border-radius: 12px;
   display: flex;

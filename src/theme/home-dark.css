@@ -1,0 +1,21 @@
+/* Dark-mode overrides for the field Home screen (src/screens/Home.css), kept
+   separate while that screen is being redesigned. Once Home.css uses the
+   theme tokens from index.css (--surface, --surface-3, --page …) this file
+   can be deleted. */
+:root[data-theme='dark'] .home-hero {
+  background: linear-gradient(180deg, #172225 0%, #142023 40%, #111b1d 100%);
+}
+:root[data-theme='dark'] .home-hero::after {
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+:root[data-theme='dark'] .clockin-card,
+:root[data-theme='dark'] .visits-viewall,
+:root[data-theme='dark'] .fld-visit {
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+:root[data-theme='dark'] .fld-visit:active { background: var(--hover); }
+:root[data-theme='dark'] .visits-empty,
+:root[data-theme='dark'] .health-pct { background: var(--surface-3); }
+:root[data-theme='dark'] .todo-icon.quote { color: var(--plum-ink); }

@@ -9,6 +9,7 @@ import ResetPassword from './auth/ResetPassword'
 import ClientPortal from './portal/ClientPortal'
 import { isSupabaseConfigured } from './lib/supabaseClient'
 import './index.css'
+import './theme/theme'
 
 // The client portal is a separate mini-app with its own login and tightly
 // scoped data. It never touches the staff store, so branch on the path here.

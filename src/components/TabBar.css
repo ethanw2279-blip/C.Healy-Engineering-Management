@@ -2,7 +2,7 @@
   display: flex;
   align-items: stretch;
   justify-content: space-around;
-  background: #fbfbfa;
+  background: var(--surface-2);
   border-top: 1px solid var(--divider);
   padding-bottom: max(env(safe-area-inset-bottom), 6px);
 }
@@ -33,5 +33,5 @@
 }
 
 .tab-indicator.on {
-  background: var(--navy);
+  background: var(--brand);
 }
