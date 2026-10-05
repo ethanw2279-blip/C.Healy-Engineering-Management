@@ -6,7 +6,6 @@ import { useCurrentUser } from '../data/store'
 // clock) so it survives reloads and the phone locking.
 export type RunningTrip = {
   startedAt: number // ms timestamp
-  odoStart?: number
   reason?: string
   jobId?: string
   fromPlace?: string

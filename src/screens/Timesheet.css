@@ -310,10 +310,6 @@
 .trip-banner b { color: var(--blue-ink); }
 .trip-banner-cancel { flex-shrink: 0; font-size: 13px; font-weight: 700; color: var(--red-ink); }
 
-.trip-label-row { display: flex; align-items: center; justify-content: space-between; }
-.trip-label-row label { font-size: 13px; font-weight: 700; color: var(--navy-muted); }
-.trip-odo-toggle { font-size: 13px; font-weight: 700; color: var(--blue-ink); }
-.trip-km { margin: 8px 0 0; }
 .trip-chips { margin-bottom: 8px; }
 .trip-need { font-size: 13px; color: var(--navy-muted); text-align: center; margin: 4px 0 8px; }
 

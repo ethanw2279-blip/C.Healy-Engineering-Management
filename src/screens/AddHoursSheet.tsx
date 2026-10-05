@@ -58,9 +58,6 @@ export default function AddHoursSheet({
   const [fromPlace, setFromPlace] = useState(editing?.fromPlace ?? finishing?.fromPlace ?? '')
   const [toPlace, setToPlace] = useState(editing?.toPlace ?? finishing?.toPlace ?? '')
   const [kmInput, setKmInput] = useState(editing?.km != null ? String(editing.km) : '')
-  const [useOdo, setUseOdo] = useState(finishing?.odoStart != null)
-  const [odoStart, setOdoStart] = useState(finishing?.odoStart != null ? String(finishing.odoStart) : '')
-  const [odoEnd, setOdoEnd] = useState('')
 
   const isTrip = kind === 'travel'
   const jobs = state.jobs.filter((j) => j.status !== 'Complete' || j.id === editing?.jobId)
@@ -68,8 +65,7 @@ export default function AddHoursSheet({
   const useTimes = !editing || (isTrip && !!editing.startTime && !!editing.endTime)
   const hours = useTimes ? hoursBetween(start, end) : hoursInput
 
-  const odoKm = odoStart !== '' && odoEnd !== '' ? Math.round((Number(odoEnd) - Number(odoStart)) * 10) / 10 : 0
-  const km = useOdo ? odoKm : Number(kmInput) || 0
+  const km = Number(kmInput) || 0
   // New trips need a distance and a reason; older travel entries can be saved without.
   const tripOk = !isTrip || !!editing || (km > 0 && !!reason.trim())
   const valid = !!user && !!date && hours > 0 && tripOk
@@ -115,7 +111,6 @@ export default function AddHoursSheet({
 
   const beginTrip = () => {
     startTrip({
-      odoStart: useOdo && odoStart !== '' ? Number(odoStart) : undefined,
       reason: reason.trim() || undefined,
       jobId: jobId || undefined,
       fromPlace: fromPlace.trim() || undefined,
@@ -230,25 +225,8 @@ export default function AddHoursSheet({
             </div>
 
             <div className="fld-form-field">
-              <div className="trip-label-row">
-                <label>Distance</label>
-                <button type="button" className="trip-odo-toggle" onClick={() => setUseOdo((v) => !v)}>
-                  {useOdo ? 'Type km instead' : 'Use odometer'}
-                </button>
-              </div>
-              {useOdo ? (
-                <div className="sheet-row">
-                  <input type="number" inputMode="decimal" min={0} value={odoStart} onChange={(e) => setOdoStart(e.target.value)} placeholder="Start reading" aria-label="Odometer at start" />
-                  <input type="number" inputMode="decimal" min={0} value={odoEnd} onChange={(e) => setOdoEnd(e.target.value)} placeholder="End reading" aria-label="Odometer at end" />
-                </div>
-              ) : (
-                <input type="number" inputMode="decimal" min={0} step="0.1" value={kmInput} onChange={(e) => setKmInput(e.target.value)} placeholder="km" />
-              )}
-              {useOdo && odoStart !== '' && odoEnd !== '' && (
-                <div className={`sheet-hours trip-km ${odoKm > 0 ? '' : 'bad'}`}>
-                  {odoKm > 0 ? `${odoKm} km` : 'End reading must be higher than the start'}
-                </div>
-              )}
+              <label>Distance (km)</label>
+              <input type="number" inputMode="decimal" min={0} step="0.1" value={kmInput} onChange={(e) => setKmInput(e.target.value)} placeholder="km" />
             </div>
 
             <div className="fld-form-field">
