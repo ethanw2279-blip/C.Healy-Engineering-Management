@@ -20,7 +20,7 @@ export default function Fab() {
   const actions = [
     { label: 'Add to schedule', Icon: CalendarIcon, show: true, onClick: () => setSheet('visit') },
     { label: 'Add hours', Icon: ClockIcon, show: true, onClick: () => setSheet('hours') },
-    { label: 'Travel hours', Icon: TruckIcon, show: true, onClick: () => setSheet('travel') },
+    { label: 'Log a trip', Icon: TruckIcon, show: true, onClick: () => setSheet('travel') },
     { label: 'New job', Icon: BriefcaseIcon, show: canManage, onClick: () => setSheet('job') },
     { label: 'New client', Icon: UserIcon, show: canManage, onClick: () => setSheet('client') },
     { label: 'New GA1 inspection', Icon: ClipboardIcon, show: can('view:ga1'), onClick: () => { setSheet(null); nav('/field/ga1/new') } },

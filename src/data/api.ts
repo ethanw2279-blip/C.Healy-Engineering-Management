@@ -93,6 +93,9 @@ export async function loadState(): Promise<State> {
       id: t.id, employeeId: t.employee_id, jobId: t.job_id ?? undefined, date: t.date,
       hours: num(t.hours), kind: t.kind === 'travel' ? 'travel' : 'work',
       note: t.note ?? undefined, approved: t.approved,
+      startTime: t.start_time ?? undefined, endTime: t.end_time ?? undefined,
+      km: t.km == null ? undefined : num(t.km), reason: t.trip_reason ?? undefined,
+      fromPlace: t.trip_from ?? undefined, toPlace: t.trip_to ?? undefined,
     })),
     visits: (visits ?? []).map((v: Row) => ({
       id: v.id, jobId: v.job_id ?? undefined, employeeId: v.employee_id, date: v.date,
@@ -258,9 +261,18 @@ export async function persist(action: Action): Promise<void> {
     case 'ADD_TIME_ENTRY':
     case 'UPDATE_TIME_ENTRY': {
       const t = action.entry
+      // Trip columns (0022_trips.sql) are only sent for travel, so working
+      // hours keep saving even before that migration has been run.
+      const trip = t.kind === 'travel'
+        ? {
+            start_time: t.startTime ?? null, end_time: t.endTime ?? null, km: t.km ?? null,
+            trip_reason: t.reason ?? null, trip_from: t.fromPlace ?? null, trip_to: t.toPlace ?? null,
+          }
+        : {}
       return check(supabase.from('time_entries').upsert({
         id: t.id, employee_id: t.employeeId, job_id: t.jobId ?? null, date: t.date,
         hours: t.hours, kind: t.kind ?? 'work', note: t.note ?? null, approved: t.approved,
+        ...trip,
       }))
     }
     case 'REMOVE_TIME_ENTRY':

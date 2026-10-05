@@ -13,6 +13,7 @@ import JobDetail from './pages/JobDetail'
 import Invoices from './pages/Invoices'
 import InvoiceDetail from './pages/InvoiceDetail'
 import Timesheets from './pages/Timesheets'
+import Trips from './pages/Trips'
 import GA1List from './pages/GA1List'
 import GA1Detail from './pages/GA1Detail'
 import GA1Form from './pages/GA1Form'
@@ -61,6 +62,7 @@ export default function AdminApp() {
         <Route path="shop/orders" element={guard('view:shop', <ShopOrders />)} />
         <Route path="shop/orders/:id" element={guard('view:shop', <OrderDetail />)} />
         <Route path="timesheets" element={guard('view:timesheets', <Timesheets />)} />
+        <Route path="trips" element={guard('view:timesheets', <Trips />)} />
         <Route path="ga1" element={guard('view:ga1', <GA1List />)} />
         <Route path="ga1/new" element={guard('view:ga1', <GA1Form />)} />
         <Route path="ga1/:id" element={guard('view:ga1', <GA1Detail />)} />
