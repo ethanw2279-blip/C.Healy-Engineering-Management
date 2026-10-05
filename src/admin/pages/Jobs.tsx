@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { PageHeader, Button, StatusBadge, Avatar, EmptyState } from '../components/ui'
 import { TrashIcon } from '../../components/Icons'
 import { useStore, useCurrentUser, eur, jobTotal, formatDateShort } from '../../data/store'
@@ -13,7 +13,10 @@ export default function Jobs() {
   const { can } = useCurrentUser()
   const create = useCreate()
   const nav = useNavigate()
-  const [filter, setFilter] = useState<(typeof filters)[number]>('All')
+  // ?status=Active (from the dashboard shortcuts) preselects a filter.
+  const [params] = useSearchParams()
+  const initial = filters.find((f) => f === params.get('status')) ?? 'All'
+  const [filter, setFilter] = useState<(typeof filters)[number]>(initial)
 
   const clientById = (id: string) => state.clients.find((c) => c.id === id)?.name ?? 'Unknown'
   const rows = state.jobs.filter((j) => filter === 'All' || j.status === filter)
