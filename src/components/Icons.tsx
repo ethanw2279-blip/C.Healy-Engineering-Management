@@ -282,3 +282,33 @@ export const TrashIcon = (p: IconProps) => (
     <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13h10l1-13" />
   </Base>
 )
+
+export const CameraIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M4 8h3l2-2.5h6L17 8h3v11H4z" />
+    <circle cx="12" cy="13" r="3.5" />
+  </Base>
+)
+
+export const FileIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M6 3h8l4 4v14H6z" />
+    <path d="M14 3v4h4" />
+    <path d="M9 12h6M9 16h6" />
+  </Base>
+)
+
+export const MapPinIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+    <circle cx="12" cy="9.5" r="2.5" />
+  </Base>
+)
+
+export const BoxIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M12 3 20 7v10l-8 4-8-4V7z" />
+    <path d="M4 7l8 4 8-4" />
+    <path d="M12 11v10" />
+  </Base>
+)

@@ -14,6 +14,7 @@ import {
   eur,
   eurExact,
   jobTotal,
+  jobAddress,
   invoiceTotal,
   formatDate,
 } from '../../data/store'
@@ -101,7 +102,7 @@ export default function JobDetail() {
           <div className="contact-row"><span>Client</span><strong>{client?.name ?? '—'}</strong></div>
           <div className="contact-row"><span>Scheduled</span><strong>{job.startDate ? formatDate(job.startDate) : 'Unscheduled'}</strong></div>
           <div className="contact-row"><span>Ends</span><strong>{job.endDate ? formatDate(job.endDate) : '—'}</strong></div>
-          <div className="contact-row"><span>Address</span><strong>{client?.address ?? '—'}</strong></div>
+          <div className="contact-row"><span>{jobAddress(job, client).own ? 'Site address' : 'Address'}</span><strong>{jobAddress(job, client).text || '—'}</strong></div>
         </div>
 
         <div className="stat-grid detail-stats">

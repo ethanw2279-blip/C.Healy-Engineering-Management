@@ -441,6 +441,13 @@ export const itemsTotal = (items: { qty: number; unitPrice: number }[]) =>
 
 export const quoteTotal = (q: Quote) => itemsTotal(q.items)
 export const jobTotal = (j: Job) => itemsTotal(j.items)
+
+// Where the job happens: its own site address/Eircode if set, otherwise the
+// client's address. `own` says which one it is.
+export function jobAddress(j: Job, client?: { address?: string }) {
+  const own = [j.siteAddress?.trim(), j.eircode?.trim()].filter(Boolean).join(', ')
+  return own ? { text: own, own: true } : { text: client?.address?.trim() ?? '', own: false }
+}
 export const invoiceTotal = (i: Invoice) => itemsTotal(i.items)
 export const orderTotal = (o: { items: { qty: number; unitPrice: number }[] }) => itemsTotal(o.items)
 
