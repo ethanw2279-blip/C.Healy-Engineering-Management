@@ -48,11 +48,11 @@ export const seed: State = {
     // Week of Jul 5 - 11
     { id: 't1', employeeId: 'e2', jobId: 'j3', date: '2026-07-01', hours: 2, kind: 'work', approved: true, note: 'Interior valet' },
     { id: 't2', employeeId: 'e2', jobId: 'j1', date: '2026-07-07', hours: 3.5, kind: 'work', approved: false, note: 'Deep clean' },
-    { id: 't2b', employeeId: 'e2', jobId: 'j1', date: '2026-07-07', hours: 1, kind: 'travel', approved: false, note: 'Drive to site' },
+    { id: 't2b', employeeId: 'e2', jobId: 'j1', date: '2026-07-07', hours: 1, kind: 'travel', approved: false, note: 'Drive to site', startTime: '07:30', endTime: '08:30', km: 54, reason: 'Job site', fromPlace: 'Yard', toPlace: 'Site' },
     { id: 't3', employeeId: 'e3', jobId: 'j2', date: '2026-07-09', hours: 3, kind: 'work', approved: false, note: 'Fleet wash' },
     { id: 't4', employeeId: 'e4', jobId: 'j2', date: '2026-07-09', hours: 3, kind: 'work', approved: false, note: 'Fleet wash' },
     { id: 't5', employeeId: 'e3', jobId: 'j4', date: '2026-06-27', hours: 4, kind: 'work', approved: true, note: 'Van fleet' },
-    { id: 't5b', employeeId: 'e3', jobId: 'j4', date: '2026-06-27', hours: 1.5, kind: 'travel', approved: true, note: 'Travel to depot' },
+    { id: 't5b', employeeId: 'e3', jobId: 'j4', date: '2026-06-27', hours: 1.5, kind: 'travel', approved: true, note: 'Travel to depot', startTime: '07:00', endTime: '08:30', km: 88, reason: 'Collect materials', fromPlace: 'Yard', toPlace: 'Depot' },
     { id: 't6', employeeId: 'e4', jobId: 'j4', date: '2026-06-27', hours: 4, kind: 'work', approved: true, note: 'Van fleet' },
     { id: 't7', employeeId: 'e5', date: '2026-07-06', hours: 6, kind: 'work', approved: true, note: 'Dispatch & scheduling' },
     { id: 't8', employeeId: 'e2', jobId: 'j1', date: '2026-07-08', hours: 4, kind: 'work', approved: false, note: 'Finish deep clean' },

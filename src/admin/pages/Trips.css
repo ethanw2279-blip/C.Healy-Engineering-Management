@@ -1,0 +1,20 @@
+/* Office Trips page. Shares the toolbar, stat and card styles from Timesheets.css. */
+
+.trips-split { display: grid; grid-template-columns: 3fr 2fr; gap: 22px; }
+.trips-split .ts-card { margin-bottom: 22px; }
+
+.trips-mini td, .trips-mini th { white-space: nowrap; }
+
+.trips-reasons { list-style: none; margin: 0; padding: 4px 18px 16px; }
+.trips-reasons li { padding: 10px 0; border-bottom: 1px solid var(--divider); }
+.trips-reasons li:last-child { border-bottom: none; }
+.trips-reason-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; font-size: 13.5px; }
+.trips-reason-top b { color: var(--blue-ink); }
+.trips-bar { height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.trips-bar i { display: block; height: 100%; border-radius: 999px; background: var(--lead-blue); }
+
+.trips-time { align-items: flex-end; }
+
+@media (max-width: 960px) {
+  .trips-split { grid-template-columns: 1fr; gap: 0; }
+}

@@ -46,7 +46,7 @@ export default function Timesheet() {
       <div className="pad">
         <div className="ts-add-row">
           <button className="ts-add" onClick={() => setAdding('work')}>+ Add hours</button>
-          <button className="ts-add ts-add-travel" onClick={() => setAdding('travel')}>+ Travel hours</button>
+          <button className="ts-add ts-add-travel" onClick={() => setAdding('travel')}>+ Trip</button>
         </div>
 
         <button className="ts-summary ts-summary-btn" onClick={() => nav('/field/timesheet/pay')}>
@@ -97,6 +97,9 @@ export default function Timesheet() {
                       {t.kind === 'travel' && <span className="ts-travel-tag">Travel</span>}
                     </strong>
                     <span>{job ? job.title : t.note || 'Time entry'}</span>
+                    {t.kind === 'travel' && (t.km || t.reason) && (
+                      <span className="ts-entry-trip">{[t.km ? `${t.km} km` : '', t.reason, t.toPlace ? `to ${t.toPlace}` : ''].filter(Boolean).join(' · ')}</span>
+                    )}
                   </div>
                   <div className="ts-entry-hours">{hoursLabel(t.hours)}</div>
                   {t.approved ? <span className="ts-entry-lock">Approved</span> : <span className="muted-sub" style={{ fontSize: 12 }}>Edit</span>}

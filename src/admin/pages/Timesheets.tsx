@@ -8,20 +8,20 @@ import './Timesheets.css'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-type Period = 'week' | 'month' | 'custom'
+export type Period = 'week' | 'month' | 'custom'
 type TypeFilter = 'all' | TimeEntryKind
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const isoLocal = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
-const fmtD = (iso: string) => (iso ? `${Number(iso.slice(8))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}` : '—')
+export const fmtD = (iso: string) => (iso ? `${Number(iso.slice(8))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}` : '—')
 const hrs = (h: number) => `${Math.round(h * 100) / 100}h`
 
-const thisMonthStart = () => { const d = new Date(); return isoLocal(new Date(d.getFullYear(), d.getMonth(), 1)) }
-const thisMonthEnd = () => { const d = new Date(); return isoLocal(new Date(d.getFullYear(), d.getMonth() + 1, 0)) }
+export const thisMonthStart = () => { const d = new Date(); return isoLocal(new Date(d.getFullYear(), d.getMonth(), 1)) }
+export const thisMonthEnd = () => { const d = new Date(); return isoLocal(new Date(d.getFullYear(), d.getMonth() + 1, 0)) }
 
 type Range = { from: string; to: string; label: string; sub: string; steppable: boolean }
 
-function computeRange(period: Period, weekOff: number, monthOff: number, cFrom: string, cTo: string): Range {
+export function computeRange(period: Period, weekOff: number, monthOff: number, cFrom: string, cTo: string): Range {
   if (period === 'week') {
     const base = new Date()
     base.setDate(base.getDate() + weekOff * 7)
@@ -50,7 +50,7 @@ function computeRange(period: Period, weekOff: number, monthOff: number, cFrom: 
   return { from, to, label: `${fmtD(from)} – ${fmtD(to)}`, sub: 'Custom range', steppable: false }
 }
 
-const csvCell = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
+export const csvCell = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
 
 export default function Timesheets() {
   const { state, dispatch } = useStore()
