@@ -141,3 +141,66 @@ export function timeAgo(iso: string, now = Date.now()): string {
   if (s < 7 * 86400) return `${Math.floor(s / 86400)}d`
   return new Date(iso).toLocaleDateString('en-IE', { day: 'numeric', month: 'short' })
 }
+
+/** The notification types a person can switch on/off, and who sees each. */
+export const NOTIFICATION_TYPES: { label: string; kinds: string[]; perm?: string }[] = [
+  { label: 'Assigned to a job', kinds: ['job_assigned'] },
+  { label: 'New visits on my schedule', kinds: ['visit_added'] },
+  { label: 'My hours approved', kinds: ['time_approved'] },
+  { label: 'Hours waiting for approval', kinds: ['time_submitted'], perm: 'approve:timesheets' },
+  { label: 'Photos & files uploaded', kinds: ['photo_added', 'file_added'], perm: 'create:records' },
+  { label: 'New GA1 reports', kinds: ['ga1_created'], perm: 'create:records' },
+  { label: 'Jobs marked complete', kinds: ['job_completed'], perm: 'create:records' },
+  { label: 'Quotes approved', kinds: ['quote_approved'], perm: 'create:records' },
+  { label: 'New requests', kinds: ['request_created'], perm: 'view:requests' },
+  { label: 'Website & portal orders', kinds: ['order_created'], perm: 'view:shop' },
+  { label: 'Invoices paid', kinds: ['invoice_paid'], perm: 'view:invoices' },
+]
+
+export type NotificationChannel = 'app' | 'push'
+
+/** The signed-in employee's notification settings (all on by default). */
+export function useNotificationPrefs(employeeId: string | undefined) {
+  const [offKinds, setOffKinds] = useState<string[]>([])
+  const [noPushKinds, setNoPushKinds] = useState<string[]>([])
+  const enabled = isSupabaseConfigured && !!employeeId
+
+  useEffect(() => {
+    if (!enabled) return
+    supabase
+      .from('notification_prefs')
+      .select('off_kinds, no_push_kinds')
+      .eq('employee_id', employeeId!)
+      .maybeSingle()
+      .then(({ data }) => {
+        setOffKinds(data?.off_kinds ?? [])
+        setNoPushKinds(data?.no_push_kinds ?? [])
+      })
+  }, [enabled, employeeId])
+
+  /** Turn a group of kinds on or off for one channel, and save. */
+  const setKinds = useCallback(
+    async (kinds: string[], channel: NotificationChannel, on: boolean) => {
+      const apply = (xs: string[]) =>
+        on ? xs.filter((k) => !kinds.includes(k)) : [...new Set([...xs, ...kinds])]
+      const nextOff = channel === 'app' ? apply(offKinds) : offKinds
+      const nextNoPush = channel === 'push' ? apply(noPushKinds) : noPushKinds
+      setOffKinds(nextOff)
+      setNoPushKinds(nextNoPush)
+      if (!enabled) return
+      const { error } = await supabase.from('notification_prefs').upsert({
+        employee_id: employeeId,
+        off_kinds: nextOff,
+        no_push_kinds: nextNoPush,
+        updated_at: new Date().toISOString(),
+      })
+      if (error) alert('Could not save notification settings.')
+    },
+    [enabled, employeeId, offKinds, noPushKinds],
+  )
+
+  const isOn = (kinds: string[], channel: NotificationChannel) =>
+    !kinds.some((k) => (channel === 'app' ? offKinds : noPushKinds).includes(k))
+
+  return { isOn, setKinds }
+}

@@ -1,7 +1,8 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient'
 
-// Web Push helpers for the field app. Subscribing stores the browser's push
-// subscription in Supabase so the server (api/notify) can reach this device.
+// Web Push helpers. Subscribing stores the browser's push subscription in
+// Supabase so the server (api/notify) can reach this device. Pushes are sent
+// by the database whenever a notification is created.
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined
 
@@ -67,28 +68,4 @@ export async function unsubscribe(): Promise<void> {
   if (!sub) return
   await supabase.from('push_subscriptions').delete().eq('endpoint', sub.endpoint)
   await sub.unsubscribe()
-}
-
-/**
- * Ask the server to push a notification to the given crew members. Best-effort:
- * failures are swallowed so they never block the primary action (e.g. saving a
- * job). No-op unless push is configured.
- */
-export async function notifyAssignees(
-  employeeIds: string[],
-  payload: { title: string; body: string; url?: string },
-): Promise<void> {
-  if (!isSupabaseConfigured || employeeIds.length === 0) return
-  try {
-    const { data } = await supabase.auth.getSession()
-    const token = data.session?.access_token
-    if (!token) return
-    await fetch('/api/notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ employeeIds, ...payload }),
-    })
-  } catch {
-    /* notifications are non-critical */
-  }
 }

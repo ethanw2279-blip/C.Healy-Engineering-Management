@@ -146,12 +146,36 @@ until then the bell just shows an empty list. Nothing else to configure.
 - Nobody is notified about their own action, and a burst of uploads or
   approvals collapses into one notification ("added 5 photos").
 
+- Anyone with *Approve timesheets* hears when someone logs hours that are
+  waiting for approval.
+- Each person picks what they get from **bell → Settings**: every type can be
+  switched off entirely, or kept in the app but not sent to their phone.
+
 Notifications are written by database triggers, so they fire no matter which
-app, the client portal or the website made the change.
+app, the client portal or the website made the change. Then run
+`supabase/migrations/0021_notification_prefs_push.sql` for the settings, the
+hours alert and phone push.
+
+**Phone push for every notification** (after the VAPID setup below):
+
+1. Make up a long random secret (e.g. `openssl rand -hex 32`) and add it in
+   Vercel as `NOTIFY_WEBHOOK_SECRET`, then redeploy.
+2. In the Supabase SQL editor, tell the database where to send pushes:
+
+   ```sql
+   insert into notification_settings (push_url, push_secret)
+   values ('https://YOUR-APP-DOMAIN/api/notify', 'THE-SAME-SECRET')
+   on conflict (id) do update
+     set push_url = excluded.push_url, push_secret = excluded.push_secret;
+   ```
+
+3. Each person turns on **bell → Settings → Push to this device** (or
+   **More → Push notifications** in the field app) on their phone.
 
 ### Push notifications (needs VAPID keys)
 
-Crew members get a push when they're assigned to a job.
+These keys let the app send phone pushes. With the
+`notification_settings` step above, every notification is also pushed.
 
 **1. Run the migration** — in the SQL editor, run `supabase/migrations/0008_push.sql`.
 
@@ -173,8 +197,8 @@ It prints a **Public Key** and **Private Key**.
 | `SUPABASE_SERVICE_ROLE_KEY` | already set for GA1 PDFs — reused by the sender |
 
 **4. Redeploy.** Then on a phone, open the app → **More → Push notifications →
-On**, accept the browser prompt. Assigning that person to a job from the admin
-app sends them a notification that deep-links to the job.
+On**, accept the browser prompt. Notifications then arrive on the phone and
+deep-link to the right screen.
 
 > iOS note: push works only when the app is **installed to the Home Screen**
 > (Add to Home Screen in Safari) — iOS doesn't deliver web push to the browser

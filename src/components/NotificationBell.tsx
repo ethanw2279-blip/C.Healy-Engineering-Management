@@ -10,6 +10,7 @@ import {
   type AppNotification,
   type NotificationApp,
 } from '../lib/notifications'
+import NotificationSettings from './NotificationSettings'
 import './NotificationBell.css'
 
 type Props = {
@@ -26,13 +27,18 @@ export default function NotificationBell({ app, buttonClassName, iconSize = 22 }
   const { user } = useCurrentUser()
   const { items, unread, enabled, markRead, markAllRead } = useNotifications(user?.id)
   const [open, setOpen] = useState(false)
-  const ref = useOutsideClose<HTMLDivElement>(open, () => setOpen(false))
+  const [settings, setSettings] = useState(false)
+  const close = () => {
+    setOpen(false)
+    setSettings(false)
+  }
+  const ref = useOutsideClose<HTMLDivElement>(open, close)
   const nav = useNavigate()
 
   const openItem = (n: AppNotification) => {
     if (!n.readAt) markRead(n.id)
     const href = notificationHref(n, app)
-    setOpen(false)
+    close()
     if (href) nav(href)
   }
 
@@ -42,7 +48,7 @@ export default function NotificationBell({ app, buttonClassName, iconSize = 22 }
         className={`${buttonClassName} nb-btn`}
         aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? close() : setOpen(true))}
       >
         <BellIcon size={iconSize} />
         {unread > 0 && <span className="nb-badge">{unread > 9 ? '9+' : unread}</span>}
@@ -51,18 +57,29 @@ export default function NotificationBell({ app, buttonClassName, iconSize = 22 }
       {open && (
         <div className="nb-panel" role="dialog" aria-label="Notifications">
           <div className="nb-head">
-            <span className="nb-title">Notifications</span>
+            <span className="nb-title">{settings ? 'Notification settings' : 'Notifications'}</span>
             <div className="nb-head-actions">
-              {unread > 0 && (
-                <button className="nb-link" onClick={markAllRead}>Mark all read</button>
-              )}
-              {app === 'field' && (
-                <button className="nb-link" onClick={() => setOpen(false)}>Close</button>
+              {settings ? (
+                <button className="nb-link" onClick={() => setSettings(false)}>Done</button>
+              ) : (
+                <>
+                  {unread > 0 && (
+                    <button className="nb-link" onClick={markAllRead}>Mark all read</button>
+                  )}
+                  {enabled && (
+                    <button className="nb-link" onClick={() => setSettings(true)}>Settings</button>
+                  )}
+                  {app === 'field' && (
+                    <button className="nb-link" onClick={close}>Close</button>
+                  )}
+                </>
               )}
             </div>
           </div>
 
-          {items.length === 0 ? (
+          {settings ? (
+            <NotificationSettings />
+          ) : items.length === 0 ? (
             <div className="nb-empty">
               {enabled ? "You're all caught up." : 'Notifications appear here once the app is connected to Supabase.'}
             </div>
