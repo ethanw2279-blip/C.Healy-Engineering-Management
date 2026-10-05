@@ -45,6 +45,7 @@
 /* Form fields */
 .fld-form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .fld-form-field > label { font-size: 13px; font-weight: 700; color: var(--navy-muted); }
+.fld-form-hint { margin: -6px 0 14px; font-size: 12px; color: var(--navy-muted); }
 .fld-form-field input,
 .fld-form-field select,
 .fld-form-field textarea {

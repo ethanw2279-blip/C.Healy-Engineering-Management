@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { CameraIcon, CheckIcon, ClockIcon, FileIcon, ListIcon, MapPinIcon } from '../components/Icons'
-import { useStore, useCurrentUser, eur, jobTotal } from '../data/store'
+import { useStore, useCurrentUser, eur, jobTotal, jobAddress } from '../data/store'
 import { fmtDayShort } from '../mobile/fieldHelpers'
 import FieldPhotos, { isImage } from './FieldPhotos'
 import FieldFiles from './FieldFiles'
@@ -32,6 +33,7 @@ export default function JobView() {
   const { id } = useParams()
   const nav = useNavigate()
   const [params, setParams] = useSearchParams()
+  const [editingAddress, setEditingAddress] = useState(false)
   const { state, dispatch } = useStore()
   const { can, user } = useCurrentUser()
 
@@ -56,6 +58,8 @@ export default function JobView() {
   const jobFiles = state.attachments.filter((a) => a.entityType === 'job' && a.entityId === job.id)
   const photoCount = jobFiles.filter((a) => isImage(a.fileName)).length
   const counts: Partial<Record<SectionKey, number>> = { photos: photoCount, files: jobFiles.length - photoCount }
+
+  const address = jobAddress(job, client)
 
   const markComplete = () => {
     dispatch({ type: 'UPDATE_JOB', job: { ...job, status: 'Complete' } })
@@ -95,9 +99,9 @@ export default function JobView() {
           <>
             <div className="fld-card">
               <div className="fld-row"><span>Client</span><strong>{client?.name ?? '—'}</strong></div>
-              {client?.address && (
+              {address.text && (
                 <button className="fld-row jv-row-link" onClick={() => pick('directions')}>
-                  <span>Address</span><strong>{client.address}</strong>
+                  <span>{address.own ? 'Site' : 'Address'}</span><strong>{address.text}</strong>
                 </button>
               )}
               {client?.phone && <div className="fld-row"><span>Phone</span><strong><a href={`tel:${client.phone}`}>{client.phone}</a></strong></div>}
@@ -142,29 +146,77 @@ export default function JobView() {
         {section === 'files' && <FieldFiles entityId={job.id} />}
 
         {section === 'directions' && (
-          client?.address ? (
+          editingAddress ? (
+            <SiteAddressForm
+              job={job}
+              clientAddress={client?.address}
+              onCancel={() => setEditingAddress(false)}
+              onSave={(siteAddress, eircode) => {
+                dispatch({ type: 'UPDATE_JOB', job: { ...job, siteAddress, eircode } })
+                setEditingAddress(false)
+              }}
+            />
+          ) : (
             <>
               <div className="fld-card jv-address">
                 <MapPinIcon size={22} />
                 <div>
-                  <strong>{client.name}</strong>
-                  <span>{client.address}</span>
+                  <small>{address.own ? 'Job site' : `${client?.name ?? 'Client'}'s address`}</small>
+                  <strong>{address.text || 'No address yet'}</strong>
                 </div>
+                {canUpdate && (
+                  <button className="jv-address-edit" onClick={() => setEditingAddress(true)}>
+                    {address.own ? 'Change' : 'Set site'}
+                  </button>
+                )}
               </div>
-              <p className="muted-sub jv-hint">Tap an app to start directions.</p>
-              <div className="jv-maps">
-                {mapLinks(client.address).map((m) => (
-                  <a key={m.key} className={`jv-map jv-map-${m.key}`} href={m.href} target="_blank" rel="noreferrer">
-                    <span className="jv-map-dot" />
-                    {m.label}
-                  </a>
-                ))}
-              </div>
+              {address.text ? (
+                <>
+                  <p className="muted-sub jv-hint">Tap an app to start directions.</p>
+                  <div className="jv-maps">
+                    {mapLinks(address.text).map((m) => (
+                      <a key={m.key} className={`jv-map jv-map-${m.key}`} href={m.href} target="_blank" rel="noreferrer">
+                        <span className="jv-map-dot" />
+                        {m.label}
+                      </a>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="muted-sub jv-hint">Add the site address or Eircode to get directions.</p>
+              )}
             </>
-          ) : (
-            <p className="muted-sub">This client has no address yet. Add one in the office app to get directions.</p>
           )
         )}
+      </div>
+    </div>
+  )
+}
+
+// Set or change the job's own site address / Eircode. Clearing both falls
+// back to the client's address.
+function SiteAddressForm({ job, clientAddress, onSave, onCancel }: {
+  job: { siteAddress?: string; eircode?: string }
+  clientAddress?: string
+  onSave: (siteAddress: string, eircode: string) => void
+  onCancel: () => void
+}) {
+  const [siteAddress, setSiteAddress] = useState(job.siteAddress ?? '')
+  const [eircode, setEircode] = useState(job.eircode ?? '')
+  return (
+    <div className="fld-card jv-address-form">
+      <div className="fld-form-field">
+        <label>Site address</label>
+        <input value={siteAddress} onChange={(e) => setSiteAddress(e.target.value)} placeholder={clientAddress || 'Where the work is'} autoComplete="street-address" autoFocus />
+      </div>
+      <div className="fld-form-field">
+        <label>Eircode</label>
+        <input value={eircode} onChange={(e) => setEircode(e.target.value)} placeholder="e.g. D12 X2Y3" autoCapitalize="characters" maxLength={8} />
+      </div>
+      <p className="fld-form-hint">Leave both blank to use the client&apos;s address.</p>
+      <div className="jv-form-actions">
+        <button className="photo-btn" onClick={onCancel}>Cancel</button>
+        <button className="fld-save jv-form-save" onClick={() => onSave(siteAddress.trim(), eircode.trim().toUpperCase())}>Save</button>
       </div>
     </div>
   )

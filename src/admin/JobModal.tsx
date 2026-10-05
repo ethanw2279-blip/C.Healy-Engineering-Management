@@ -32,6 +32,8 @@ export default function JobModal({
   const [title, setTitle] = useState(editing?.title ?? '')
   const [start, setStart] = useState(editing?.startDate ?? '')
   const [end, setEnd] = useState(editing?.endDate ?? '')
+  const [siteAddress, setSiteAddress] = useState(editing?.siteAddress ?? '')
+  const [eircode, setEircode] = useState(editing?.eircode ?? '')
   const [assigned, setAssigned] = useState<string[]>(editing?.assignedTo ?? [])
   const [status, setStatus] = useState<JobStatus>(editing?.status ?? 'Unscheduled')
   const [items, setItems] = useState<LineItem[]>(editing?.items.length ? editing.items : blankItems())
@@ -58,6 +60,9 @@ export default function JobModal({
           status,
           startDate: start,
           endDate: end || start,
+          ...(siteAddress.trim() || eircode.trim() || editing.siteAddress || editing.eircode
+            ? { siteAddress: siteAddress.trim(), eircode: eircode.trim().toUpperCase() }
+            : {}),
         },
       })
     } else {
@@ -71,6 +76,9 @@ export default function JobModal({
         status: start ? 'Scheduled' : 'Unscheduled',
         startDate: start,
         endDate: end || start,
+        ...(siteAddress.trim() || eircode.trim()
+          ? { siteAddress: siteAddress.trim(), eircode: eircode.trim().toUpperCase() }
+          : {}),
       }
       dispatch({ type: 'ADD_JOB', job })
 
@@ -110,6 +118,10 @@ export default function JobModal({
       <div className="field-row">
         <ClientSelect value={clientId} onChange={setClientId} />
         <Field label="Job title"><input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Interior deep clean" /></Field>
+      </div>
+      <div className="field-row">
+        <Field label="Site address (if not the client's)"><input value={siteAddress} onChange={(e) => setSiteAddress(e.target.value)} placeholder={state.clients.find((c) => c.id === clientId)?.address || 'Where the work is'} /></Field>
+        <Field label="Eircode"><input value={eircode} onChange={(e) => setEircode(e.target.value)} placeholder="e.g. D12 X2Y3" maxLength={8} /></Field>
       </div>
       <div className="field-row">
         <Field label="Start date"><input type="date" value={start} onChange={(e) => setStart(e.target.value)} /></Field>

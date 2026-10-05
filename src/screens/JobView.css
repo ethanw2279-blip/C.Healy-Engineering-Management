@@ -87,7 +87,7 @@ button.fld-row.jv-row-link { width: 100%; text-align: left; font: inherit; }
 .jv-address { display: flex; align-items: flex-start; gap: 12px; padding: 16px; color: var(--green); }
 .jv-address div { display: flex; flex-direction: column; gap: 3px; }
 .jv-address strong { color: var(--navy); font-size: 16px; font-weight: 800; }
-.jv-address span { color: var(--navy-muted); font-size: 15px; line-height: 1.35; }
+
 .jv-hint { margin: 16px 2px 10px; }
 .jv-maps { display: flex; flex-direction: column; gap: 10px; }
 .jv-map {
@@ -101,3 +101,13 @@ button.fld-row.jv-row-link { width: 100%; text-align: left; font: inherit; }
 .jv-map-google .jv-map-dot { background: var(--green); }
 .jv-map-waze .jv-map-dot { background: var(--lead-blue); }
 .jv-map-apple .jv-map-dot { background: var(--navy-muted); }
+.jv-address > div { flex: 1; min-width: 0; }
+.jv-address small { color: var(--navy-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.jv-address-edit {
+  flex: none; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--border-strong); color: var(--navy); font-size: 13px; font-weight: 700;
+}
+.jv-address-edit:active { background: var(--hover); }
+.jv-address-form { padding: 16px 16px 14px; }
+.jv-form-actions { display: flex; gap: 10px; }
+.jv-form-save { margin-top: 0; flex: 1; }
