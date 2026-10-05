@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  BellIcon,
   PlayIcon,
   ClockIcon,
   CalendarIcon,
@@ -15,6 +14,7 @@ import {
 } from '../components/Icons'
 import { useStore, useCurrentUser } from '../data/store'
 import { useClock } from '../mobile/useClock'
+import NotificationBell from '../components/NotificationBell'
 import { greeting, firstName, fmtDay, fmtDayShort, todayISO, weekDatesISO, visitsForUser } from '../mobile/fieldHelpers'
 import AddHoursSheet from './AddHoursSheet'
 import './screens.css'
@@ -76,7 +76,7 @@ export default function Home() {
           <span className="home-date">{fmtDay(today)}</span>
           <h1 className="home-greeting">{greeting()}, {firstName(user?.name) || 'there'}</h1>
         </div>
-        <button className="sh-icon-btn" aria-label="Notifications"><BellIcon size={22} /></button>
+        <NotificationBell app="field" buttonClassName="sh-icon-btn" />
       </header>
 
       <div className="pad">

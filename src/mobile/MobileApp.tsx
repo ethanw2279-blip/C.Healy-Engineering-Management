@@ -6,6 +6,7 @@ import Timesheet from '../screens/Timesheet'
 import TimesheetPay from '../screens/TimesheetPay'
 import Search from '../screens/Search'
 import More from '../screens/More'
+import Preferences from '../screens/Preferences'
 import JobView from '../screens/JobView'
 import FieldClients from '../screens/FieldClients'
 import FieldJobs from '../screens/FieldJobs'
@@ -26,6 +27,7 @@ export default function MobileApp() {
           <Route path="timesheet/pay" element={<TimesheetPay />} />
           <Route path="search" element={<Search />} />
           <Route path="more" element={<More />} />
+          <Route path="preferences" element={<Preferences />} />
           <Route path="job/:id" element={<JobView />} />
           <Route path="clients" element={<FieldClients />} />
           <Route path="jobs" element={<FieldJobs />} />

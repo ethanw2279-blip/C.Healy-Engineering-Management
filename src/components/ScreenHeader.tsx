@@ -1,4 +1,4 @@
-import { BellIcon } from './Icons'
+import NotificationBell from './NotificationBell'
 import './ScreenHeader.css'
 
 type Props = {
@@ -18,9 +18,7 @@ export default function ScreenHeader({ title, eyebrow, showBell }: Props) {
           {eyebrow ? <span className="sh-eyebrow">{eyebrow}</span> : <span />}
           {showBell && (
             <div className="sh-actions">
-              <button className="sh-icon-btn" aria-label="Notifications">
-                <BellIcon size={22} />
-              </button>
+              <NotificationBell app="field" buttonClassName="sh-icon-btn" />
             </div>
           )}
         </div>

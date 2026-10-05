@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BellIcon, PlusIcon, ChevronDownIcon, LogoutIcon } from '../components/Icons'
+import { PlusIcon, ChevronDownIcon, LogoutIcon } from '../components/Icons'
 import { Button, Avatar } from './components/ui'
 import type { CreateKind } from './CreateModals'
 import { useStore, useCurrentUser } from '../data/store'
@@ -7,6 +7,7 @@ import { isSupabaseConfigured } from '../lib/supabaseClient'
 import { useAuth } from '../auth/AuthProvider'
 import { useOutsideClose } from './useOutsideClose'
 import GlobalSearch from './GlobalSearch'
+import NotificationBell from '../components/NotificationBell'
 
 const createOptions: { kind: CreateKind; label: string }[] = [
   { kind: 'client', label: 'Client' },
@@ -88,9 +89,7 @@ export default function Topbar({ onCreate }: { onCreate: (k: CreateKind) => void
           </div>
         )}
 
-        <button className="topbar-icon" aria-label="Notifications">
-          <BellIcon size={21} />
-        </button>
+        <NotificationBell app="office" buttonClassName="topbar-icon" iconSize={21} />
 
         {can('create:records') && (
           <div className="create-wrap" ref={createRef}>
