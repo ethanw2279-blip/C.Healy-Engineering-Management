@@ -67,7 +67,18 @@ export default function NotificationBell({ app, buttonClassName, iconSize = 22 }
                     <button className="nb-link" onClick={markAllRead}>Mark all read</button>
                   )}
                   {enabled && (
-                    <button className="nb-link" onClick={() => setSettings(true)}>Settings</button>
+                    <button
+                      className="nb-link"
+                      onClick={() => {
+                        // The field app keeps settings on More → Preferences.
+                        if (app === 'field') {
+                          close()
+                          nav('/field/preferences')
+                        } else setSettings(true)
+                      }}
+                    >
+                      Settings
+                    </button>
                   )}
                   {app === 'field' && (
                     <button className="nb-link" onClick={close}>Close</button>

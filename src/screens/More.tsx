@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ScreenHeader from '../components/ScreenHeader'
 import {
@@ -8,13 +7,11 @@ import {
   TeamIcon,
   BuildingIcon,
   SlidersIcon,
-  BellIcon,
   GridIcon,
   LogoutIcon,
 } from '../components/Icons'
 import { useCurrentUser } from '../data/store'
 import { isSupabaseConfigured } from '../lib/supabaseClient'
-import { isPushConfigured, isSubscribed, subscribe, unsubscribe } from '../lib/push'
 import { useAuth } from '../auth/AuthProvider'
 import ThemeToggle from '../theme/ThemeToggle'
 import './screens.css'
@@ -24,31 +21,6 @@ export default function More() {
   const { user, role, can } = useCurrentUser()
   const { signOut } = useAuth()
   const nav = useNavigate()
-
-  const [pushOn, setPushOn] = useState(false)
-  const [pushBusy, setPushBusy] = useState(false)
-
-  useEffect(() => {
-    if (isPushConfigured) isSubscribed().then(setPushOn)
-  }, [])
-
-  const togglePush = async () => {
-    if (!user || pushBusy) return
-    setPushBusy(true)
-    try {
-      if (pushOn) {
-        await unsubscribe()
-        setPushOn(false)
-      } else {
-        await subscribe(user.id)
-        setPushOn(true)
-      }
-    } catch (e) {
-      alert(e instanceof Error ? e.message : 'Could not update notifications.')
-    } finally {
-      setPushBusy(false)
-    }
-  }
 
   // Switch to the office/admin app. Set the flag so the phone-redirect on "/"
   // doesn't bounce straight back here.
@@ -63,7 +35,7 @@ export default function More() {
     { label: 'Profile', Icon: UserIcon, show: true },
     { label: 'Manage team', Icon: TeamIcon, show: can('manage:team') },
     { label: 'Company details', Icon: BuildingIcon, show: true },
-    { label: 'Preferences', Icon: SlidersIcon, show: true },
+    { label: 'Preferences', Icon: SlidersIcon, show: true, onClick: () => nav('/field/preferences') },
   ].filter((i) => i.show)
 
   return (
@@ -97,13 +69,6 @@ export default function More() {
               <span>{label}</span>
             </li>
           ))}
-          {isPushConfigured && (
-            <li className="menu-item" onClick={togglePush}>
-              <BellIcon size={24} />
-              <span>Push notifications</span>
-              <span className={`push-state ${pushOn ? 'on' : ''}`}>{pushBusy ? '…' : pushOn ? 'On' : 'Off'}</span>
-            </li>
-          )}
           <ThemeToggle variant="menu" />
         </ul>
 

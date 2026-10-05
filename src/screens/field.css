@@ -180,3 +180,13 @@
 /* Non-job schedule blocks (travel, shop trips) aren't tappable through to a job. */
 .visit-card.no-job { cursor: default; }
 .visit-card.no-job .visit-service { color: var(--green-dark); font-weight: 700; }
+
+/* Preferences */
+.prefs-section {
+  padding: 18px 16px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--navy-muted);
+}

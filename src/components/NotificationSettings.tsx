@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useCurrentUser } from '../data/store'
 import { NOTIFICATION_TYPES, useNotificationPrefs } from '../lib/notifications'
 import { isPushConfigured, isSubscribed, subscribe, unsubscribe } from '../lib/push'
+import './NotificationBell.css'
 
 function Switch({ on, disabled, label, onChange }: { on: boolean; disabled?: boolean; label: string; onChange: (on: boolean) => void }) {
   return (

@@ -148,7 +148,8 @@ until then the bell just shows an empty list. Nothing else to configure.
 
 - Anyone with *Approve timesheets* hears when someone logs hours that are
   waiting for approval.
-- Each person picks what they get from **bell → Settings**: every type can be
+- Each person picks what they get from **More → Preferences** (field app) or
+  **bell → Settings** (office app): every type can be
   switched off entirely, or kept in the app but not sent to their phone.
 
 Notifications are written by database triggers, so they fire no matter which
@@ -169,8 +170,8 @@ hours alert and phone push.
      set push_url = excluded.push_url, push_secret = excluded.push_secret;
    ```
 
-3. Each person turns on **bell → Settings → Push to this device** (or
-   **More → Push notifications** in the field app) on their phone.
+3. Each person turns on **Push to this device** on their phone: in the field
+   app under **More → Preferences**, in the office app under **bell → Settings**.
 
 ### Push notifications (needs VAPID keys)
 
@@ -196,8 +197,8 @@ It prints a **Public Key** and **Private Key**.
 | `VAPID_SUBJECT` | `mailto:you@yourdomain.com` |
 | `SUPABASE_SERVICE_ROLE_KEY` | already set for GA1 PDFs — reused by the sender |
 
-**4. Redeploy.** Then on a phone, open the app → **More → Push notifications →
-On**, accept the browser prompt. Notifications then arrive on the phone and
+**4. Redeploy.** Then on a phone, open the field app → **More → Preferences →
+Push to this device**, accept the browser prompt. Notifications then arrive on the phone and
 deep-link to the right screen.
 
 > iOS note: push works only when the app is **installed to the Home Screen**
