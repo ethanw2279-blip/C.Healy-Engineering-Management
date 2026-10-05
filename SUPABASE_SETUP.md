@@ -129,6 +129,26 @@ The field app now works offline:
 
 Nothing to configure — it activates once deployed over HTTPS.
 
+### In-app notifications (bell icon)
+
+The bell in the office top bar and on the field app's screens shows live
+notifications with an unread count. Run
+`supabase/migrations/0020_notifications.sql` in the SQL editor to switch it on;
+until then the bell just shows an empty list. Nothing else to configure.
+
+- **Field crew** hear when they're assigned to a job, when someone adds a visit
+  to their schedule, and when their hours are approved.
+- **Office staff** (anyone with *Create records*) hear when photos or files are
+  added to a job or GA1, a GA1 report is filed (flagged if unsafe or needing
+  repair), a job is marked complete, or a client approves a quote. New requests
+  go to anyone who can see Requests, website/portal orders to anyone who can see
+  the Shop, and paid invoices to anyone who can see Invoices.
+- Nobody is notified about their own action, and a burst of uploads or
+  approvals collapses into one notification ("added 5 photos").
+
+Notifications are written by database triggers, so they fire no matter which
+app, the client portal or the website made the change.
+
 ### Push notifications (needs VAPID keys)
 
 Crew members get a push when they're assigned to a job.

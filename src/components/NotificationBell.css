@@ -1,0 +1,110 @@
+/* Notification bell + panel, shared by the field and office apps. Colours come
+   from the global tokens so a theme change carries through. */
+
+.nb { position: relative; }
+
+.nb-btn { position: relative; }
+
+.nb-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--surface, var(--bg));
+}
+
+.nb-panel {
+  background: var(--surface, var(--bg));
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+}
+
+/* Office: dropdown under the bell. */
+.nb-office .nb-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  max-height: min(520px, calc(100vh - 90px));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+/* Field: full-screen sheet. */
+.nb-field .nb-panel {
+  position: fixed;
+  inset: 0;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 200;
+}
+
+.nb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider);
+}
+.nb-field .nb-head { padding: 16px 20px; }
+
+.nb-title { font-weight: 700; font-size: 15px; }
+.nb-field .nb-title { font-size: 20px; font-weight: 800; }
+
+.nb-head-actions { display: flex; gap: 14px; }
+.nb-link { color: var(--green); font-weight: 600; font-size: 14px; }
+
+.nb-list { list-style: none; overflow-y: auto; flex: 1; }
+
+.nb-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider);
+  color: inherit;
+}
+.nb-field .nb-item { padding: 14px 20px; }
+.nb-item:hover { background: rgba(127, 127, 127, 0.07); }
+
+.nb-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+.nb-item.unread .nb-dot { background: var(--green); }
+
+.nb-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.nb-text strong { font-size: 14px; font-weight: 500; }
+.nb-item.unread .nb-text strong { font-weight: 700; }
+.nb-text span {
+  font-size: 13px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nb-time { flex: none; font-size: 12px; color: var(--text-faint); margin-top: 2px; }
+
+.nb-empty { padding: 32px 16px; text-align: center; color: var(--text-muted); font-size: 14px; }

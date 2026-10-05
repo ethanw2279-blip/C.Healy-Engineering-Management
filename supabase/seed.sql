@@ -115,3 +115,11 @@ insert into visits (job_id, employee_id, date, start_time, end_time) values
   ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000e5', '2026-07-20', '14:00', '16:00'),
   ('00000000-0000-0000-0000-0000000000d3', '00000000-0000-0000-0000-0000000000e3', '2026-07-22', '11:00', '12:30'),
   ('00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-0000000000e2', '2026-07-27', '09:00', '11:00');
+
+-- Sample data shouldn't arrive as a pile of "new visit" notifications.
+do $$
+begin
+  if to_regclass('public.notifications') is not null then
+    delete from notifications;
+  end if;
+end $$;
