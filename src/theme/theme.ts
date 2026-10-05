@@ -1,4 +1,3 @@
-import './home-dark.css'
 import { useEffect, useState } from 'react'
 
 // Light/dark theme for the field and office apps. The user's choice is kept
