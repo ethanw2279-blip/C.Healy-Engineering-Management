@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { TrashIcon } from '../components/Icons'
-import { useStore, useCurrentUser, newId } from '../data/store'
+import { useStore, useCurrentUser, newId, formatDateTime, formatDateTimeShort } from '../data/store'
+import { photoTakenAt } from '../lib/photoTakenAt'
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient'
 import type { Attachment } from '../data/types'
 
@@ -35,18 +36,23 @@ export default function FieldPhotos({ entityType, entityId }: { entityType: 'job
     return () => { alive = false }
   }, [fileKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const upload = async (list: FileList | null) => {
+  const uploaderName = (id: string) => state.employees.find((e) => e.id === id)?.name ?? 'Unknown'
+
+  // justCaptured: taken with the in-app camera button (so "now" is a fair
+  // taken-time when the image carries no EXIF date).
+  const upload = async (list: FileList | null, justCaptured = false) => {
     if (!list?.length || !user) return
     setBusy(true)
     setError(null)
     for (const file of Array.from(list)) {
       const id = newId('att')
+      const takenAt = (await photoTakenAt(file, { justCaptured })) ?? undefined
       const path = `${entityType}/${entityId}/${id}-${file.name.replace(/[^\w.\-]/g, '_')}`
       const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, file)
       if (upErr) { setError(upErr.message); break }
       dispatch({
         type: 'ADD_ATTACHMENT',
-        attachment: { id, entityType, entityId, fileName: file.name, path, size: file.size, uploadedBy: user.id, createdAt: new Date().toISOString() },
+        attachment: { id, entityType, entityId, fileName: file.name, path, size: file.size, uploadedBy: user.id, createdAt: new Date().toISOString(), takenAt },
       })
     }
     setBusy(false)
@@ -67,7 +73,7 @@ export default function FieldPhotos({ entityType, entityId }: { entityType: 'job
       <div className="photo-actions">
         <button className="photo-btn" onClick={() => cameraRef.current?.click()} disabled={busy}>📷 Take photo</button>
         <button className="photo-btn" onClick={() => galleryRef.current?.click()} disabled={busy}>🖼 Upload</button>
-        <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { upload(e.target.files); e.target.value = '' }} />
+        <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { upload(e.target.files, true); e.target.value = '' }} />
         <input ref={galleryRef} type="file" accept="image/*" multiple hidden onChange={(e) => { upload(e.target.files); e.target.value = '' }} />
       </div>
       {busy && <p className="muted-sub">Uploading…</p>}
@@ -80,16 +86,24 @@ export default function FieldPhotos({ entityType, entityId }: { entityType: 'job
           {files.map((a) => {
             const url = urls[a.path]
             const canRemove = can('create:records') || a.uploadedBy === user?.id
+            const who = uploaderName(a.uploadedBy)
+            const detail = `${a.takenAt ? `Taken ${formatDateTime(a.takenAt)}` : 'Taken: unknown'}\nUploaded ${formatDateTime(a.createdAt)} by ${who}`
             return (
-              <div key={a.id} className="photo-thumb">
-                {isImage(a.fileName) && url ? (
-                  <a href={url} target="_blank" rel="noreferrer"><img src={url} alt={a.fileName} /></a>
-                ) : (
-                  <a className="photo-file" href={url} target="_blank" rel="noreferrer">{a.fileName}</a>
-                )}
-                {canRemove && (
-                  <button className="photo-del" aria-label="Remove" onClick={() => remove(a)}><TrashIcon size={15} /></button>
-                )}
+              <div key={a.id} className="photo-item">
+                <div className="photo-thumb">
+                  {isImage(a.fileName) && url ? (
+                    <a href={url} target="_blank" rel="noreferrer"><img src={url} alt={a.fileName} /></a>
+                  ) : (
+                    <a className="photo-file" href={url} target="_blank" rel="noreferrer">{a.fileName}</a>
+                  )}
+                  {canRemove && (
+                    <button className="photo-del" aria-label="Remove" onClick={() => remove(a)}><TrashIcon size={15} /></button>
+                  )}
+                </div>
+                <div className="photo-caption" title={detail}>
+                  <span>{a.takenAt ? formatDateTimeShort(a.takenAt) : `Added ${formatDateTimeShort(a.createdAt)}`}</span>
+                  <span>{who}</span>
+                </div>
               </div>
             )
           })}

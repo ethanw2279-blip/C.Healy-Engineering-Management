@@ -166,7 +166,8 @@ export type Attachment = {
   path: string // storage object path within the 'attachments' bucket
   size: number
   uploadedBy: ID
-  createdAt: string
+  createdAt: string // when it was uploaded
+  takenAt?: string // when the photo was taken (EXIF), if known
 }
 
 export type GA1Result = 'safe' | 'repair_required' | 'unsafe'

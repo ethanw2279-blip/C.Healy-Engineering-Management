@@ -104,6 +104,7 @@ export async function loadState(): Promise<State> {
     attachments: (attachments ?? []).map((a: Row) => ({
       id: a.id, entityType: a.entity_type, entityId: a.entity_id, fileName: a.file_name,
       path: a.path, size: a.size ?? 0, uploadedBy: a.uploaded_by, createdAt: a.created_at,
+      takenAt: a.taken_at ?? undefined,
     })),
     products: (products ?? []).map((p: Row) => ({
       id: p.id, name: p.name, sku: p.sku ?? '', description: p.description ?? undefined,
@@ -322,10 +323,15 @@ export async function persist(action: Action): Promise<void> {
 
     case 'ADD_ATTACHMENT': {
       const a = action.attachment
-      return check(supabase.from('attachments').insert({
+      const row = {
         id: a.id, entity_type: a.entityType, entity_id: a.entityId, file_name: a.fileName,
         path: a.path, size: a.size, uploaded_by: a.uploadedBy, created_at: a.createdAt,
-      }))
+      }
+      const { error } = await supabase.from('attachments').insert({ ...row, taken_at: a.takenAt ?? null })
+      // Until migration 0019 adds taken_at, save without it rather than lose the photo.
+      if (error && /taken_at/.test(error.message ?? '')) return check(supabase.from('attachments').insert(row))
+      if (error) throw error
+      return
     }
     case 'REMOVE_ATTACHMENT':
       return check(supabase.from('attachments').delete().eq('id', action.id))

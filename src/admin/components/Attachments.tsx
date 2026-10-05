@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { TrashIcon } from '../../components/Icons'
-import { useStore, useCurrentUser, newId } from '../../data/store'
+import { useStore, useCurrentUser, newId, formatDateTime } from '../../data/store'
+import { photoTakenAt } from '../../lib/photoTakenAt'
 import { supabase, isSupabaseConfigured } from '../../lib/supabaseClient'
 import type { Attachment } from '../../data/types'
 
@@ -27,6 +28,7 @@ export default function Attachments({ entityType, entityId }: { entityType: 'cli
     setBusy(true)
     setError(null)
     const id = newId('att')
+    const takenAt = (await photoTakenAt(file)) ?? undefined
     const path = `${entityType}/${entityId}/${id}-${file.name}`
     const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: false })
     if (upErr) {
@@ -34,7 +36,7 @@ export default function Attachments({ entityType, entityId }: { entityType: 'cli
     } else {
       const attachment: Attachment = {
         id, entityType, entityId, fileName: file.name, path, size: file.size,
-        uploadedBy: user.id, createdAt: new Date().toISOString(),
+        uploadedBy: user.id, createdAt: new Date().toISOString(), takenAt,
       }
       dispatch({ type: 'ADD_ATTACHMENT', attachment })
     }
@@ -77,7 +79,10 @@ export default function Attachments({ entityType, entityId }: { entityType: 'cli
             return (
               <li key={a.id} className="attach-item">
                 <button className="attach-name" onClick={() => download(a)}>{a.fileName}</button>
-                <span className="attach-meta">{human(a.size)} · {authorName(a.uploadedBy)}</span>
+                <span className="attach-meta">
+                  {human(a.size)} · Uploaded by {authorName(a.uploadedBy)}, {formatDateTime(a.createdAt)}
+                  {a.takenAt && <> · Taken {formatDateTime(a.takenAt)}</>}
+                </span>
                 {canRemove && isSupabaseConfigured && (
                   <button className="attach-remove" aria-label="Remove file" onClick={() => remove(a)}>
                     <TrashIcon size={16} />

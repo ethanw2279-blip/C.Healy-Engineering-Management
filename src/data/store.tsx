@@ -358,6 +358,20 @@ export const formatDate = (iso: string) => {
   return d.toLocaleDateString('en-IE', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+export const formatDateTime = (iso: string) => {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return '—'
+  return d.toLocaleString('en-IE', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
+export const formatDateTimeShort = (iso: string) => {
+  if (!iso) return '—'
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return '—'
+  return d.toLocaleString('en-IE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+}
+
 export const formatDateShort = (iso: string) => {
   if (!iso) return '—'
   const d = new Date(iso)

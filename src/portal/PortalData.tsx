@@ -109,7 +109,7 @@ async function loadPortal(): Promise<{ state: PortalState; linked: boolean }> {
   // Documents = GA1 certificates + files attached to the client / their jobs.
   const documents: PortalDoc[] = [
     ...ga1Rows.map((g) => ({ id: `ga1-${g.id}`, name: `GA1 ${g.reportNumber} — ${g.equipmentType || g.serialNumber}`, kind: 'GA1 Certificate', category: 'Certificates' as const, date: g.examinationDate, url: `/api/ga1/${g.id}/pdf`, size: 0 })),
-    ...(attachments ?? []).map((a: Row) => ({ id: `att-${a.id}`, name: a.file_name, kind: a.entity_type === 'job' ? 'Job document' : 'Document', category: 'Files' as const, date: a.created_at, attachmentId: a.id, size: num(a.size) })),
+    ...(attachments ?? []).map((a: Row) => ({ id: `att-${a.id}`, name: a.file_name, kind: a.entity_type === 'job' ? 'Job document' : 'Document', category: 'Files' as const, date: a.taken_at ?? a.created_at, attachmentId: a.id, size: num(a.size) })),
   ]
 
   const pr = (prefsRows ?? [])[0] as Row | undefined
