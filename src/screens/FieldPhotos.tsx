@@ -6,9 +6,11 @@ import { supabase, isSupabaseConfigured } from '../lib/supabaseClient'
 import type { Attachment } from '../data/types'
 
 const BUCKET = 'attachments'
-const isImage = (name: string) => /\.(png|jpe?g|webp|gif|heic|heif)$/i.test(name)
+export const isImage = (name: string) => /\.(png|jpe?g|webp|gif|heic|heif)$/i.test(name)
 
-export default function FieldPhotos({ entityType, entityId }: { entityType: 'job' | 'ga1'; entityId: string }) {
+// imagesOnly: show just pictures, leaving drawings/PDFs to the Files section
+// (used on the job page, where photos and files have their own tabs).
+export default function FieldPhotos({ entityType, entityId, imagesOnly = false }: { entityType: 'job' | 'ga1'; entityId: string; imagesOnly?: boolean }) {
   const { state, dispatch } = useStore()
   const { user, can } = useCurrentUser()
   const cameraRef = useRef<HTMLInputElement>(null)
@@ -17,7 +19,7 @@ export default function FieldPhotos({ entityType, entityId }: { entityType: 'job
   const [error, setError] = useState<string | null>(null)
   const [urls, setUrls] = useState<Record<string, string>>({})
 
-  const files = state.attachments.filter((a) => a.entityType === entityType && a.entityId === entityId)
+  const files = state.attachments.filter((a) => a.entityType === entityType && a.entityId === entityId && (!imagesOnly || isImage(a.fileName)))
   const fileKey = files.map((f) => f.id).join(',')
 
   // Resolve signed thumbnail URLs for the current files.

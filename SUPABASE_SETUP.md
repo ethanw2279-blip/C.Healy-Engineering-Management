@@ -204,3 +204,10 @@ deep-link to the right screen.
 > iOS note: push works only when the app is **installed to the Home Screen**
 > (Add to Home Screen in Safari) — iOS doesn't deliver web push to the browser
 > tab. Requires iOS 16.4+.
+
+## Job site addresses
+
+Jobs can have their own site address and Eircode, which the field app uses for
+directions instead of the client's address. To switch it on, in the SQL editor
+run `supabase/migrations/0023_job_site_address.sql`. It only adds two empty
+columns to `jobs`, so it is safe to run before or after the app update.

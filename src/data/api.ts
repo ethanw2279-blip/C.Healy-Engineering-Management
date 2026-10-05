@@ -80,6 +80,7 @@ export async function loadState(): Promise<State> {
     jobs: (jobs ?? []).map((j: Row) => ({
       id: j.id, number: j.number, clientId: j.client_id, title: j.title, status: j.status,
       startDate: j.start_date ?? '', endDate: j.end_date ?? '',
+      siteAddress: j.site_address ?? undefined, eircode: j.eircode ?? undefined,
       items: itemsFor(jobItems, 'job_id', j.id),
       assignedTo: (jobAssignees ?? []).filter((a: Row) => a.job_id === j.id).map((a: Row) => a.employee_id),
     })),
@@ -205,6 +206,11 @@ export async function persist(action: Action): Promise<void> {
       await check(supabase.from('jobs').upsert({
         id: j.id, number: j.number, client_id: j.clientId, title: j.title, status: j.status,
         start_date: j.startDate || null, end_date: j.endDate || null,
+        // Only sent once set, so saving jobs keeps working on a database that
+        // hasn't run 0023_job_site_address.sql yet.
+        ...(j.siteAddress !== undefined || j.eircode !== undefined
+          ? { site_address: j.siteAddress?.trim() || null, eircode: j.eircode?.trim().toUpperCase() || null }
+          : {}),
       }))
       await check(supabase.from('job_items').delete().eq('job_id', j.id))
       if (j.items.length) await check(supabase.from('job_items').insert(itemRows('job_id', j.id, j.items)))
