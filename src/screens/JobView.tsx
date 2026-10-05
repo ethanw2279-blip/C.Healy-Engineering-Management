@@ -3,6 +3,7 @@ import { CheckIcon, ClockIcon } from '../components/Icons'
 import { useStore, useCurrentUser, eur, jobTotal } from '../data/store'
 import { fmtDayShort } from '../mobile/fieldHelpers'
 import FieldPhotos from './FieldPhotos'
+import JobMaterials from './JobMaterials'
 import './screens.css'
 import './field.css'
 import './JobView.css'
@@ -62,6 +63,8 @@ export default function JobView() {
             </div>
           </>
         )}
+
+        <JobMaterials jobId={job.id} />
 
         <h3 className="fld-h3">Visits</h3>
         {visits.length === 0 ? (

@@ -20,6 +20,7 @@ import Team from './pages/Team'
 import Roles from './pages/Roles'
 import Reports from './pages/Reports'
 import ShopProducts from './pages/ShopProducts'
+import Stock from './pages/Stock'
 import ShopOrders from './pages/ShopOrders'
 import OrderDetail from './pages/OrderDetail'
 import PrintDocument from './pages/PrintDocument'
@@ -55,6 +56,7 @@ export default function AdminApp() {
         <Route path="quotes/:id" element={guard('view:quotes', <QuoteDetail />)} />
         <Route path="jobs" element={guard('view:jobs', <Jobs />)} />
         <Route path="jobs/:id" element={guard('view:jobs', <JobDetail />)} />
+        <Route path="stock" element={guard('view:stock', <Stock />)} />
         <Route path="invoices" element={guard('view:invoices', <Invoices />)} />
         <Route path="invoices/:id" element={guard('view:invoices', <InvoiceDetail />)} />
         <Route path="shop/products" element={guard('view:shop', <ShopProducts />)} />

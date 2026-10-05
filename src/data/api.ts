@@ -27,6 +27,8 @@ export async function loadState(): Promise<State> {
     { data: jobAssignees }, { data: invoices }, { data: invoiceItems },
     { data: timeEntries }, { data: visits }, { data: notes }, { data: ga1 }, { data: attachments },
     { data: products }, { data: orders }, { data: orderItems },
+    { data: stockLocations }, { data: stockItems }, { data: stockLevels }, { data: stockMovements },
+    { data: jobMaterials }, { data: shoppingItems },
   ] = await Promise.all([
     supabase.from('roles').select('*'),
     supabase.from('employees').select('*'),
@@ -47,6 +49,13 @@ export async function loadState(): Promise<State> {
     supabase.from('products').select('*').order('created_at', { ascending: false }),
     supabase.from('orders').select('*').order('created_at', { ascending: false }),
     supabase.from('order_items').select('*'),
+    // Stock tables arrive with migration 0022; before that these come back empty.
+    supabase.from('stock_locations').select('*').order('sort'),
+    supabase.from('stock_items').select('*').order('name'),
+    supabase.from('stock_levels').select('*'),
+    supabase.from('stock_movements').select('*').order('created_at', { ascending: false }).limit(1000),
+    supabase.from('job_materials').select('*').order('created_at'),
+    supabase.from('shopping_items').select('*').order('created_at'),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) =>
@@ -121,6 +130,31 @@ export async function loadState(): Promise<State> {
       items: (orderItems ?? []).filter((r: Row) => r.order_id === o.id).map((r: Row) => ({
         id: r.id, productId: r.product_id ?? undefined, name: r.name, qty: num(r.qty), unitPrice: num(r.unit_price),
       })),
+    })),
+    stockLocations: (stockLocations ?? []).map((l: Row) => ({
+      id: l.id, name: l.name, kind: l.kind === 'shed' ? 'shed' : 'van', sort: num(l.sort),
+    })),
+    stockItems: (stockItems ?? []).map((i: Row) => ({
+      id: i.id, name: i.name, unit: i.unit ?? 'each', category: i.category ?? undefined,
+      supplier: i.supplier ?? undefined, cost: i.cost == null ? undefined : num(i.cost),
+      active: i.active ?? true, createdAt: i.created_at,
+    })),
+    stockLevels: (stockLevels ?? []).map((l: Row) => ({
+      itemId: l.item_id, locationId: l.location_id, count: num(l.count), min: num(l.min_qty), topUp: num(l.top_up),
+    })),
+    stockMovements: (stockMovements ?? []).map((m: Row) => ({
+      id: m.id, itemId: m.item_id, locationId: m.location_id, delta: num(m.delta), reason: m.reason,
+      jobId: m.job_id ?? undefined, employeeId: m.employee_id ?? undefined, note: m.note ?? undefined,
+      createdAt: m.created_at,
+    })),
+    jobMaterials: (jobMaterials ?? []).map((m: Row) => ({
+      id: m.id, jobId: m.job_id, itemId: m.item_id ?? undefined, name: m.name, unit: m.unit ?? 'each',
+      qty: num(m.qty), status: m.status, locationId: m.location_id ?? undefined,
+      addedBy: m.added_by ?? undefined, createdAt: m.created_at,
+    })),
+    shoppingItems: (shoppingItems ?? []).map((s: Row) => ({
+      id: s.id, itemId: s.item_id ?? undefined, name: s.name, unit: s.unit ?? 'each', qty: num(s.qty),
+      addedBy: s.added_by ?? undefined, createdAt: s.created_at,
     })),
     ga1: (ga1 ?? []).map((g: Row) => ({
       id: g.id, reportNumber: g.report_number, clientId: g.client_id, examinerId: g.examiner_id,
@@ -335,6 +369,60 @@ export async function persist(action: Action): Promise<void> {
     }
     case 'REMOVE_ATTACHMENT':
       return check(supabase.from('attachments').delete().eq('id', action.id))
+
+    case 'ADD_STOCK_LOCATION':
+    case 'UPDATE_STOCK_LOCATION': {
+      const l = action.location
+      return check(supabase.from('stock_locations').upsert({ id: l.id, name: l.name, kind: l.kind, sort: l.sort }))
+    }
+    case 'REMOVE_STOCK_LOCATION':
+      return check(supabase.from('stock_locations').delete().eq('id', action.id))
+
+    case 'ADD_STOCK_ITEM':
+    case 'UPDATE_STOCK_ITEM': {
+      const i = action.item
+      await check(supabase.from('stock_items').upsert({
+        id: i.id, name: i.name, unit: i.unit, category: i.category ?? null, supplier: i.supplier ?? null,
+        cost: i.cost ?? null, active: i.active, created_at: i.createdAt,
+      }))
+      // Counts are left out so an edit never overwrites them; movements own the count.
+      if (action.levels.length)
+        await check(supabase.from('stock_levels').upsert(
+          action.levels.map((l) => ({ item_id: l.itemId, location_id: l.locationId, min_qty: l.min, top_up: l.topUp })),
+          { onConflict: 'item_id,location_id' },
+        ))
+      return
+    }
+    case 'REMOVE_STOCK_ITEM':
+      return check(supabase.from('stock_items').delete().eq('id', action.id))
+
+    // Insert-or-skip, so a movement replayed from the offline outbox never counts twice.
+    case 'STOCK_MOVEMENTS':
+      return check(supabase.from('stock_movements').upsert(action.movements.map((m) => ({
+        id: m.id, item_id: m.itemId, location_id: m.locationId, delta: m.delta, reason: m.reason,
+        job_id: m.jobId ?? null, employee_id: m.employeeId ?? null, note: m.note ?? null, created_at: m.createdAt,
+      })), { onConflict: 'id', ignoreDuplicates: true }))
+
+    case 'ADD_JOB_MATERIAL':
+    case 'UPDATE_JOB_MATERIAL': {
+      const m = action.material
+      return check(supabase.from('job_materials').upsert({
+        id: m.id, job_id: m.jobId, item_id: m.itemId ?? null, name: m.name, unit: m.unit, qty: m.qty,
+        status: m.status, location_id: m.locationId ?? null, added_by: m.addedBy ?? null, created_at: m.createdAt,
+      }))
+    }
+    case 'REMOVE_JOB_MATERIAL':
+      return check(supabase.from('job_materials').delete().eq('id', action.id))
+
+    case 'ADD_SHOPPING_ITEM': {
+      const s = action.item
+      return check(supabase.from('shopping_items').insert({
+        id: s.id, item_id: s.itemId ?? null, name: s.name, unit: s.unit, qty: s.qty,
+        added_by: s.addedBy ?? null, created_at: s.createdAt,
+      }))
+    }
+    case 'REMOVE_SHOPPING_ITEM':
+      return check(supabase.from('shopping_items').delete().eq('id', action.id))
 
     // Local-only actions: no persistence.
     case 'SET_CURRENT_USER':
