@@ -209,6 +209,50 @@ export type GA1Inspection = {
   createdAt: string
 }
 
+// ---- Stock, job materials and the shopping list ---------------------------
+export type StockLocation = { id: ID; name: string; kind: 'shed' | 'van'; sort: number }
+export type StockItem = {
+  id: ID
+  name: string
+  unit: string // each, metres, boxes…
+  category?: string
+  supplier?: string
+  cost?: number // typical cost per unit
+  active: boolean
+  createdAt: string
+}
+// One per item per location. Low when count <= min (min 0 = no alerts).
+export type StockLevel = { itemId: ID; locationId: ID; count: number; min: number; topUp: number }
+export type StockMoveReason = 'used' | 'returned' | 'bought' | 'moved' | 'counted' | 'adjusted'
+// Every count change is a movement; the database adds its delta to the level.
+export type StockMovement = {
+  id: ID
+  itemId: ID
+  locationId: ID
+  delta: number
+  reason: StockMoveReason
+  jobId?: ID
+  employeeId?: ID
+  note?: string
+  createdAt: string
+}
+export type MaterialStatus = 'from_stock' | 'to_buy' | 'got' | 'used'
+export type JobMaterial = {
+  id: ID
+  jobId: ID
+  itemId?: ID // a stock item, or a one-off when unset
+  name: string
+  unit: string
+  qty: number
+  status: MaterialStatus
+  locationId?: ID // where it's taken from (from stock) or was taken from (used)
+  addedBy?: ID
+  createdAt: string
+}
+// Things added to the shopping list by hand. Low stock and job materials to
+// buy are worked out from the data above, not stored here.
+export type ShoppingItem = { id: ID; itemId?: ID; name: string; unit: string; qty: number; addedBy?: ID; createdAt: string }
+
 export type State = {
   roles: Role[]
   currentUserId: ID
@@ -225,4 +269,10 @@ export type State = {
   attachments: Attachment[]
   products: Product[]
   orders: Order[]
+  stockLocations: StockLocation[]
+  stockItems: StockItem[]
+  stockLevels: StockLevel[]
+  stockMovements: StockMovement[]
+  jobMaterials: JobMaterial[]
+  shoppingItems: ShoppingItem[]
 }

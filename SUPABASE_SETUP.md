@@ -211,3 +211,20 @@ Jobs can have their own site address and Eircode, which the field app uses for
 directions instead of the client's address. To switch it on, in the SQL editor
 run `supabase/migrations/0023_job_site_address.sql`. It only adds two empty
 columns to `jobs`, so it is safe to run before or after the app update.
+
+## Stock, job materials and the shopping list
+
+Run `supabase/migrations/0024_stock.sql` in the SQL editor. It only adds new
+tables, so the site keeps working before and after. It:
+
+- creates the stock, job materials and shopping list tables, with a starting
+  **Shed** and **Van** (rename them or add vans from Stock → Locations);
+- gives every role that can see Jobs the new **Stock & shopping list**
+  permission, and roles that can create records **Add stock items & set
+  minimum levels** (change these in Roles & permissions as usual);
+- sends "running low" / "out of stock" alerts when a count drops to an item's
+  "alert at" level, and "materials to buy" alerts to the office. These use
+  the notifications set up by 0020 and 0021; until those are run, stock still
+  works, just without alerts.
+
+Until it's run, the Stock page and the Materials section are simply empty.

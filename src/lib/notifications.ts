@@ -116,6 +116,8 @@ export function notificationHref(n: AppNotification, app: NotificationApp): stri
       case 'ga1': return id ? `/field/ga1/${id}` : '/field/ga1'
       case 'timesheet': return '/field/timesheet'
       case 'schedule': return '/field/schedule'
+      case 'stock': return id ? `/field/stock?loc=${id}` : '/field/stock'
+      case 'shopping': return '/field/shopping'
       default: return null
     }
   }
@@ -128,6 +130,8 @@ export function notificationHref(n: AppNotification, app: NotificationApp): stri
     case 'order': return id ? `/shop/orders/${id}` : '/shop/orders'
     case 'timesheet': return '/timesheets'
     case 'schedule': return '/schedule'
+    case 'stock': return id ? `/stock?loc=${id}` : '/stock'
+    case 'shopping': return '/stock'
     default: return null
   }
 }
@@ -155,6 +159,8 @@ export const NOTIFICATION_TYPES: { label: string; kinds: string[]; perm?: string
   { label: 'New requests', kinds: ['request_created'], perm: 'view:requests' },
   { label: 'Website & portal orders', kinds: ['order_created'], perm: 'view:shop' },
   { label: 'Invoices paid', kinds: ['invoice_paid'], perm: 'view:invoices' },
+  { label: 'Stock running low or out', kinds: ['stock_low', 'stock_out'], perm: 'view:stock' },
+  { label: 'Materials to buy for jobs', kinds: ['materials_to_buy'], perm: 'create:records' },
 ]
 
 export type NotificationChannel = 'app' | 'push'

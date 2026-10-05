@@ -15,7 +15,7 @@ const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@example.com'
 const webhookSecret = process.env.NOTIFY_WEBHOOK_SECRET
 
 // Kinds meant for field crew open in the field app; the rest in the office app.
-const FIELD_KINDS = new Set(['job_assigned', 'visit_added', 'time_approved'])
+const FIELD_KINDS = new Set(['job_assigned', 'visit_added', 'time_approved', 'stock_low', 'stock_out'])
 
 function hrefFor(n) {
   const id = n.entity_id
@@ -24,6 +24,7 @@ function hrefFor(n) {
       case 'job': return id ? `/field/job/${id}` : '/field/jobs'
       case 'timesheet': return '/field/timesheet'
       case 'schedule': return '/field/schedule'
+      case 'stock': return id ? `/field/stock?loc=${id}` : '/field/stock'
       default: return '/field'
     }
   }
@@ -36,6 +37,8 @@ function hrefFor(n) {
     case 'order': return id ? `/shop/orders/${id}` : '/shop/orders'
     case 'timesheet': return '/timesheets'
     case 'schedule': return '/schedule'
+    case 'stock': return id ? `/stock?loc=${id}` : '/stock'
+    case 'shopping': return '/stock'
     default: return '/'
   }
 }

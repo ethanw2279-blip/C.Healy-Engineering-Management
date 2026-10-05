@@ -8,6 +8,8 @@ import {
   BuildingIcon,
   SlidersIcon,
   GridIcon,
+  BoxIcon,
+  ListIcon,
   LogoutIcon,
 } from '../components/Icons'
 import { useCurrentUser } from '../data/store'
@@ -30,6 +32,8 @@ export default function More() {
   }
 
   const menu = [
+    { label: 'Stock', Icon: BoxIcon, show: can('view:stock') || can('create:records'), onClick: () => nav('/field/stock') },
+    { label: 'Shopping list', Icon: ListIcon, show: can('view:stock') || can('create:records'), onClick: () => nav('/field/shopping') },
     { label: 'GA1 Inspections', Icon: ClipboardIcon, show: can('view:ga1'), onClick: () => nav('/field/ga1') },
     { label: 'Office app', Icon: GridIcon, show: can('view:dashboard'), onClick: openOffice },
     { label: 'Profile', Icon: UserIcon, show: true },

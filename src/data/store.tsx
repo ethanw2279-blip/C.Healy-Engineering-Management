@@ -21,7 +21,13 @@ import type {
   Quote,
   Request,
   Role,
+  ShoppingItem,
   State,
+  StockItem,
+  StockLevel,
+  StockLocation,
+  StockMovement,
+  JobMaterial,
   TimeEntry,
   Visit,
 } from './types'
@@ -75,6 +81,19 @@ export type Action =
   | { type: 'ADD_ORDER'; order: Order }
   | { type: 'UPDATE_ORDER'; order: Order }
   | { type: 'REMOVE_ORDER'; id: string }
+  | { type: 'ADD_STOCK_LOCATION'; location: StockLocation }
+  | { type: 'UPDATE_STOCK_LOCATION'; location: StockLocation }
+  | { type: 'REMOVE_STOCK_LOCATION'; id: string }
+  // levels carry each location's min / top-up; counts change only via movements
+  | { type: 'ADD_STOCK_ITEM'; item: StockItem; levels: StockLevel[] }
+  | { type: 'UPDATE_STOCK_ITEM'; item: StockItem; levels: StockLevel[] }
+  | { type: 'REMOVE_STOCK_ITEM'; id: string }
+  | { type: 'STOCK_MOVEMENTS'; movements: StockMovement[] }
+  | { type: 'ADD_JOB_MATERIAL'; material: JobMaterial }
+  | { type: 'UPDATE_JOB_MATERIAL'; material: JobMaterial }
+  | { type: 'REMOVE_JOB_MATERIAL'; id: string }
+  | { type: 'ADD_SHOPPING_ITEM'; item: ShoppingItem }
+  | { type: 'REMOVE_SHOPPING_ITEM'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -120,6 +139,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         jobs: state.jobs.filter((j) => j.id !== action.id),
         visits: state.visits.filter((v) => v.jobId !== action.id),
+        jobMaterials: state.jobMaterials.filter((m) => m.jobId !== action.id),
       }
     case 'ADD_INVOICE':
       return { ...state, invoices: [action.invoice, ...state.invoices] }
@@ -215,6 +235,69 @@ function reducer(state: State, action: Action): State {
       }
     case 'REMOVE_ORDER':
       return { ...state, orders: state.orders.filter((o) => o.id !== action.id) }
+    case 'ADD_STOCK_LOCATION':
+      return { ...state, stockLocations: [...state.stockLocations, action.location] }
+    case 'UPDATE_STOCK_LOCATION':
+      return {
+        ...state,
+        stockLocations: state.stockLocations.map((l) => (l.id === action.location.id ? action.location : l)),
+      }
+    case 'REMOVE_STOCK_LOCATION':
+      return {
+        ...state,
+        stockLocations: state.stockLocations.filter((l) => l.id !== action.id),
+        stockLevels: state.stockLevels.filter((l) => l.locationId !== action.id),
+      }
+    case 'ADD_STOCK_ITEM':
+    case 'UPDATE_STOCK_ITEM': {
+      // Levels from the edit set min / top-up; the current count is kept.
+      const id = action.item.id
+      const edited = action.levels.map((l) => ({
+        ...l,
+        count: state.stockLevels.find((x) => x.itemId === id && x.locationId === l.locationId)?.count ?? 0,
+      }))
+      const untouched = state.stockLevels.filter(
+        (l) => l.itemId !== id || !edited.some((e) => e.locationId === l.locationId),
+      )
+      return {
+        ...state,
+        stockItems: state.stockItems.some((i) => i.id === id)
+          ? state.stockItems.map((i) => (i.id === id ? action.item : i))
+          : [...state.stockItems, action.item],
+        stockLevels: [...untouched, ...edited],
+      }
+    }
+    case 'REMOVE_STOCK_ITEM':
+      return {
+        ...state,
+        stockItems: state.stockItems.filter((i) => i.id !== action.id),
+        stockLevels: state.stockLevels.filter((l) => l.itemId !== action.id),
+        stockMovements: state.stockMovements.filter((m) => m.itemId !== action.id),
+        shoppingItems: state.shoppingItems.filter((s) => s.itemId !== action.id),
+      }
+    case 'STOCK_MOVEMENTS': {
+      let levels = state.stockLevels
+      for (const m of action.movements) {
+        const exists = levels.some((l) => l.itemId === m.itemId && l.locationId === m.locationId)
+        levels = exists
+          ? levels.map((l) => (l.itemId === m.itemId && l.locationId === m.locationId ? { ...l, count: l.count + m.delta } : l))
+          : [...levels, { itemId: m.itemId, locationId: m.locationId, count: m.delta, min: 0, topUp: 0 }]
+      }
+      return { ...state, stockLevels: levels, stockMovements: [...action.movements, ...state.stockMovements] }
+    }
+    case 'ADD_JOB_MATERIAL':
+      return { ...state, jobMaterials: [...state.jobMaterials, action.material] }
+    case 'UPDATE_JOB_MATERIAL':
+      return {
+        ...state,
+        jobMaterials: state.jobMaterials.map((m) => (m.id === action.material.id ? action.material : m)),
+      }
+    case 'REMOVE_JOB_MATERIAL':
+      return { ...state, jobMaterials: state.jobMaterials.filter((m) => m.id !== action.id) }
+    case 'ADD_SHOPPING_ITEM':
+      return { ...state, shoppingItems: [...state.shoppingItems, action.item] }
+    case 'REMOVE_SHOPPING_ITEM':
+      return { ...state, shoppingItems: state.shoppingItems.filter((s) => s.id !== action.id) }
     default:
       return state
   }
@@ -227,17 +310,22 @@ type Store = {
 
 const StoreContext = createContext<Store | null>(null)
 
+let writeChain: Promise<void> = Promise.resolve()
+
 const EMPTY_STATE: State = {
   roles: [], currentUserId: '', employees: [], clients: [], requests: [],
   quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [], attachments: [],
   products: [], orders: [],
+  stockLocations: [], stockItems: [], stockLevels: [], stockMovements: [], jobMaterials: [], shoppingItems: [],
 }
 
 // Initial state: demo mode uses the in-memory seed. DB mode starts from the
 // last cached state (so the app opens instantly / offline) or empty.
 function initialState(): State {
   if (!isSupabaseConfigured) return seed
-  return readCache() ?? EMPTY_STATE
+  // A cache saved by an older version may lack newer collections.
+  const cached = readCache()
+  return cached ? { ...EMPTY_STATE, ...cached } : EMPTY_STATE
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
@@ -285,7 +373,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         enqueue(action)
         return
       }
-      persist(action).catch(async (e) => {
+      // Writes go out one at a time, in order, so a record always lands
+      // before anything that refers to it (e.g. a new stock item's counts).
+      const write = writeChain.then(() => persist(action))
+      writeChain = write.catch(() => {})
+      write.catch(async (e) => {
         console.error('Failed to save change to Supabase', e)
         if (typeof navigator !== 'undefined' && !navigator.onLine) {
           enqueue(action)

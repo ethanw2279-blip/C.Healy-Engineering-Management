@@ -1,19 +1,20 @@
 import { useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { CameraIcon, CheckIcon, ClockIcon, FileIcon, ListIcon, MapPinIcon } from '../components/Icons'
+import { BoxIcon, CameraIcon, CheckIcon, ClockIcon, FileIcon, ListIcon, MapPinIcon } from '../components/Icons'
 import { useStore, useCurrentUser, eur, jobTotal, jobAddress } from '../data/store'
 import { fmtDayShort } from '../mobile/fieldHelpers'
 import FieldPhotos, { isImage } from './FieldPhotos'
 import FieldFiles from './FieldFiles'
+import JobMaterials from './JobMaterials'
 import './screens.css'
 import './field.css'
 import './JobView.css'
 
 // Sections of the job page, shown as tabs under the job header. The chosen
 // tab is kept in the URL (?tab=photos) so back/forward and refresh keep it.
-// A Materials section slots in here as another entry when it's built.
 const SECTIONS = [
   { key: 'details', label: 'Details', icon: ListIcon },
+  { key: 'materials', label: 'Materials', icon: BoxIcon },
   { key: 'photos', label: 'Photos', icon: CameraIcon },
   { key: 'files', label: 'Files', icon: FileIcon },
   { key: 'directions', label: 'Directions', icon: MapPinIcon },
@@ -57,7 +58,8 @@ export default function JobView() {
 
   const jobFiles = state.attachments.filter((a) => a.entityType === 'job' && a.entityId === job.id)
   const photoCount = jobFiles.filter((a) => isImage(a.fileName)).length
-  const counts: Partial<Record<SectionKey, number>> = { photos: photoCount, files: jobFiles.length - photoCount }
+  const toBuy = state.jobMaterials.filter((m) => m.jobId === job.id && m.status !== 'used').length
+  const counts: Partial<Record<SectionKey, number>> = { materials: toBuy, photos: photoCount, files: jobFiles.length - photoCount }
 
   const address = jobAddress(job, client)
 
@@ -140,6 +142,8 @@ export default function JobView() {
             {complete && <div className="fld-done"><CheckIcon size={18} /> Job complete</div>}
           </>
         )}
+
+        {section === 'materials' && <JobMaterials jobId={job.id} />}
 
         {section === 'photos' && <FieldPhotos entityType="job" entityId={job.id} imagesOnly />}
 

@@ -304,3 +304,11 @@ export const MapPinIcon = (p: IconProps) => (
     <circle cx="12" cy="9.5" r="2.5" />
   </Base>
 )
+
+export const BoxIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M12 3 20 7v10l-8 4-8-4V7z" />
+    <path d="M4 7l8 4 8-4" />
+    <path d="M12 11v10" />
+  </Base>
+)

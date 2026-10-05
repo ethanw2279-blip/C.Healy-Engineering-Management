@@ -13,6 +13,8 @@ import FieldJobs from '../screens/FieldJobs'
 import FieldGA1 from '../screens/FieldGA1'
 import FieldGA1Detail from '../screens/FieldGA1Detail'
 import FieldGA1Form from '../screens/FieldGA1Form'
+import FieldStock from '../screens/FieldStock'
+import FieldShopping from '../screens/FieldShopping'
 
 // The field-crew mobile app, mounted under /field. It keeps the clock in/out
 // flow, which belongs to on-site staff (not the office admin).
@@ -28,6 +30,8 @@ export default function MobileApp() {
           <Route path="search" element={<Search />} />
           <Route path="more" element={<More />} />
           <Route path="preferences" element={<Preferences />} />
+          <Route path="stock" element={<FieldStock />} />
+          <Route path="shopping" element={<FieldShopping />} />
           <Route path="job/:id" element={<JobView />} />
           <Route path="clients" element={<FieldClients />} />
           <Route path="jobs" element={<FieldJobs />} />

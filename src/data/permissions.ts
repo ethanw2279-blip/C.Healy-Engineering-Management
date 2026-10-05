@@ -21,6 +21,7 @@ export const PERMISSION_GROUPS: {
       { key: 'view:timesheets', label: 'Timesheets' },
       { key: 'view:ga1', label: 'GA1 Inspections' },
       { key: 'view:shop', label: 'Shop (products & orders)' },
+      { key: 'view:stock', label: 'Stock & shopping list' },
       { key: 'view:team', label: 'Team' },
       { key: 'view:reports', label: 'Reports' },
     ],
@@ -30,6 +31,7 @@ export const PERMISSION_GROUPS: {
     perms: [
       { key: 'create:records', label: 'Create quotes, jobs, invoices & clients' },
       { key: 'approve:timesheets', label: 'Approve timesheets' },
+      { key: 'manage:stock', label: 'Add stock items & set minimum levels' },
     ],
   },
   {
@@ -50,7 +52,7 @@ const ADMIN_PERMS = ALL_PERMISSION_KEYS.filter((k) => k !== 'manage:roles')
 
 // A field employee: sees their work, logs and reviews their hours. GA1 access
 // is granted per person (a toggle on their Team profile), not via this role.
-const EMPLOYEE_PERMS = ['view:schedule', 'view:jobs', 'view:clients', 'view:timesheets']
+const EMPLOYEE_PERMS = ['view:schedule', 'view:jobs', 'view:clients', 'view:timesheets', 'view:stock']
 
 // Seed roles. Developer is a system role: full access, cannot be deleted or
 // have its permissions edited (it always holds '*').

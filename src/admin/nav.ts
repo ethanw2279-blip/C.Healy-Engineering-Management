@@ -15,6 +15,7 @@ import {
   GiftIcon,
   CardIcon,
   TruckIcon,
+  BoxIcon,
 } from '../components/Icons'
 import type { PermissionKey } from '../data/permissions'
 
@@ -33,6 +34,7 @@ export const NAV: NavItem[] = [
   { to: '/requests', label: 'Requests', Icon: RequestsIcon, perm: 'view:requests' },
   { to: '/quotes', label: 'Quotes', Icon: QuoteIcon, perm: 'view:quotes' },
   { to: '/jobs', label: 'Jobs', Icon: BriefcaseIcon, perm: 'view:jobs' },
+  { to: '/stock', label: 'Stock', Icon: BoxIcon, perm: 'view:stock' },
   { to: '/invoices', label: 'Invoices', Icon: ReceiptIcon, perm: 'view:invoices' },
   { to: '/shop/products', label: 'Products', Icon: GiftIcon, perm: 'view:shop' },
   { to: '/shop/orders', label: 'Orders', Icon: CardIcon, perm: 'view:shop' },

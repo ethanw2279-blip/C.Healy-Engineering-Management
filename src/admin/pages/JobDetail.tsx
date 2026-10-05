@@ -5,6 +5,7 @@ import JobModal from '../JobModal'
 import VisitModal from '../VisitModal'
 import Notes from '../components/Notes'
 import Attachments from '../components/Attachments'
+import JobMaterials from '../components/JobMaterials'
 import { nextNumber, today } from '../formParts'
 import {
   useStore,
@@ -172,6 +173,8 @@ export default function JobDetail() {
           </tbody>
         </table>
       </Section>
+
+      <JobMaterials jobId={job.id} />
 
       {/* Visits — each row is a day on the Schedule calendar */}
       <Section
