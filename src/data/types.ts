@@ -76,6 +76,8 @@ export type Job = {
   status: JobStatus
   startDate: string
   endDate: string
+  siteAddress?: string // where the work is, when it isn't the client's address
+  eircode?: string
 }
 
 export type InvoiceStatus = 'Draft' | 'Awaiting payment' | 'Paid' | 'Past due'

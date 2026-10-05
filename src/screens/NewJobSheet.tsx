@@ -21,9 +21,12 @@ export default function NewJobSheet({ onClose }: { onClose: () => void }) {
   const [clientId, setClientId] = useState('')
   const [title, setTitle] = useState('')
   const [start, setStart] = useState('')
+  const [siteAddress, setSiteAddress] = useState('')
+  const [eircode, setEircode] = useState('')
 
   const clients = [...state.clients].sort((a, b) => a.name.localeCompare(b.name))
   const valid = !!clientId && title.trim().length > 0
+  const clientAddress = clients.find((c) => c.id === clientId)?.address
 
   const save = () => {
     if (!valid) return
@@ -37,6 +40,9 @@ export default function NewJobSheet({ onClose }: { onClose: () => void }) {
       status: start ? 'Scheduled' : 'Unscheduled',
       startDate: start,
       endDate: start,
+      ...(siteAddress.trim() || eircode.trim()
+        ? { siteAddress: siteAddress.trim(), eircode: eircode.trim().toUpperCase() }
+        : {}),
     }
     dispatch({ type: 'ADD_JOB', job })
     onClose()
@@ -55,6 +61,15 @@ export default function NewJobSheet({ onClose }: { onClose: () => void }) {
           </select>
         </div>
         <div className="fld-form-field"><label>Job title</label><input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Gate repair" /></div>
+        <div className="fld-form-field">
+          <label>Site address</label>
+          <input value={siteAddress} onChange={(e) => setSiteAddress(e.target.value)} placeholder={clientAddress || 'e.g. Unit 4, Ballymount Ind. Est.'} autoComplete="street-address" />
+        </div>
+        <div className="fld-form-field">
+          <label>Eircode</label>
+          <input value={eircode} onChange={(e) => setEircode(e.target.value)} placeholder="e.g. D12 X2Y3" autoCapitalize="characters" maxLength={8} />
+        </div>
+        <p className="fld-form-hint">Leave both blank to use the client&apos;s address for directions.</p>
         <div className="fld-form-field"><label>Start date (optional)</label><input type="date" value={start} onChange={(e) => setStart(e.target.value)} /></div>
         <button className="fld-save" onClick={save} disabled={!valid}>Save job</button>
       </div>
