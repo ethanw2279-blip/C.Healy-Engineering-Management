@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Button, Field } from '../components/ui'
 import { nextNumber, today } from '../formParts'
 import { useStore, newId } from '../../data/store'
-import { RESULT_LABELS, addMonths } from '../../data/ga1'
+import { RESULT_LABELS, addMonths, TEST_TYPES, DEFAULT_TEST_TYPE, testIntervalMonths } from '../../data/ga1'
 import EquipmentSelect from '../../components/EquipmentSelect'
 import type { GA1Inspection, GA1Result } from '../../data/types'
 
@@ -41,7 +41,7 @@ export default function GA1Form() {
       reinspectionDate: '',
       additionalNotes: '',
       signature: '',
-      purposeOfExamination: '12 Monthly Testing',
+      purposeOfExamination: DEFAULT_TEST_TYPE,
       particularsOfTests: '',
       createdAt: new Date().toISOString(),
     },
@@ -105,14 +105,19 @@ export default function GA1Form() {
       <FormCard title="Examination">
         <div className="field-row">
           <Field label="Date of examination">
-            <input type="date" value={f.examinationDate} onChange={(e) => set({ examinationDate: e.target.value, nextExaminationDate: addMonths(e.target.value, 12) })} />
+            <input type="date" value={f.examinationDate} onChange={(e) => set({ examinationDate: e.target.value, nextExaminationDate: addMonths(e.target.value, testIntervalMonths(f.purposeOfExamination)) })} />
           </Field>
           <Field label="Previous examination"><input type="date" value={f.previousExaminationDate} onChange={(e) => set({ previousExaminationDate: e.target.value })} /></Field>
           <Field label="Next examination due"><input type="date" value={f.nextExaminationDate} onChange={(e) => set({ nextExaminationDate: e.target.value })} /></Field>
         </div>
         <div className="field-row">
           <Field label="Examination location"><input value={f.examinationLocation} onChange={(e) => set({ examinationLocation: e.target.value })} /></Field>
-          <Field label="Purpose of examination"><input value={f.purposeOfExamination} onChange={(e) => set({ purposeOfExamination: e.target.value })} /></Field>
+          <Field label="Purpose of examination">
+            <select value={f.purposeOfExamination} onChange={(e) => set({ purposeOfExamination: e.target.value, nextExaminationDate: addMonths(f.examinationDate, testIntervalMonths(e.target.value)) })}>
+            {TEST_TYPES.map((t) => <option key={t.label} value={t.label}>{t.label}</option>)}
+            {f.purposeOfExamination && !TEST_TYPES.some((t) => t.label === f.purposeOfExamination) && <option value={f.purposeOfExamination}>{f.purposeOfExamination}</option>}
+          </select>
+          </Field>
         </div>
         <Field label="Particulars of tests"><input value={f.particularsOfTests} onChange={(e) => set({ particularsOfTests: e.target.value })} /></Field>
       </FormCard>

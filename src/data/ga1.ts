@@ -38,6 +38,18 @@ export function addMonths(dateStr: string, n: number) {
   return d.toISOString().slice(0, 10)
 }
 
+// The two test intervals a GA1 can be done on. The chosen one is printed as
+// the "Purpose of examination" and sets how far ahead the next exam is due.
+export const TEST_TYPES = [
+  { label: '12 Month Test', months: 12 },
+  { label: '6 Month Test', months: 6 },
+] as const
+export const DEFAULT_TEST_TYPE = TEST_TYPES[0].label
+
+/** Months until the next exam for a purpose string (old reports default to 12). */
+export const testIntervalMonths = (purpose: string) =>
+  TEST_TYPES.find((t) => t.label === purpose)?.months ?? (/\b6\s*month/i.test(purpose) ? 6 : 12)
+
 export const isOverdue = (dateStr: string) => !!dateStr && new Date(dateStr) < new Date('2026-07-08')
 
 // ── Register (schedule of examinations) ─────────────────────────────────────
