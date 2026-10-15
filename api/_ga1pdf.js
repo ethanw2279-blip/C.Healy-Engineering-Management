@@ -220,7 +220,7 @@ export function generateGA1PDF({ inspection, client, engineer }, stream) {
   cell(doc, ML + purpW, y, CW - purpW, purpLH, { bg: LABEL_BG, lines: [{ text: 'Purpose of thorough examination:', bold: true }], valign: 'middle' })
   y += purpLH
   cell(doc, ML, y, purpW, purpVH, { lines: [{ text: 'Functional test & visual examination' }], valign: 'middle' })
-  cell(doc, ML + purpW, y, CW - purpW, purpVH, { lines: [{ text: inspection.purpose_of_examination || '12 Monthly Testing' }], valign: 'middle' })
+  cell(doc, ML + purpW, y, CW - purpW, purpVH, { lines: [{ text: inspection.purpose_of_examination || '12 Month Test' }], valign: 'middle' })
   y += purpVH + 10
 
   const nextH = 30, nextLW = 210

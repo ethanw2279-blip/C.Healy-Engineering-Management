@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useStore, useCurrentUser, newId } from '../data/store'
-import { RESULT_LABELS, addMonths } from '../data/ga1'
+import { RESULT_LABELS, addMonths, TEST_TYPES, DEFAULT_TEST_TYPE, testIntervalMonths } from '../data/ga1'
 import EquipmentSelect from '../components/EquipmentSelect'
 import type { GA1Inspection, GA1Result } from '../data/types'
 import './screens.css'
@@ -71,7 +71,7 @@ export default function FieldGA1Form() {
       reinspectionDate: '',
       additionalNotes: '',
       signature: user?.name ?? '',
-      purposeOfExamination: '12 Monthly Testing',
+      purposeOfExamination: DEFAULT_TEST_TYPE,
       particularsOfTests: '',
       createdAt: new Date().toISOString(),
     },
@@ -113,8 +113,14 @@ export default function FieldGA1Form() {
         <Field label="Serial number"><input value={f.serialNumber} onChange={(e) => set({ serialNumber: e.target.value })} /></Field>
         <Field label="SWL / WLL"><input value={f.swl} onChange={(e) => set({ swl: e.target.value })} placeholder="e.g. 4,000 kg" /></Field>
         <Field label="Year of manufacture"><input value={f.yearOfManufacture} onChange={(e) => set({ yearOfManufacture: e.target.value })} /></Field>
+        <Field label="Test type">
+          <select value={f.purposeOfExamination} onChange={(e) => set({ purposeOfExamination: e.target.value, nextExaminationDate: addMonths(f.examinationDate, testIntervalMonths(e.target.value)) })}>
+            {TEST_TYPES.map((t) => <option key={t.label} value={t.label}>{t.label}</option>)}
+            {f.purposeOfExamination && !TEST_TYPES.some((t) => t.label === f.purposeOfExamination) && <option value={f.purposeOfExamination}>{f.purposeOfExamination}</option>}
+          </select>
+        </Field>
         <Field label="Examination date">
-          <input type="date" value={f.examinationDate} onChange={(e) => set({ examinationDate: e.target.value, nextExaminationDate: addMonths(e.target.value, 12) })} />
+          <input type="date" value={f.examinationDate} onChange={(e) => set({ examinationDate: e.target.value, nextExaminationDate: addMonths(e.target.value, testIntervalMonths(f.purposeOfExamination)) })} />
         </Field>
         <Field label="Next examination due"><input type="date" value={f.nextExaminationDate} onChange={(e) => set({ nextExaminationDate: e.target.value })} /></Field>
         <Field label="Examination location"><input value={f.examinationLocation} onChange={(e) => set({ examinationLocation: e.target.value })} /></Field>
