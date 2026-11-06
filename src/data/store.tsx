@@ -28,6 +28,9 @@ import type {
   StockLocation,
   StockMovement,
   JobMaterial,
+  JobStage,
+  StageEntry,
+  StageTemplate,
   TimeEntry,
   Visit,
 } from './types'
@@ -94,6 +97,14 @@ export type Action =
   | { type: 'REMOVE_JOB_MATERIAL'; id: string }
   | { type: 'ADD_SHOPPING_ITEM'; item: ShoppingItem }
   | { type: 'REMOVE_SHOPPING_ITEM'; id: string }
+  | { type: 'ADD_JOB_STAGE'; stage: JobStage }
+  | { type: 'UPDATE_JOB_STAGE'; stage: JobStage }
+  | { type: 'REMOVE_JOB_STAGE'; id: string }
+  | { type: 'ADD_STAGE_ENTRY'; entry: StageEntry }
+  | { type: 'UPDATE_STAGE_ENTRY'; entry: StageEntry }
+  | { type: 'REMOVE_STAGE_ENTRY'; id: string }
+  | { type: 'ADD_STAGE_TEMPLATE'; template: StageTemplate }
+  | { type: 'REMOVE_STAGE_TEMPLATE'; id: string }
   | { type: 'HYDRATE'; state: State }
 
 function reducer(state: State, action: Action): State {
@@ -140,6 +151,8 @@ function reducer(state: State, action: Action): State {
         jobs: state.jobs.filter((j) => j.id !== action.id),
         visits: state.visits.filter((v) => v.jobId !== action.id),
         jobMaterials: state.jobMaterials.filter((m) => m.jobId !== action.id),
+        jobStages: state.jobStages.filter((s) => s.jobId !== action.id),
+        stageEntries: state.stageEntries.filter((e) => e.jobId !== action.id),
       }
     case 'ADD_INVOICE':
       return { ...state, invoices: [action.invoice, ...state.invoices] }
@@ -298,6 +311,26 @@ function reducer(state: State, action: Action): State {
       return { ...state, shoppingItems: [...state.shoppingItems, action.item] }
     case 'REMOVE_SHOPPING_ITEM':
       return { ...state, shoppingItems: state.shoppingItems.filter((s) => s.id !== action.id) }
+    case 'ADD_JOB_STAGE':
+      return { ...state, jobStages: [...state.jobStages, action.stage] }
+    case 'UPDATE_JOB_STAGE':
+      return { ...state, jobStages: state.jobStages.map((s) => (s.id === action.stage.id ? action.stage : s)) }
+    case 'REMOVE_JOB_STAGE':
+      return {
+        ...state,
+        jobStages: state.jobStages.filter((s) => s.id !== action.id),
+        stageEntries: state.stageEntries.filter((e) => e.stageId !== action.id),
+      }
+    case 'ADD_STAGE_ENTRY':
+      return { ...state, stageEntries: [...state.stageEntries, action.entry] }
+    case 'UPDATE_STAGE_ENTRY':
+      return { ...state, stageEntries: state.stageEntries.map((e) => (e.id === action.entry.id ? action.entry : e)) }
+    case 'REMOVE_STAGE_ENTRY':
+      return { ...state, stageEntries: state.stageEntries.filter((e) => e.id !== action.id) }
+    case 'ADD_STAGE_TEMPLATE':
+      return { ...state, stageTemplates: [...state.stageTemplates, action.template] }
+    case 'REMOVE_STAGE_TEMPLATE':
+      return { ...state, stageTemplates: state.stageTemplates.filter((t) => t.id !== action.id) }
     default:
       return state
   }
@@ -317,6 +350,7 @@ const EMPTY_STATE: State = {
   quotes: [], jobs: [], invoices: [], timeEntries: [], visits: [], notes: [], ga1: [], attachments: [],
   products: [], orders: [],
   stockLocations: [], stockItems: [], stockLevels: [], stockMovements: [], jobMaterials: [], shoppingItems: [],
+  jobStages: [], stageEntries: [], stageTemplates: [],
 }
 
 // Initial state: demo mode uses the in-memory seed. DB mode starts from the

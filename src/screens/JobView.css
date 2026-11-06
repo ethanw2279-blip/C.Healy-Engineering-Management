@@ -44,15 +44,15 @@
 
 /* Section tabs */
 .jv-tabs {
-  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 3px;
   padding: 4px; margin-bottom: 18px;
   background: var(--surface-3); border-radius: 14px;
 }
 .jv-tab {
   position: relative;
   display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 9px 2px 8px; border-radius: 11px;
-  font-size: 12px; font-weight: 700; color: var(--navy-muted);
+  padding: 9px 0 8px; border-radius: 11px; min-width: 0;
+  font-size: 11px; font-weight: 700; color: var(--navy-muted); white-space: nowrap; letter-spacing: -0.01em;
 }
 .jv-tab.active { background: var(--surface); color: var(--navy); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .jv-tab.active svg { color: var(--green); }
