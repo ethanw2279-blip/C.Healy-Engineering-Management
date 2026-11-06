@@ -6,6 +6,7 @@ import { fmtDayShort } from '../mobile/fieldHelpers'
 import FieldPhotos, { isImage } from './FieldPhotos'
 import FieldFiles from './FieldFiles'
 import JobMaterials from './JobMaterials'
+import JobCard from './JobCard'
 import './screens.css'
 import './field.css'
 import './JobView.css'
@@ -15,6 +16,7 @@ import './JobView.css'
 const SECTIONS = [
   { key: 'details', label: 'Details', icon: ListIcon },
   { key: 'materials', label: 'Materials', icon: BoxIcon },
+  { key: 'card', label: 'Job card', icon: ClockIcon },
   { key: 'photos', label: 'Photos', icon: CameraIcon },
   { key: 'files', label: 'Files', icon: FileIcon },
   { key: 'directions', label: 'Directions', icon: MapPinIcon },
@@ -144,6 +146,8 @@ export default function JobView() {
         )}
 
         {section === 'materials' && <JobMaterials jobId={job.id} />}
+
+        {section === 'card' && <JobCard jobId={job.id} />}
 
         {section === 'photos' && <FieldPhotos entityType="job" entityId={job.id} imagesOnly />}
 

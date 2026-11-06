@@ -1,0 +1,69 @@
+/* Job card: stages of a job and the time spent on each. Shared by the field and office apps. */
+
+.jc-timer {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--brand); color: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 18px;
+}
+.jc-timer-dot { width: 10px; height: 10px; border-radius: 50%; background: #5FCB8E; box-shadow: 0 0 0 4px rgba(95, 203, 142, 0.25); flex: none; }
+.jc-timer-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.jc-timer-text small { font-size: 12px; opacity: 0.75; font-weight: 600; }
+.jc-timer-text strong { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jc-timer-clock { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.jc-timer-stop { background: #fff; color: #16343B; border-radius: 10px; padding: 9px 14px; font-weight: 800; font-size: 14px; }
+.jc-timer.elsewhere { background: var(--surface-3); color: var(--navy); }
+.jc-timer.elsewhere .jc-timer-stop { background: var(--surface); border: 1px solid var(--border-strong); }
+
+.jc-stage { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--divider); width: 100%; text-align: left; }
+.jc-stage:active { background: var(--surface-2); }
+.jc-num {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface-3); color: var(--navy-muted);
+  display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
+}
+.jc-num.done { background: var(--green); color: #fff; }
+.jc-num.running { background: var(--brand); color: #fff; }
+.jc-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.jc-mid > strong { font-size: 15px; font-weight: 700; color: var(--navy); }
+.jc-who { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--navy-muted); }
+.jc-faces { display: inline-flex; }
+.jc-faces .avatar { border: 2px solid var(--surface); margin-right: -6px; }
+.jc-faces .avatar:last-child { margin-right: 0; }
+.jc-hrs { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.jc-hrs b { font-size: 17px; font-weight: 800; color: var(--navy); }
+.jc-hrs small { font-size: 11px; font-weight: 700; color: var(--navy-muted); }
+.jc-hrs small.running { color: var(--green); }
+.jc-total { display: flex; justify-content: space-between; padding: 14px 16px; background: var(--surface-2); border-top: 1px solid var(--divider); font-weight: 800; color: var(--navy); }
+.jc-new { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--divider); }
+.jc-new input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 10px; font-size: 15px; background: var(--surface); color: var(--navy); }
+.jc-new button { padding: 0 14px; border-radius: 10px; background: var(--green); color: #fff; font-weight: 700; }
+.jc-tpls { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.jc-tpls button { border: 1px solid var(--border-strong); border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 700; color: var(--navy); background: var(--surface); }
+
+.jc-chips { display: flex; gap: 8px; margin: -4px 0 14px; flex-wrap: wrap; }
+.jc-chips button { border: 1px solid var(--border-strong); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700; color: var(--navy); background: var(--surface); }
+.jc-chips button.on { background: var(--green-soft); border-color: var(--green-line); color: var(--green-dark); }
+.jc-check { display: flex; align-items: center; gap: 10px; margin: 2px 0 16px; font-size: 14px; font-weight: 600; color: var(--navy); }
+.jc-check input { width: 20px; height: 20px; accent-color: var(--green); }
+.jc-log { margin: 0 0 16px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.jc-log-row { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--divider); font-size: 13px; color: var(--navy-muted); width: 100%; text-align: left; }
+.jc-log-row:last-child { border-bottom: none; }
+.jc-log-row b { color: var(--navy); }
+button.jc-log-row:active { background: var(--surface-2); }
+
+/* Office */
+.jc-table td { vertical-align: middle; }
+.jc-sub td { background: var(--surface-2); font-size: 13px; color: var(--navy-muted); padding-top: 8px; padding-bottom: 8px; }
+.jc-arrows { display: inline-flex; gap: 2px; }
+.jc-arrows button { width: 26px; height: 26px; border-radius: 6px; color: var(--navy-muted); font-size: 13px; }
+.jc-arrows button:hover:not(:disabled) { background: var(--hover); color: var(--navy); }
+.jc-arrows button:disabled { opacity: 0.3; }
+.jc-status { cursor: pointer; border: none; }
+.jc-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.jc-opts { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; margin-bottom: 14px; }
+.jc-opts .stk-seg { margin: 0; min-width: 220px; }
+.jc-opts label.jc-lab { display: block; font-size: 12px; font-weight: 700; color: var(--navy-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+.jc-rate { width: 120px; padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 9px; font-size: 14px; font-weight: 600; background: var(--surface); color: var(--navy); }
+.jc-checks { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-bottom: 14px; }
+.jc-checks .jc-check { margin: 0; }
+.jc-qty { width: 70px; padding: 4px 8px; border: 1px solid var(--border-strong); border-radius: 7px; text-align: right; font: inherit; background: var(--surface); color: var(--navy); }
+.jc-dim { color: var(--navy-muted); font-size: 12.5px; font-weight: 500; }

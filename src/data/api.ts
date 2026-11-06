@@ -29,6 +29,7 @@ export async function loadState(): Promise<State> {
     { data: products }, { data: orders }, { data: orderItems },
     { data: stockLocations }, { data: stockItems }, { data: stockLevels }, { data: stockMovements },
     { data: jobMaterials }, { data: shoppingItems },
+    { data: jobStages }, { data: stageEntries }, { data: stageTemplates },
   ] = await Promise.all([
     supabase.from('roles').select('*'),
     supabase.from('employees').select('*'),
@@ -56,6 +57,10 @@ export async function loadState(): Promise<State> {
     supabase.from('stock_movements').select('*').order('created_at', { ascending: false }).limit(1000),
     supabase.from('job_materials').select('*').order('created_at'),
     supabase.from('shopping_items').select('*').order('created_at'),
+    // Job card tables arrive with migration 0025; before that these come back empty.
+    supabase.from('job_stages').select('*').order('sort'),
+    supabase.from('job_stage_entries').select('*').order('created_at'),
+    supabase.from('job_stage_templates').select('*').order('name'),
   ])
 
   const itemsFor = (rows: Row[] | null, key: string, id: string) =>
@@ -159,6 +164,16 @@ export async function loadState(): Promise<State> {
     shoppingItems: (shoppingItems ?? []).map((s: Row) => ({
       id: s.id, itemId: s.item_id ?? undefined, name: s.name, unit: s.unit ?? 'each', qty: num(s.qty),
       addedBy: s.added_by ?? undefined, createdAt: s.created_at,
+    })),
+    jobStages: (jobStages ?? []).map((s: Row) => ({
+      id: s.id, jobId: s.job_id, name: s.name, sort: num(s.sort), done: !!s.done, createdAt: s.created_at,
+    })),
+    stageEntries: (stageEntries ?? []).map((e: Row) => ({
+      id: e.id, stageId: e.stage_id, jobId: e.job_id, employeeId: e.employee_id ?? undefined, date: e.date,
+      hours: num(e.hours), note: e.note ?? undefined, startedAt: e.started_at ?? undefined, createdAt: e.created_at,
+    })),
+    stageTemplates: (stageTemplates ?? []).map((t: Row) => ({
+      id: t.id, name: t.name, stages: Array.isArray(t.stages) ? t.stages : [], createdAt: t.created_at,
     })),
     ga1: (ga1 ?? []).map((g: Row) => ({
       id: g.id, reportNumber: g.report_number, clientId: g.client_id, examinerId: g.examiner_id,
@@ -441,6 +456,34 @@ export async function persist(action: Action): Promise<void> {
     }
     case 'REMOVE_SHOPPING_ITEM':
       return check(supabase.from('shopping_items').delete().eq('id', action.id))
+
+    case 'ADD_JOB_STAGE':
+    case 'UPDATE_JOB_STAGE': {
+      const st = action.stage
+      return check(supabase.from('job_stages').upsert({
+        id: st.id, job_id: st.jobId, name: st.name, sort: st.sort, done: st.done, created_at: st.createdAt,
+      }))
+    }
+    case 'REMOVE_JOB_STAGE':
+      return check(supabase.from('job_stages').delete().eq('id', action.id))
+
+    case 'ADD_STAGE_ENTRY':
+    case 'UPDATE_STAGE_ENTRY': {
+      const e = action.entry
+      return check(supabase.from('job_stage_entries').upsert({
+        id: e.id, stage_id: e.stageId, job_id: e.jobId, employee_id: e.employeeId ?? null, date: e.date,
+        hours: e.hours, note: e.note ?? null, started_at: e.startedAt ?? null, created_at: e.createdAt,
+      }))
+    }
+    case 'REMOVE_STAGE_ENTRY':
+      return check(supabase.from('job_stage_entries').delete().eq('id', action.id))
+
+    case 'ADD_STAGE_TEMPLATE': {
+      const t = action.template
+      return check(supabase.from('job_stage_templates').insert({ id: t.id, name: t.name, stages: t.stages, created_at: t.createdAt }))
+    }
+    case 'REMOVE_STAGE_TEMPLATE':
+      return check(supabase.from('job_stage_templates').delete().eq('id', action.id))
 
     // Local-only actions: no persistence.
     case 'SET_CURRENT_USER':

@@ -158,4 +158,19 @@ export const seed: State = {
   shoppingItems: [
     { id: 'sh1', name: 'Hi-vis vests', unit: 'each', qty: 2, addedBy: 'e4', createdAt: '2026-07-06T12:00:00' },
   ],
+  jobStages: [
+    { id: 'st1', jobId: 'j1', name: 'Carry, cut, prep stock', sort: 0, done: true, createdAt: '2026-07-06T09:00:00' },
+    { id: 'st2', jobId: 'j1', name: 'Setup and tack frame', sort: 1, done: true, createdAt: '2026-07-06T09:00:00' },
+    { id: 'st3', jobId: 'j1', name: 'Fully weld frame', sort: 2, done: false, createdAt: '2026-07-06T09:00:00' },
+    { id: 'st4', jobId: 'j1', name: 'Finish and paint', sort: 3, done: false, createdAt: '2026-07-06T09:00:00' },
+  ],
+  stageEntries: [
+    { id: 'se1', stageId: 'st1', jobId: 'j1', employeeId: 'e2', date: '2026-07-06', hours: 2, createdAt: '2026-07-06T12:00:00' },
+    { id: 'se2', stageId: 'st1', jobId: 'j1', employeeId: 'e3', date: '2026-07-06', hours: 1.4, note: 'Cut 8 lengths of box', createdAt: '2026-07-06T12:00:00' },
+    { id: 'se3', stageId: 'st2', jobId: 'j1', employeeId: 'e2', date: '2026-07-07', hours: 4, createdAt: '2026-07-07T13:00:00' },
+    { id: 'se4', stageId: 'st3', jobId: 'j1', employeeId: 'e2', date: '2026-07-07', hours: 3, createdAt: '2026-07-07T17:00:00' },
+  ],
+  stageTemplates: [
+    { id: 'tpl1', name: 'Man basket', stages: ['Carry, cut, prep stock', 'Setup and tack frame', 'Fully weld frame', 'Finish and paint'], createdAt: '2026-06-01' },
+  ],
 }

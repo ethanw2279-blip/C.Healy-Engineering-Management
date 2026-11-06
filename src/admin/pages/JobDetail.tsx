@@ -6,6 +6,7 @@ import VisitModal from '../VisitModal'
 import Notes from '../components/Notes'
 import Attachments from '../components/Attachments'
 import JobMaterials from '../components/JobMaterials'
+import JobCard from '../components/JobCard'
 import { nextNumber, today } from '../formParts'
 import {
   useStore,
@@ -173,6 +174,8 @@ export default function JobDetail() {
           </tbody>
         </table>
       </Section>
+
+      <JobCard jobId={job.id} />
 
       <JobMaterials jobId={job.id} />
 

@@ -253,6 +253,23 @@ export type JobMaterial = {
 // buy are worked out from the data above, not stored here.
 export type ShoppingItem = { id: ID; itemId?: ID; name: string; unit: string; qty: number; addedBy?: ID; createdAt: string }
 
+// ---- Job card ---------------------------------------------------------------
+// The stages of a job and how long each person spent on each. Separate from
+// timesheets. A running timer is an entry with startedAt set and no hours yet.
+export type JobStage = { id: ID; jobId: ID; name: string; sort: number; done: boolean; createdAt: string }
+export type StageEntry = {
+  id: ID
+  stageId: ID
+  jobId: ID
+  employeeId?: ID
+  date: string // ISO yyyy-mm-dd
+  hours: number
+  note?: string
+  startedAt?: string // set while the timer is running
+  createdAt: string
+}
+export type StageTemplate = { id: ID; name: string; stages: string[]; createdAt: string }
+
 export type State = {
   roles: Role[]
   currentUserId: ID
@@ -275,4 +292,7 @@ export type State = {
   stockMovements: StockMovement[]
   jobMaterials: JobMaterial[]
   shoppingItems: ShoppingItem[]
+  jobStages: JobStage[]
+  stageEntries: StageEntry[]
+  stageTemplates: StageTemplate[]
 }
