@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import ScreenHeader from '../components/ScreenHeader'
 import { ChevronRightIcon } from '../components/Icons'
 import { useStore, useCurrentUser } from '../data/store'
-import { weekDatesISO, todayISO } from '../mobile/fieldHelpers'
+import { weekDatesISO, todayISO, timeRange, hrsText } from '../mobile/fieldHelpers'
 import AddHoursSheet from './AddHoursSheet'
 import TeamHours from './TeamHours'
 import ViewSwitch from '../components/ViewSwitch'
@@ -112,7 +112,10 @@ function MyTimesheet() {
                       <span className="ts-entry-trip">{[t.km ? `${t.km} km` : '', t.reason, t.toPlace ? `to ${t.toPlace}` : ''].filter(Boolean).join(' · ')}</span>
                     )}
                   </div>
-                  <div className="ts-entry-hours">{hoursLabel(t.hours)}</div>
+                  <div className="ts-entry-time">
+                    {timeRange(t) && <b>{timeRange(t)}</b>}
+                    <span className={timeRange(t) ? '' : 'solo'}>{timeRange(t) ? '= ' : ''}{hrsText(t.hours)}</span>
+                  </div>
                   {t.approved ? <span className="ts-entry-lock">Approved</span> : <span className="muted-sub" style={{ fontSize: 12 }}>Edit</span>}
                 </button>
               )

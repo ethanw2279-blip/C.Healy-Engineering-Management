@@ -62,7 +62,7 @@ export default function AddHoursSheet({
   const isTrip = kind === 'travel'
   const jobs = state.jobs.filter((j) => j.status !== 'Complete' || j.id === editing?.jobId)
   // Old entries without times are edited as plain hours.
-  const useTimes = !editing || (isTrip && !!editing.startTime && !!editing.endTime)
+  const useTimes = !editing || (!!editing.startTime && !!editing.endTime)
   const hours = useTimes ? hoursBetween(start, end) : hoursInput
 
   const km = Number(kmInput) || 0
@@ -90,16 +90,16 @@ export default function AddHoursSheet({
       kind,
       note: note.trim() || (isTrip && reason.trim()) || 'Manual entry',
       approved: false,
+      startTime: useTimes ? start : editing?.startTime,
+      endTime: useTimes ? end : editing?.endTime,
       ...(isTrip
         ? {
-            startTime: useTimes ? start : editing?.startTime,
-            endTime: useTimes ? end : editing?.endTime,
             km: km > 0 ? km : undefined,
             reason: reason.trim() || undefined,
             fromPlace: fromPlace.trim() || undefined,
             toPlace: toPlace.trim() || undefined,
           }
-        : { startTime: undefined, endTime: undefined, km: undefined, reason: undefined, fromPlace: undefined, toPlace: undefined }),
+        : { km: undefined, reason: undefined, fromPlace: undefined, toPlace: undefined }),
     }
     if (editing) {
       dispatch({ type: 'UPDATE_TIME_ENTRY', entry: { ...editing, ...base } })
