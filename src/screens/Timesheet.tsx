@@ -5,6 +5,9 @@ import { ChevronRightIcon } from '../components/Icons'
 import { useStore, useCurrentUser } from '../data/store'
 import { weekDatesISO, todayISO } from '../mobile/fieldHelpers'
 import AddHoursSheet from './AddHoursSheet'
+import TeamHours from './TeamHours'
+import ViewSwitch from '../components/ViewSwitch'
+import { useTeamView } from '../mobile/useTeamView'
 import type { TimeEntry, TimeEntryKind } from '../data/types'
 import './screens.css'
 import './Timesheet.css'
@@ -18,7 +21,14 @@ function hoursLabel(h: number) {
   return `${hh}:${String(mm).padStart(2, '0')}`
 }
 
+// Managers land on everyone's hours; everyone else (or a manager who picks
+// "Me") gets their own week and the add-hours buttons.
 export default function Timesheet() {
+  const { teamView } = useTeamView()
+  return teamView ? <TeamHours /> : <MyTimesheet />
+}
+
+function MyTimesheet() {
   const { state } = useStore()
   const { user } = useCurrentUser()
   const nav = useNavigate()
@@ -44,6 +54,7 @@ export default function Timesheet() {
       <ScreenHeader title="Timesheet" />
 
       <div className="pad">
+        <ViewSwitch />
         <div className="ts-add-row">
           <button className="ts-add" onClick={() => setAdding('work')}>+ Add hours</button>
           <button className="ts-add ts-add-travel" onClick={() => setAdding('travel')}>+ Trip</button>
