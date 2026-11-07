@@ -3,7 +3,7 @@ import { PageHeader, Button, Avatar, StatusBadge, EmptyState } from '../componen
 import { DownloadIcon } from '../../components/Icons'
 import { useStore, useCurrentUser, formatDate } from '../../data/store'
 import type { TimeEntry } from '../../data/types'
-import { computeRange, csvCell, thisMonthStart, thisMonthEnd, type Period } from './Timesheets'
+import { computeRange, csvCell, thisMonthStart, thisMonthEnd, type Period } from '../../data/hoursRange'
 import './Timesheets.css'
 import './Trips.css'
 
