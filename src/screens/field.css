@@ -151,6 +151,11 @@
 .ts-entry-body strong { font-size: 15px; color: var(--navy); }
 .ts-entry-body span { font-size: 13px; color: var(--navy-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ts-entry-hours { font-size: 15px; font-weight: 800; color: var(--navy); }
+/* "14:00–18:00" over "= 4 hrs" on a time entry; just "4 hrs" when no times were saved. */
+.ts-entry-time { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ts-entry-time b { font-size: 15px; font-weight: 800; color: var(--navy); }
+.ts-entry-time span { font-size: 12.5px; font-weight: 600; color: var(--navy-muted); }
+.ts-entry-time span.solo { font-size: 15px; font-weight: 800; color: var(--navy); }
 .ts-entry-lock { font-size: 11px; font-weight: 700; color: var(--green-dark); background: var(--green-soft); border-radius: 999px; padding: 3px 8px; }
 .ts-entry.editable:active { background: var(--surface-2); }
 

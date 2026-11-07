@@ -31,9 +31,13 @@ export function useClock() {
   const clockOut = () => {
     if (startedAt == null || !user) return
     const hours = Math.round(((Date.now() - startedAt) / 3600000) * 100) / 100
+    const hhmm = (ms: number) => { const d = new Date(ms); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` }
     dispatch({
       type: 'ADD_TIME_ENTRY',
-      entry: { id: newId('t'), employeeId: user.id, date: todayISO(), hours, kind: 'work', note: 'Clocked via mobile', approved: false },
+      entry: {
+        id: newId('t'), employeeId: user.id, date: todayISO(), hours, kind: 'work', note: 'Clocked via mobile', approved: false,
+        startTime: hhmm(startedAt), endTime: hhmm(Date.now()),
+      },
     })
     localStorage.removeItem(key)
     setStartedAt(null)

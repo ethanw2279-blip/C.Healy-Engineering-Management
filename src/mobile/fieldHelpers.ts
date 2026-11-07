@@ -7,6 +7,16 @@ export function greeting() {
   return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'
 }
 
+// "4 hrs" / "1.5 hrs" / "1 hr" for a time entry's length.
+export const hrsText = (h: number) => {
+  const n = Math.round(h * 100) / 100
+  return `${n} ${n === 1 ? 'hr' : 'hrs'}`
+}
+
+// "14:00–18:00" when an entry has its start and finish saved, else ''.
+export const timeRange = (t: { startTime?: string; endTime?: string }) =>
+  t.startTime && t.endTime ? `${t.startTime}–${t.endTime}` : ''
+
 export const firstName = (name?: string) => (name ?? '').split(' ')[0]
 
 export const fmtDay = (iso: string) =>

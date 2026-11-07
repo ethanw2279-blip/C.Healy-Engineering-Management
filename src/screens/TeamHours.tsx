@@ -4,7 +4,7 @@ import ViewSwitch from '../components/ViewSwitch'
 import { ChevronDownIcon } from '../components/Icons'
 import { useStore, eur, roleNameOf } from '../data/store'
 import { computeRange, thisMonthStart, thisMonthEnd, type Period } from '../data/hoursRange'
-import { fmtDayShort } from '../mobile/fieldHelpers'
+import { fmtDayShort, timeRange, hrsText } from '../mobile/fieldHelpers'
 import type { TimeEntry, TimeEntryKind } from '../data/types'
 import './screens.css'
 import './Timesheet.css'
@@ -223,7 +223,10 @@ export default function TeamHours() {
                               )}
                             </div>
                             <div className="th-entry-side">
-                              <b>{hoursLabel(t.hours)}</b>
+                              <div className="ts-entry-time">
+                                {timeRange(t) && <b>{timeRange(t)}</b>}
+                                <span className={timeRange(t) ? '' : 'solo'}>{timeRange(t) ? '= ' : ''}{hrsText(t.hours)}</span>
+                              </div>
                               {t.approved ? (
                                 <span className="ts-entry-lock">Approved</span>
                               ) : (
