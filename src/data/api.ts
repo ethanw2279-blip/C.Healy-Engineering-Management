@@ -310,17 +310,15 @@ export async function persist(action: Action): Promise<void> {
     case 'ADD_TIME_ENTRY':
     case 'UPDATE_TIME_ENTRY': {
       const t = action.entry
-      // Trip columns (0022_trips.sql) are only sent for travel, so working
-      // hours keep saving even before that migration has been run.
+      // Start/finish times are kept for every entry (shown as "14:00–18:00");
+      // the trip details (0022_trips.sql) only apply to travel.
       const trip = t.kind === 'travel'
-        ? {
-            start_time: t.startTime ?? null, end_time: t.endTime ?? null, km: t.km ?? null,
-            trip_reason: t.reason ?? null, trip_from: t.fromPlace ?? null, trip_to: t.toPlace ?? null,
-          }
+        ? { km: t.km ?? null, trip_reason: t.reason ?? null, trip_from: t.fromPlace ?? null, trip_to: t.toPlace ?? null }
         : {}
       return check(supabase.from('time_entries').upsert({
         id: t.id, employee_id: t.employeeId, job_id: t.jobId ?? null, date: t.date,
         hours: t.hours, kind: t.kind ?? 'work', note: t.note ?? null, approved: t.approved,
+        start_time: t.startTime ?? null, end_time: t.endTime ?? null,
         ...trip,
       }))
     }
